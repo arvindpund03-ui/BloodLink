@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow p-4">
+
+    <h2 class="text-danger">
+        Donor Details
+    </h2>
+
+    <hr>
+
+    {% if donor.photo %}
+        <img src="{{ donor.photo.url }}"
+             width="180"
+             height="180"
+             class="rounded-circle mb-3">
+    {% else %}
+        <p><strong>No Photo Available</strong></p>
+    {% endif %}
+
+    <h4>{{ donor.full_name }}</h4>
+
+    <p><strong>Blood Group:</strong> {{ donor.blood_group }}</p>
+
+    <p><strong>Phone:</strong> {{ donor.phone }}</p>
+
+    <p><strong>City:</strong> {{ donor.city }}</p>
+
+    <p><strong>Emergency Contact:</strong> {{ donor.emergency_contact }}</p>
+
+    <a href="/donors/" class="btn btn-secondary">
+        Back to Donor List
+    </a>
+    <a href="https://wa.me/91{{ donor.phone }}"
+   class="btn btn-success mt-3"
+   target="_blank">
+    💬 Contact on WhatsApp
+</a>
+
+</div>
+
+{% endblock %}

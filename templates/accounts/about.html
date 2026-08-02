@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-danger">🩸 About BloodLink</h2>
+
+    <p>
+        BloodLink is a Blood Donation Management System developed using Django.
+        This website helps patients find blood donors quickly and allows donors
+        to register and help save lives.
+    </p>
+
+    <h4>Features</h4>
+
+    <ul>
+        <li>Donor Registration</li>
+        <li>Blood Request Management</li>
+        <li>Search Donors by Blood Group and City</li>
+        <li>Matching Donors</li>
+        <li>Dashboard Statistics</li>
+    </ul>
+
+    <a href="/dashboard/" class="btn btn-danger">
+        Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

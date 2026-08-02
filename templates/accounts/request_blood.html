@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow p-4">
+
+    <h2 class="text-danger mb-3">
+        🩸 Blood Request Form
+    </h2>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+
+        <button type="submit" class="btn btn-danger">
+            Submit Request
+        </button>
+
+
+        <a href="/dashboard/" class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+
+    </form>
+
+</div>
+
+
+{% endblock %}

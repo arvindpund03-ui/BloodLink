@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-danger mb-3">
+    🩸 Blood Requests
+</h2>
+
+<table class="table table-bordered table-striped shadow">
+
+    <tr class="table-danger">
+        <th>Patient Name</th>
+        <th>Blood Group</th>
+        <th>City</th>
+        <th>Hospital</th>
+        <th>Units Required</th>
+        <th>Action</th>
+    </tr>
+
+    {% for blood_request in requests %}
+
+    <tr>
+        <td>{{ blood_request.patient_name }}</td>
+        <td>{{ blood_request.blood_group }}</td>
+        <td>{{ blood_request.city }}</td>
+        <td>{{ blood_request.hospital }}</td>
+        <td>{{ blood_request.units_required }}</td>
+
+        <td>
+            <a href="{% url 'matching_donors' blood_request.id %}" class="btn btn-danger">
+                Find Donor
+            </a>
+        </td>
+    </tr>
+
+    {% empty %}
+
+    <tr>
+        <td colspan="6" class="text-center">
+            No Blood Requests Found
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<a href="/dashboard/" class="btn btn-secondary">
+    Back to Dashboard
+</a>
+
+{% endblock %}
