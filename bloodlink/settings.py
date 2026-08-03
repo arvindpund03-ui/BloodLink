@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-4l5dj%8h#wmkqh628_pa619kd2!(fj_r1^n=$nj$r!l3(n7-(%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["bloodlink-xhpx.onrender.com",
+    "127.0.0.1",
+    "localhost",
+    ]
 
 
 # Application definition
