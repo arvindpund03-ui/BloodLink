@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.urls import path
+from . import views
 from .views import (
     home,
     register,
@@ -18,8 +20,11 @@ from .views import (
 
 
 urlpatterns = [
+    path('send-otp/',views.send_otp,name='send_otp'),
 
-    path("", home, name="home"),
+    path('verify-otp/',views.verify_otp,name='verify_otp'),
+
+    path("home", home, name="home"),
 
     path("register/", register, name="register"),
 
@@ -47,4 +52,7 @@ urlpatterns = [
     
     path("download-pdf/", views.download_pdf, name="download_pdf"),
 ]
+
+
+
 

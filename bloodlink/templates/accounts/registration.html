@@ -1,0 +1,151 @@
+<h2 style="color:red;">OTP VERSION</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BloodLink Registration</title>
+</head>
+
+<body>
+
+<h1>Hello BloodLink</h1>
+
+
+<form method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <!-- OTP Section Start -->
+
+    <div class="mb-3">
+
+        <label>Mobile Number</label>
+
+        <input 
+        type="text" 
+        id="mobile"
+        name="mobile"
+        class="form-control"
+        placeholder="Enter Mobile Number">
+
+    </div>
+
+
+    <button 
+    type="button"
+    onclick="sendOTP()"
+    class="btn btn-primary">
+
+    Send OTP
+
+    </button>
+
+
+
+    <div class="mb-3 mt-3">
+
+        <label>Enter OTP</label>
+
+        <input 
+        type="text"
+        id="otp"
+        name="otp"
+        class="form-control"
+        placeholder="Enter OTP">
+
+    </div>
+
+
+    <button 
+    type="button"
+    onclick="verifyOTP()"
+    class="btn btn-success">
+
+    Verify OTP
+
+    </button>
+
+
+    <!-- OTP Section End -->
+
+
+    <br><br>
+
+<button type="submit">
+        Register
+    </button>
+
+</form>
+
+
+<script>
+
+function sendOTP(){
+
+let mobile=document.getElementById("mobile").value;
+
+
+fetch("/send-otp/",{
+
+method:"POST",
+
+headers:{
+"X-CSRFToken":"{{ csrf_token }}",
+"Content-Type":"application/x-www-form-urlencoded"
+},
+
+body:"mobile="+mobile
+
+})
+
+.then(response=>response.json())
+
+.then(data=>{
+
+alert(data.message);
+
+});
+
+}
+
+
+
+function verifyOTP(){
+
+let mobile=document.getElementById("mobile").value;
+
+let otp=document.getElementById("otp").value;
+
+
+fetch("/verify-otp/",{
+
+method:"POST",
+
+headers:{
+"X-CSRFToken":"{{ csrf_token }}",
+"Content-Type":"application/x-www-form-urlencoded"
+},
+
+body:
+"mobile="+mobile+
+"&otp="+otp
+
+})
+
+
+.then(response=>response.json())
+
+.then(data=>{
+
+alert(data.message);
+
+});
+
+}
+
+</script>
+
+
+</body>
+</html>

@@ -4,7 +4,6 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count
-
 from .models import UserProfile, BloodRequest
 from .forms import RegistrationForm, UserProfileForm, BloodRequestForm
 from django.core.mail import send_mail
@@ -20,6 +19,13 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from datetime import datetime
 from reportlab.platypus import Image
 import os
+
+from django.http import JsonResponse
+from .models import OTPVerification
+from .utils import generate_otp
+
+
+
 
 def home(request):
 
@@ -41,18 +47,36 @@ def home(request):
 
 
 def register(request):
+
     if request.method == "POST":
+
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-            form.save()
+
+            user = form.save(commit=False)
+
+            user.set_password(
+                form.cleaned_data["password"]
+            )
+
+            user.save()
+
             return redirect("/login/")
+
+
     else:
+
         form = RegistrationForm()
 
-    return render(request, "accounts/registration.html", {
-        "form": form
-    })
+
+    return render(
+        request,
+        "accounts/registration.html",
+        {
+            "form":form
+        }
+    )
 
 
 class UserLoginView(LoginView):
@@ -401,3 +425,50 @@ def download_pdf(request):
 
 
     return response
+
+
+def send_otp(request):
+
+    mobile = request.POST.get("mobile")
+
+    otp = generate_otp()
+
+    OTPVerification.objects.create(
+        mobile=mobile,
+        otp=otp
+    )
+
+    print("Generated OTP:", otp)
+
+    return JsonResponse({
+        "message":"OTP Sent Successfully"
+    })
+
+
+def verify_otp(request):
+
+    mobile = request.POST.get("mobile")
+    otp = request.POST.get("otp")
+
+
+    result = OTPVerification.objects.filter(
+        mobile=mobile,
+        otp=otp,
+        is_verified=False
+    ).last()
+
+
+    if result:
+
+        result.is_verified = True
+        result.save()
+
+        return JsonResponse({
+            "message":"OTP Verified"
+        })
+
+
+    return JsonResponse({
+        "message":"Invalid OTP"
+    })
+
