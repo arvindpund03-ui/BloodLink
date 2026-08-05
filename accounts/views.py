@@ -20,10 +20,7 @@ from datetime import datetime
 from reportlab.platypus import Image
 import os
 
-import requests
-from django.http import JsonResponse
-from .models import OTPVerification
-from .utils import generate_otp
+
 
 
 
@@ -45,9 +42,30 @@ def home(request):
     "recent_requests": recent_requests,
 })
 
+def register(request):
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
 
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password"])
+            user.save()
+
+            messages.success(request, "Registration Successful")
+            return redirect("/login/")
+    else:
+        form = RegistrationForm()
+
+    return render(
+        request,
+        "accounts/registration.html",
+        {
+            "form": form
+        }
+    )
 class UserLoginView(LoginView):
     template_name = "accounts/login.html"
+
 
 
 @login_required
