@@ -4,21 +4,44 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count
-from .forms import RegistrationForm, UserProfileForm, BloodRequestForm
+
+from .models import (
+    UserProfile,
+    BloodRequest,
+    OTPVerification,
+    DonationCertificate,
+)
+
+from .forms import (
+    RegistrationForm,
+    UserProfileForm,
+    BloodRequestForm,
+)
+
 from django.core.mail import send_mail
 from django.conf import settings
-from django.http import HttpResponse
-from reportlab.pdfgen import canvas
+from django.http import HttpResponse, JsonResponse
+
+from datetime import datetime
+
+import os
+import requests
+
+from .utils import generate_otp
+
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-from reportlab.lib.units import inch
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Table,
+    TableStyle,
+    Paragraph,
+    Image,
+)
 from reportlab.lib.enums import TA_CENTER
-from reportlab.pdfbase.pdfmetrics import stringWidth
-from datetime import datetime
-from reportlab.platypus import Image
-import os
 
+
+#Home View
 
 def home(request):
 
@@ -30,26 +53,45 @@ def home(request):
         is_available=True
     ).count()
 
-    recent_requests = BloodRequest.objects.all().order_by("-id")[:5]
-    return render(request, "home.html", {
-    "total_donors": total_donors,
-    "total_requests": total_requests,
-    "available_donors": available_donors,
-    "recent_requests": recent_requests,
-})
+    recent_requests = BloodRequest.objects.order_by("-id")[:5]
+
+    return render(
+        request,
+        "home.html",
+        {
+            "total_donors": total_donors,
+            "total_requests": total_requests,
+            "available_donors": available_donors,
+            "recent_requests": recent_requests,
+        },
+    )
+
+
+#Register View
 
 def register(request):
+
     if request.method == "POST":
+
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
+
             user = form.save(commit=False)
+
             user.set_password(form.cleaned_data["password"])
+
             user.save()
 
-            messages.success(request, "Registration Successful")
+            messages.success(
+                request,
+                "Registration Successful"
+            )
+
             return redirect("/login/")
+
     else:
+
         form = RegistrationForm()
 
     return render(
@@ -59,61 +101,104 @@ def register(request):
             "form": form
         }
     )
+
+
+#Login View
+
 class UserLoginView(LoginView):
+
     template_name = "accounts/login.html"
 
-
+#Dashboard
 
 @login_required
 def dashboard(request):
-    total_donors = UserProfile.objects.count()
-    total_requests = BloodRequest.objects.count()
-    available_donors = UserProfile.objects.filter(is_available=True).count()
 
-    blood_stats = UserProfile.objects.values("blood_group").annotate(total=Count("id"))
+    total_donors = UserProfile.objects.count()
+
+    total_requests = BloodRequest.objects.count()
+
+    available_donors = UserProfile.objects.filter(
+        is_available=True
+    ).count()
+
+    blood_stats = UserProfile.objects.values(
+        "blood_group"
+    ).annotate(
+        total=Count("id")
+    )
 
     latest_donors = UserProfile.objects.order_by("-id")[:5]
+
     recent_requests = BloodRequest.objects.order_by("-id")[:5]
 
-    return render(request, "accounts/dashboard.html", {
-        "total_donors": total_donors,
-        "total_requests": total_requests,
-        "available_donors": available_donors,
-        "blood_stats": blood_stats,
-        "latest_donors": latest_donors,
-        "recent_requests": recent_requests,
-    })
+    return render(
+        request,
+        "accounts/dashboard.html",
+        {
+            "total_donors": total_donors,
+            "total_requests": total_requests,
+            "available_donors": available_donors,
+            "blood_stats": blood_stats,
+            "latest_donors": latest_donors,
+            "recent_requests": recent_requests,
+        },
+    )
 
+#Logout
 
 def user_logout(request):
+
     logout(request)
+
     return redirect("/login/")
 
+#Profile
 
 @login_required
 def profile(request):
+
     profile, created = UserProfile.objects.get_or_create(
         user=request.user
     )
 
     if request.method == "POST":
+
         form = UserProfileForm(
             request.POST,
             request.FILES,
-            instance=profile
+            instance=profile,
         )
 
         if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user = request.user
-            profile.save()
-            return redirect("/profile/")
-    else:
-        form = UserProfileForm(instance=profile)
 
-    return render(request, "accounts/profile.html", {
-        "form": form
-    })
+            profile = form.save(commit=False)
+
+            profile.user = request.user
+
+            profile.save()
+
+            messages.success(
+                request,
+                "Profile Updated Successfully."
+            )
+
+            return redirect("/profile/")
+
+    else:
+
+        form = UserProfileForm(
+            instance=profile
+        )
+
+    return render(
+        request,
+        "accounts/profile.html",
+        {
+            "form": form
+        },
+    )
+
 @login_required
 def donor_list(request):
     donors = UserProfile.objects.all()
@@ -122,45 +207,59 @@ def donor_list(request):
     city = request.GET.get("city")
 
     if blood_group:
-        donors = donors.filter(blood_group=blood_group)
+        donors = donors.filter(
+            blood_group=blood_group
+        )
 
     if city:
-        donors = donors.filter(city__icontains=city)
+        donors = donors.filter(
+            city__icontains=city
+        )
 
-    return render(request, "accounts/donor_list.html", {
-        "donors": donors
-    })
+    return render(
+        request,
+        "accounts/donor_list.html",
+        {
+            "donors": donors
+        }
+    )
 
 
 @login_required
 def donor_detail(request, id):
     donor = UserProfile.objects.get(id=id)
 
-    return render(request, "accounts/donor_detail.html", {
-        "donor": donor
-    })
+    return render(
+        request,
+        "accounts/donor_detail.html",
+        {
+            "donor": donor
+        }
+    )
 
 
 @login_required
 def request_blood(request):
+
     if request.method == "POST":
+
         form = BloodRequestForm(request.POST)
 
         if form.is_valid():
+
             blood_request = form.save()
 
-            
             emails = UserProfile.objects.filter(
                 blood_group=blood_request.blood_group,
-                city=blood_request.city,      
+                city=blood_request.city,
                 is_available=True
             ).exclude(
                 user__email=""
             ).values_list(
-                "user__email", flat=True
+                "user__email",
+                flat=True
             )
 
-            # Matching donors ना email पाठवा
             if emails:
                 send_mail(
                     subject="🩸 Urgent Blood Request - BloodLink",
@@ -180,54 +279,73 @@ BloodLink Team
                     fail_silently=False,
                 )
 
+            messages.success(
+                request,
+                "Blood request submitted successfully!"
+            )
+
+            return redirect("/dashboard/")
+
     else:
         form = BloodRequestForm()
 
-    return render(request, "accounts/request_blood.html", {
-        "form": form
-    })
-
-    messages.success(request, "Blood request submitted successfully!")
-    return redirect("/dashboard/")
-
+    return render(
+        request,
+        "accounts/request_blood.html",
+        {
+            "form": form
+        }
+    )
 
 @login_required
 def blood_request_list(request):
-    requests = BloodRequest.objects.all()
 
-    return render(request, "accounts/blood_request_list.html", {
-        "requests": requests
-    })
+    requests = BloodRequest.objects.all().order_by("-id")
+
+    return render(
+        request,
+        "accounts/blood_request_list.html",
+        {
+            "requests": requests
+        }
+    )
 
 
 @login_required
 def matching_donors(request, id):
+
     blood_request = BloodRequest.objects.get(id=id)
 
     donors = UserProfile.objects.filter(
         blood_group=blood_request.blood_group,
-        city=blood_request.city
+        city=blood_request.city,
+        is_available=True
     )
 
-    return render(request, "accounts/matching_donors.html", {
-        "blood_request": blood_request,
-        "donors": donors
-    })
+    return render(
+        request,
+        "accounts/matching_donors.html",
+        {
+            "blood_request": blood_request,
+            "donors": donors
+        }
+    )
 
 
 def about(request):
-    return render(request, "accounts/about.html")
+    return render(
+        request,
+        "accounts/about.html"
+    )
 
 
 def contact(request):
-    return render(request, "accounts/contact.html")
+    return render(
+        request,
+        "accounts/contact.html"
+    )
 
-
-def contact(request):
-    return render(request, "accounts/contact.html")
-
-
-# येथे donation_certificate function add करा
+# donation_certificate
 
 @login_required
 def donation_certificate(request, id):
@@ -246,22 +364,23 @@ def donation_certificate(request, id):
 
     styles = getSampleStyleSheet()
 
-    content = []
+    story = []
 
-    content.append(
+    story.append(
         Paragraph(
             "BloodLink Blood Donation Certificate",
             styles["Title"]
         )
     )
 
-    content.append(
+    story.append(
         Paragraph(
             f"""
-            Donor Name: {donor.full_name}<br/>
-            Blood Group: {donor.blood_group}<br/>
-            Donation Count: {donor.donation_count}<br/>
-            Date: {datetime.now().strftime("%d-%m-%Y")}<br/>
+            <br/><br/>
+            Donor Name : <b>{donor.full_name}</b><br/><br/>
+            Blood Group : <b>{donor.blood_group}</b><br/><br/>
+            City : <b>{donor.city}</b><br/><br/>
+            Date : <b>{datetime.now().strftime("%d-%m-%Y")}</b><br/><br/>
 
             Thank You For Saving A Life ❤️
             """,
@@ -269,42 +388,27 @@ def donation_certificate(request, id):
         )
     )
 
-    doc.build(content)
-
+    doc.build(story)
     return response
-
-
-from reportlab.pdfgen import canvas
 
 @login_required
 def download_pdf(request):
 
-    response = HttpResponse(content_type='application/pdf')
-
-    response['Content-Disposition'] = 'attachment; filename="BloodLink_Report.pdf"'
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="BloodLink_Report.pdf"'
 
     doc = SimpleDocTemplate(response)
-
     styles = getSampleStyleSheet()
 
     story = []
 
-    donor_data = [
-        ["Name", "Blood Group", "City"]
-    ]
-
-    
-
     # ---------------- Logo ----------------
 
     logo_path = os.path.join(settings.MEDIA_ROOT, "logo.png")
-    print("LOGO PATH:", logo_path)
-    print("LOGO EXISTS:", os.path.exists(logo_path))
 
     if os.path.exists(logo_path):
         logo = Image(logo_path, width=80, height=80)
         story.append(logo)
-
 
     # ---------------- Title ----------------
 
@@ -312,54 +416,55 @@ def download_pdf(request):
     title.alignment = TA_CENTER
 
     story.append(
-        Paragraph("🩸 BloodLink Report", title)
+        Paragraph("BloodLink Report", title)
     )
 
     story.append(
         Paragraph("<br/><br/>", styles["Normal"])
     )
 
+    # ---------------- Date ----------------
 
-    # ---------------- Statistics ----------------
-
-    total_donors = UserProfile.objects.count()
-
-    total_requests = BloodRequest.objects.count()
-
-    available = UserProfile.objects.filter(
-        is_available=True
-    ).count()
-
-
-    stats = [
-        ["Statistics", "Count"],
-        ["Total Donors", str(total_donors)],
-        ["Blood Requests", str(total_requests)],
-        ["Available Donors", str(available)],
-    ]
-
-
-    stats_table = Table(stats)
-
-    stats_table.setStyle(TableStyle([
-
-        ("BACKGROUND",(0,0),(-1,0),colors.red),
-
-        ("TEXTCOLOR",(0,0),(-1,0),colors.white),
-
-        ("GRID",(0,0),(-1,-1),1,colors.black),
-
-        ("ALIGN",(0,0),(-1,-1),"CENTER"),
-
-    ]))
-    current_time = datetime.now().strftime("%d-%m-%Y %I:%M:%S %p")
     story.append(
         Paragraph(
-            "Generated On : " + current_time,
+            "Generated On : " +
+            datetime.now().strftime("%d-%m-%Y %I:%M:%S %p"),
             styles["Normal"]
         )
     )
 
+    story.append(
+        Paragraph("<br/><br/>", styles["Normal"])
+    )
+
+    # ---------------- Statistics ----------------
+
+    total_donors = UserProfile.objects.count()
+    total_requests = BloodRequest.objects.count()
+    available = UserProfile.objects.filter(
+        is_available=True
+    ).count()
+
+    stats = [
+        ["Statistics", "Count"],
+        ["Total Donors", total_donors],
+        ["Blood Requests", total_requests],
+        ["Available Donors", available],
+    ]
+
+    stats_table = Table(stats)
+
+    stats_table.setStyle(TableStyle([
+        ("BACKGROUND", (0,0), (-1,0), colors.red),
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+        ("GRID", (0,0), (-1,-1), 1, colors.black),
+        ("ALIGN", (0,0), (-1,-1), "CENTER"),
+    ]))
+
+    story.append(stats_table)
+    story.append(
+        Paragraph("<br/><br/>", styles["Normal"])
+    )
 
     # ---------------- Donor Table ----------------
 
@@ -370,27 +475,19 @@ def download_pdf(request):
     for donor in UserProfile.objects.all():
 
         donor_data.append([
-            donor.user.get_full_name(),
+            donor.full_name,
             donor.blood_group,
-            donor.city
+            donor.city,
         ])
-
 
     donor_table = Table(donor_data)
 
-
     donor_table.setStyle(TableStyle([
-
         ("BACKGROUND",(0,0),(-1,0),colors.darkgreen),
-
         ("TEXTCOLOR",(0,0),(-1,0),colors.white),
-
         ("GRID",(0,0),(-1,-1),1,colors.black),
-
         ("ALIGN",(0,0),(-1,-1),"CENTER"),
-
     ]))
-
 
     story.append(
         Paragraph("Donor List", styles["Heading2"])
@@ -398,50 +495,33 @@ def download_pdf(request):
 
     story.append(donor_table)
 
-
     story.append(
         Paragraph("<br/><br/>", styles["Normal"])
     )
 
-
-    # ---------------- Blood Request Table ----------------
+    # ---------------- Blood Requests ----------------
 
     request_data = [
         ["Patient", "Blood", "City", "Units"]
     ]
 
-
     for req in BloodRequest.objects.all():
 
         request_data.append([
-
             req.patient_name,
-
             req.blood_group,
-
             req.city,
-
-            str(req.units_required)
-
+            str(req.units_required),
         ])
-
-
 
     request_table = Table(request_data)
 
-
     request_table.setStyle(TableStyle([
-
         ("BACKGROUND",(0,0),(-1,0),colors.darkred),
-
         ("TEXTCOLOR",(0,0),(-1,0),colors.white),
-
         ("GRID",(0,0),(-1,-1),1,colors.black),
-
         ("ALIGN",(0,0),(-1,-1),"CENTER"),
-
     ]))
-
 
     story.append(
         Paragraph("Blood Requests", styles["Heading2"])
@@ -449,71 +529,7 @@ def download_pdf(request):
 
     story.append(request_table)
 
-
-
-    # ---------------- Build PDF ----------------
-
     doc.build(story)
-
 
     return response
 
-
-
-def send_otp(request):
-
-    mobile = request.POST.get("mobile")
-
-    otp = generate_otp()
-
-    OTPVerification.objects.create(
-        mobile=mobile,
-        otp=otp
-    )
-
-    url = "https://www.fast2sms.com/dev/bulkV2"
-
-    payload = {
-        "route": "otp",
-        "variables_values": otp,
-        "numbers": mobile,
-    }
-
-    headers = {
-        "authorization": "CBg6dNL7KQOp0DtmzjwlTRvPxJFuA5cW489ibqsh1UnSekHG3Mrq2xg1eR6wuNvYX9i5QHakGAzfIF0y",
-    }
-
-    response = requests.post(
-        url,
-        data=payload,
-        headers=headers
-    )
-
-    print(response.text)
-
-    return JsonResponse({
-        "message": "OTP Sent Successfully"
-    })
-    
-
-def verify_otp(request):
-    mobile = request.POST.get("mobile")
-    otp = request.POST.get("otp")
-
-    result = OTPVerification.objects.filter(
-        mobile=mobile,
-        otp=otp,
-        is_verified=False
-    ).last()
-
-    if result:
-        result.is_verified = True
-        result.save()
-
-        return JsonResponse({
-            "message": "OTP Verified"
-        })
-
-    return JsonResponse({
-        "message": "Invalid OTP"
-    })
