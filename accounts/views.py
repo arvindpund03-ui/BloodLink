@@ -4,7 +4,6 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count
-from .models import UserProfile, BloodRequest
 from .forms import RegistrationForm, UserProfileForm, BloodRequestForm
 from django.core.mail import send_mail
 from django.conf import settings
