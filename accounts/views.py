@@ -20,9 +20,11 @@ from datetime import datetime
 from reportlab.platypus import Image
 import os
 
+import requests
 from django.http import JsonResponse
 from .models import OTPVerification
 from .utils import generate_otp
+
 
 
 
@@ -52,29 +54,46 @@ def register(request):
 
         form = RegistrationForm(request.POST)
 
+        mobile = request.POST.get("mobile")
+
+        otp_verified = OTPVerification.objects.filter(
+            mobile=mobile,
+            is_verified=True
+        ).exists()
+
+        if not otp_verified:
+            messages.error(request, "Please verify OTP first.")
+            return render(
+                request,
+                "accounts/registration.html",
+                {"form": form}
+            )
+
         if form.is_valid():
 
             user = form.save(commit=False)
 
-            user.set_password(
-                form.cleaned_data["password"]
-            )
+            user.set_password(form.cleaned_data["password"])
 
             user.save()
 
-            return redirect("/login/")
+            OTPVerification.objects.filter(
+                mobile=mobile
+            ).delete()
 
+            messages.success(request, "Registration Successful")
+
+            return redirect("/login/")
 
     else:
 
         form = RegistrationForm()
 
-
     return render(
         request,
         "accounts/registration.html",
         {
-            "form":form
+            "form": form
         }
     )
 
@@ -427,6 +446,12 @@ def download_pdf(request):
     return response
 
 
+import requests
+from django.http import JsonResponse
+from .models import OTPVerification
+from .utils import generate_otp
+
+
 def send_otp(request):
 
     mobile = request.POST.get("mobile")
@@ -438,37 +463,26 @@ def send_otp(request):
         otp=otp
     )
 
-    print("Generated OTP:", otp)
+    url = "https://www.fast2sms.com/dev/bulkV2"
+
+    payload = {
+        "route": "otp",
+        "variables_values": otp,
+        "numbers": mobile,
+    }
+
+    headers = {
+        "authorization": "CBg6dNL7KQOp0DtmzjwlTRvPxJFuA5cW489ibqsh1UnSekHG3Mrq2xg1eR6wuNvYX9i5QHakGAzfIF0y",
+    }
+
+    response = requests.post(
+        url,
+        data=payload,
+        headers=headers
+    )
+
+    print(response.text)
 
     return JsonResponse({
-        "message":"OTP Sent Successfully"
+        "message": "OTP Sent Successfully"
     })
-
-
-def verify_otp(request):
-
-    mobile = request.POST.get("mobile")
-    otp = request.POST.get("otp")
-
-
-    result = OTPVerification.objects.filter(
-        mobile=mobile,
-        otp=otp,
-        is_verified=False
-    ).last()
-
-
-    if result:
-
-        result.is_verified = True
-        result.save()
-
-        return JsonResponse({
-            "message":"OTP Verified"
-        })
-
-
-    return JsonResponse({
-        "message":"Invalid OTP"
-    })
-
