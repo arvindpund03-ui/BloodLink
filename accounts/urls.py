@@ -32,4 +32,5 @@ urlpatterns = [
     path("about/", about, name="about"),
     path("contact/", contact, name="contact"),
     path("download-pdf/", views.download_pdf, name="download_pdf"),
+    path("certificate/<int:id>/",views.donation_certificate,name="certificate"),
 ]

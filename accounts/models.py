@@ -40,11 +40,38 @@ class UserProfile(models.Model):
         default=True
     )
 
+    location = models.CharField(
+        max_length=255,
+        blank=True
+     )
 
     def __str__(self):
         return self.full_name
 
+from django.utils import timezone
+import uuid
 
+
+class DonationCertificate(models.Model):
+
+    donor = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE
+    )
+
+    donation_date = models.DateField(
+        default=timezone.now
+    )
+
+    certificate_number = models.CharField(
+        max_length=50,
+        unique=True,
+        default=uuid.uuid4
+    )
+
+
+    def __str__(self):
+        return self.certificate_number
 
 class BloodRequest(models.Model):
 
@@ -66,6 +93,16 @@ class BloodRequest(models.Model):
 
     contact_number = models.CharField(
         max_length=15
+    )
+
+    location = models.CharField(
+        max_length=255,
+        blank=True
+    )
+
+    emergency_contact = models.CharField(
+        max_length=15,
+        blank=True
     )
 
     units_required = models.IntegerField()

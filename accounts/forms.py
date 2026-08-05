@@ -28,7 +28,7 @@ class UserProfileForm(forms.ModelForm):
             "blood_group",
             "phone",
             "city",
-            "emergency_contact",
+            "is_available",
             "photo",
         ]
 

@@ -21,9 +21,6 @@ from reportlab.platypus import Image
 import os
 
 
-
-
-
 def home(request):
 
     total_donors = UserProfile.objects.count()
@@ -153,10 +150,10 @@ def request_blood(request):
         if form.is_valid():
             blood_request = form.save()
 
-            # Matching donors चे email घ्या
+            
             emails = UserProfile.objects.filter(
                 blood_group=blood_request.blood_group,
-                city=blood_request.city,      # City पण match होईल
+                city=blood_request.city,      
                 is_available=True
             ).exclude(
                 user__email=""
@@ -225,6 +222,57 @@ def about(request):
 
 def contact(request):
     return render(request, "accounts/contact.html")
+
+
+def contact(request):
+    return render(request, "accounts/contact.html")
+
+
+# येथे donation_certificate function add करा
+
+@login_required
+def donation_certificate(request, id):
+
+    donor = UserProfile.objects.get(id=id)
+
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
+
+    response["Content-Disposition"] = (
+        'attachment; filename="Donation_Certificate.pdf"'
+    )
+
+    doc = SimpleDocTemplate(response)
+
+    styles = getSampleStyleSheet()
+
+    content = []
+
+    content.append(
+        Paragraph(
+            "BloodLink Blood Donation Certificate",
+            styles["Title"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            f"""
+            Donor Name: {donor.full_name}<br/>
+            Blood Group: {donor.blood_group}<br/>
+            Donation Count: {donor.donation_count}<br/>
+            Date: {datetime.now().strftime("%d-%m-%Y")}<br/>
+
+            Thank You For Saving A Life ❤️
+            """,
+            styles["Normal"]
+        )
+    )
+
+    doc.build(content)
+
+    return response
 
 
 from reportlab.pdfgen import canvas
