@@ -46,56 +46,6 @@ def home(request):
 })
 
 
-def register(request):
-
-    if request.method == "POST":
-
-        form = RegistrationForm(request.POST)
-
-        mobile = request.POST.get("mobile")
-
-        otp_verified = OTPVerification.objects.filter(
-            mobile=mobile,
-            is_verified=True
-        ).exists()
-
-        if not otp_verified:
-            messages.error(request, "Please verify OTP first.")
-            return render(
-                request,
-                "accounts/registration.html",
-                {"form": form}
-            )
-
-        if form.is_valid():
-
-            user = form.save(commit=False)
-
-            user.set_password(form.cleaned_data["password"])
-
-            user.save()
-
-            OTPVerification.objects.filter(
-                mobile=mobile
-            ).delete()
-
-            messages.success(request, "Registration Successful")
-
-            return redirect("/login/")
-
-    else:
-
-        form = RegistrationForm()
-
-    return render(
-        request,
-        "accounts/registration.html",
-        {
-            "form": form
-        }
-    )
-
-
 class UserLoginView(LoginView):
     template_name = "accounts/login.html"
 

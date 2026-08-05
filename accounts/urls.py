@@ -19,10 +19,6 @@ from .views import (
 urlpatterns = [
     path("", home, name="home"),
     path("home/", home, name="home"),
-
-    path("send-otp/", views.send_otp, name="send_otp"),
-    path("verify-otp/", views.verify_otp, name="verify_otp"),
-
     path("register/", register, name="register"),
     path("login/", UserLoginView.as_view(), name="login"),
     path("dashboard/", dashboard, name="dashboard"),

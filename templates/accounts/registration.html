@@ -17,47 +17,7 @@
 
                 {{ form.as_p }}
 
-                <!-- Mobile Number -->
-                <div class="mb-3">
-                    <label>Mobile Number</label>
-                    <input
-                        type="text"
-                        id="mobile"
-                        name="mobile"
-                        class="form-control"
-                        placeholder="Enter Mobile Number">
-                </div>
-
-                <button
-                    type="button"
-                    class="btn btn-primary mb-3"
-                    onclick="sendOTP()">
-                    Send OTP
-                </button>
-
-                <!-- OTP -->
-                <div class="mb-3">
-                    <label>Enter OTP</label>
-                    <input
-                        type="text"
-                        id="otp"
-                        class="form-control"
-                        placeholder="Enter OTP">
-                </div>
-
-                <button
-                    type="button"
-                    class="btn btn-success mb-3"
-                    onclick="verifyOTP()">
-                    Verify OTP
-                </button>
-
-                <!-- Register -->
-                <button
-                    type="submit"
-                    id="registerBtn"
-                    class="btn btn-danger w-100"
-                    disabled>
+                <button type="submit" class="btn btn-danger w-100">
                     Register
                 </button>
 
@@ -74,72 +34,5 @@
 
     </div>
 </div>
-
-<script>
-
-function sendOTP(){
-
-    let mobile = document.getElementById("mobile").value;
-
-    fetch("/send-otp/", {
-
-        method: "POST",
-
-        headers: {
-            "X-CSRFToken": "{{ csrf_token }}",
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-
-        body: "mobile=" + mobile
-
-    })
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        alert(data.message);
-
-    });
-
-}
-
-
-function verifyOTP(){
-
-    let mobile = document.getElementById("mobile").value;
-
-    let otp = document.getElementById("otp").value;
-
-    fetch("/verify-otp/", {
-
-        method: "POST",
-
-        headers: {
-            "X-CSRFToken": "{{ csrf_token }}",
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-
-        body: "mobile=" + mobile + "&otp=" + otp
-
-    })
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        alert(data.message);
-
-        if(data.message == "OTP Verified"){
-
-            document.getElementById("registerBtn").disabled = false;
-
-        }
-
-    });
-
-}
-
-</script>
 
 {% endblock %}
