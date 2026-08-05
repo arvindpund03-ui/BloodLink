@@ -27,8 +27,6 @@ from .utils import generate_otp
 
 
 
-
-
 def home(request):
 
     total_donors = UserProfile.objects.count()
@@ -446,11 +444,6 @@ def download_pdf(request):
     return response
 
 
-import requests
-from django.http import JsonResponse
-from .models import OTPVerification
-from .utils import generate_otp
-
 
 def send_otp(request):
 
@@ -485,4 +478,27 @@ def send_otp(request):
 
     return JsonResponse({
         "message": "OTP Sent Successfully"
+    })
+    
+
+def verify_otp(request):
+    mobile = request.POST.get("mobile")
+    otp = request.POST.get("otp")
+
+    result = OTPVerification.objects.filter(
+        mobile=mobile,
+        otp=otp,
+        is_verified=False
+    ).last()
+
+    if result:
+        result.is_verified = True
+        result.save()
+
+        return JsonResponse({
+            "message": "OTP Verified"
+        })
+
+    return JsonResponse({
+        "message": "Invalid OTP"
     })
