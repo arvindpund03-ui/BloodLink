@@ -43,7 +43,11 @@ class UserProfile(models.Model):
     location = models.CharField(
         max_length=255,
         blank=True
-     )
+    )
+
+    donation_count = models.PositiveIntegerField(
+        default=0
+    )
 
     def __str__(self):
         return self.full_name
@@ -107,7 +111,7 @@ class BloodRequest(models.Model):
 
     units_required = models.IntegerField()
 
-    donation_count = models.PositiveIntegerField(default=0)
+
 
 
     STATUS_CHOICES = [
