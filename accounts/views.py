@@ -402,6 +402,22 @@ def download_pdf(request):
 
     story = []
 
+@login_required
+def donation_certificate(request, id):
+
+    donor = UserProfile.objects.get(id=id)
+
+    if donor.donation_count == 0:
+        messages.error(
+            request,
+            "Certificate is available only after completing a blood donation."
+        )
+        return redirect("/donors/")
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="Donation_Certificate.pdf"'
+
+    
     # ---------------- Logo ----------------
 
     logo_path = os.path.join(settings.MEDIA_ROOT, "logo.png")

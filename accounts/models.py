@@ -107,6 +107,8 @@ class BloodRequest(models.Model):
 
     units_required = models.IntegerField()
 
+    donation_count = models.PositiveIntegerField(default=0)
+
 
     STATUS_CHOICES = [
         ("Pending", "Pending"),
@@ -141,3 +143,4 @@ class OTPVerification(models.Model):
 
     def __str__(self):
         return self.mobile
+
