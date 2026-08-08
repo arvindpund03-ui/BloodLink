@@ -1,9 +1,14 @@
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+
 
 from .models import (
     UserProfile,
@@ -345,12 +350,20 @@ def contact(request):
         "accounts/contact.html"
     )
 
-# donation_certificate
+# ---------------- Donation Certificate ----------------
 
 @login_required
 def donation_certificate(request, id):
 
     donor = UserProfile.objects.get(id=id)
+
+    # Certificate फक्त donation केल्यानंतर
+    if donor.donation_count == 0:
+        messages.error(
+            request,
+            "Certificate is available only after completing a blood donation."
+        )
+        return redirect("/donors/")
 
     response = HttpResponse(
         content_type="application/pdf"
@@ -360,90 +373,85 @@ def donation_certificate(request, id):
         'attachment; filename="Donation_Certificate.pdf"'
     )
 
-    doc = SimpleDocTemplate(response)
+    p = canvas.Canvas(response, pagesize=A4)
 
-    styles = getSampleStyleSheet()
-
-    story = []
-
-    story.append(
-        Paragraph(
-            "BloodLink Blood Donation Certificate",
-            styles["Title"]
-        )
+    p.setFont("Helvetica-Bold", 24)
+    p.drawCentredString(
+        300,
+        780,
+        "Blood Donation Certificate"
     )
 
-    story.append(
-        Paragraph(
-            f"""
-            <br/><br/>
-            Donor Name : <b>{donor.full_name}</b><br/><br/>
-            Blood Group : <b>{donor.blood_group}</b><br/><br/>
-            City : <b>{donor.city}</b><br/><br/>
-            Date : <b>{datetime.now().strftime("%d-%m-%Y")}</b><br/><br/>
+    p.setFont("Helvetica", 16)
 
-            Thank You For Saving A Life ❤️
-            """,
-            styles["Normal"]
-        )
+    p.drawCentredString(
+        300,
+        720,
+        f"This certificate is awarded to {donor.full_name}"
     )
 
-    doc.build(story)
+    p.drawCentredString(
+        300,
+        690,
+        "For Voluntarily Donating Blood"
+    )
+
+    p.drawCentredString(
+        300,
+        660,
+        f"Blood Group: {donor.blood_group}"
+    )
+
+    p.drawCentredString(
+        300,
+        630,
+        f"Date: {datetime.now().strftime('%d-%m-%Y')}"
+    )
+
+    p.setFont("Helvetica-Bold", 14)
+
+    p.drawCentredString(
+        300,
+        570,
+        "Thank You For Saving A Life!"
+    )
+
+    p.showPage()
+    p.save()
+
     return response
+
 
 @login_required
 def download_pdf(request):
-
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'attachment; filename="BloodLink_Report.pdf"'
+    return HttpResponse(
+        "Download PDF function is working!"
+    )
+    response["Content-Disposition"] = (
+        'attachment; filename="BloodLink_Report.pdf"'
+    )
 
     doc = SimpleDocTemplate(response)
+
     styles = getSampleStyleSheet()
 
     story = []
 
-@login_required
-def donation_certificate(request, id):
-
-    donor = UserProfile.objects.get(id=id)
-
-    if donor.donation_count == 0:
-        messages.error(
-            request,
-            "Certificate is available only after completing a blood donation."
-        )
-        return redirect("/donors/")
-
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'attachment; filename="Donation_Certificate.pdf"'
-
-    
-    # ---------------- Logo ----------------
-
-    logo_path = os.path.join(settings.MEDIA_ROOT, "logo.png")
-
-    if os.path.exists(logo_path):
-        logo = Image(logo_path, width=80, height=80)
-        story.append(logo)
-
-    # ---------------- Title ----------------
-
+    # Title
     title = styles["Heading1"]
     title.alignment = TA_CENTER
 
     story.append(
-        Paragraph("BloodLink Report", title)
+        Paragraph(
+            "BloodLink Report",
+            title
+        )
     )
 
-    story.append(
-        Paragraph("<br/><br/>", styles["Normal"])
-    )
-
-    # ---------------- Date ----------------
-
+    # Date
     story.append(
         Paragraph(
-            "Generated On : " +
+            "Generated On: " +
             datetime.now().strftime("%d-%m-%Y %I:%M:%S %p"),
             styles["Normal"]
         )
@@ -453,11 +461,12 @@ def donation_certificate(request, id):
         Paragraph("<br/><br/>", styles["Normal"])
     )
 
-    # ---------------- Statistics ----------------
-
+    # Statistics
     total_donors = UserProfile.objects.count()
+
     total_requests = BloodRequest.objects.count()
-    available = UserProfile.objects.filter(
+
+    available_donors = UserProfile.objects.filter(
         is_available=True
     ).count()
 
@@ -465,24 +474,33 @@ def donation_certificate(request, id):
         ["Statistics", "Count"],
         ["Total Donors", total_donors],
         ["Blood Requests", total_requests],
-        ["Available Donors", available],
+        ["Available Donors", available_donors],
     ]
 
     stats_table = Table(stats)
 
-    stats_table.setStyle(TableStyle([
-        ("BACKGROUND", (0,0), (-1,0), colors.red),
-        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
-        ("GRID", (0,0), (-1,-1), 1, colors.black),
-        ("ALIGN", (0,0), (-1,-1), "CENTER"),
-    ]))
+    stats_table.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.red),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ])
+    )
 
     story.append(stats_table)
+
     story.append(
         Paragraph("<br/><br/>", styles["Normal"])
     )
 
-    # ---------------- Donor Table ----------------
+    # Donor List
+    story.append(
+        Paragraph(
+            "Donor List",
+            styles["Heading2"]
+        )
+    )
 
     donor_data = [
         ["Name", "Blood Group", "City"]
@@ -498,15 +516,13 @@ def donation_certificate(request, id):
 
     donor_table = Table(donor_data)
 
-    donor_table.setStyle(TableStyle([
-        ("BACKGROUND",(0,0),(-1,0),colors.darkgreen),
-        ("TEXTCOLOR",(0,0),(-1,0),colors.white),
-        ("GRID",(0,0),(-1,-1),1,colors.black),
-        ("ALIGN",(0,0),(-1,-1),"CENTER"),
-    ]))
-
-    story.append(
-        Paragraph("Donor List", styles["Heading2"])
+    donor_table.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.darkgreen),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ])
     )
 
     story.append(donor_table)
@@ -515,7 +531,13 @@ def donation_certificate(request, id):
         Paragraph("<br/><br/>", styles["Normal"])
     )
 
-    # ---------------- Blood Requests ----------------
+    # Blood Requests
+    story.append(
+        Paragraph(
+            "Blood Requests",
+            styles["Heading2"]
+        )
+    )
 
     request_data = [
         ["Patient", "Blood", "City", "Units"]
@@ -532,20 +554,19 @@ def donation_certificate(request, id):
 
     request_table = Table(request_data)
 
-    request_table.setStyle(TableStyle([
-        ("BACKGROUND",(0,0),(-1,0),colors.darkred),
-        ("TEXTCOLOR",(0,0),(-1,0),colors.white),
-        ("GRID",(0,0),(-1,-1),1,colors.black),
-        ("ALIGN",(0,0),(-1,-1),"CENTER"),
-    ]))
-
-    story.append(
-        Paragraph("Blood Requests", styles["Heading2"])
+    request_table.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.darkred),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ])
     )
 
     story.append(request_table)
 
+    # Generate PDF
     doc.build(story)
 
+    # VERY IMPORTANT
     return response
-

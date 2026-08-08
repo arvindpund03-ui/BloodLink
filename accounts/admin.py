@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from .models import UserProfile, BloodRequest
 
 
@@ -10,18 +9,34 @@ class UserProfileAdmin(admin.ModelAdmin):
         "full_name",
         "blood_group",
         "phone",
-        "city"
+        "city",
+        "donation_count",
+        "is_available",
     ]
 
     search_fields = [
         "full_name",
         "blood_group",
-        "city"
+        "city",
     ]
 
     list_filter = [
         "blood_group",
-        "city"
+        "city",
+        "is_available",
+    ]
+
+    fields = [
+        "user",
+        "full_name",
+        "blood_group",
+        "phone",
+        "city",
+        "photo",
+        "emergency_contact",
+        "location",
+        "is_available",
+        "donation_count",
     ]
 
 
@@ -33,16 +48,17 @@ class BloodRequestAdmin(admin.ModelAdmin):
         "blood_group",
         "city",
         "hospital",
-        "units_required"
+        "units_required",
     ]
 
     search_fields = [
         "patient_name",
         "blood_group",
-        "city"
+        "city",
     ]
 
     list_filter = [
         "blood_group",
-        "city"
+        "city",
     ]
+print("UserProfile admin loaded")
