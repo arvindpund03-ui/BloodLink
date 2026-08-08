@@ -25,7 +25,6 @@ from .forms import (
 
 from django.core.mail import send_mail
 from django.conf import settings
-from django.http import HttpResponse, JsonResponse
 
 from datetime import datetime
 
@@ -421,12 +420,13 @@ def donation_certificate(request, id):
 
     return response
 
-
 @login_required
 def download_pdf(request):
-    return HttpResponse(
-        "Download PDF function is working!"
+
+    response = HttpResponse(
+        content_type="application/pdf"
     )
+
     response["Content-Disposition"] = (
         'attachment; filename="BloodLink_Report.pdf"'
     )
@@ -437,7 +437,8 @@ def download_pdf(request):
 
     story = []
 
-    # Title
+    # ---------------- Title ----------------
+
     title = styles["Heading1"]
     title.alignment = TA_CENTER
 
@@ -448,20 +449,27 @@ def download_pdf(request):
         )
     )
 
-    # Date
+    # ---------------- Date ----------------
+
     story.append(
         Paragraph(
             "Generated On: " +
-            datetime.now().strftime("%d-%m-%Y %I:%M:%S %p"),
+            datetime.now().strftime(
+                "%d-%m-%Y %I:%M:%S %p"
+            ),
             styles["Normal"]
         )
     )
 
     story.append(
-        Paragraph("<br/><br/>", styles["Normal"])
+        Paragraph(
+            "<br/><br/>",
+            styles["Normal"]
+        )
     )
 
-    # Statistics
+    # ---------------- Statistics ----------------
+
     total_donors = UserProfile.objects.count()
 
     total_requests = BloodRequest.objects.count()
@@ -491,10 +499,14 @@ def download_pdf(request):
     story.append(stats_table)
 
     story.append(
-        Paragraph("<br/><br/>", styles["Normal"])
+        Paragraph(
+            "<br/><br/>",
+            styles["Normal"]
+        )
     )
 
-    # Donor List
+    # ---------------- Donor List ----------------
+
     story.append(
         Paragraph(
             "Donor List",
@@ -528,10 +540,14 @@ def download_pdf(request):
     story.append(donor_table)
 
     story.append(
-        Paragraph("<br/><br/>", styles["Normal"])
+        Paragraph(
+            "<br/><br/>",
+            styles["Normal"]
+        )
     )
 
-    # Blood Requests
+    # ---------------- Blood Requests ----------------
+
     story.append(
         Paragraph(
             "Blood Requests",
@@ -565,8 +581,8 @@ def download_pdf(request):
 
     story.append(request_table)
 
-    # Generate PDF
+    # ---------------- Generate PDF ----------------
+
     doc.build(story)
 
-    # VERY IMPORTANT
     return response
