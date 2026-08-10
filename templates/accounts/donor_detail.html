@@ -2,48 +2,51 @@
 
 {% block content %}
 
-<div class="card shadow p-4">
+<div class="card shadow p-4"><h2 class="text-danger">Donor Details</h2>
 
-    <h2 class="text-danger">
-        Donor Details
-    </h2>
+<hr>
 
-    <hr>
+{% if donor.photo %}
+    <img src="{{ donor.photo.url }}"
+         width="180"
+         height="180"
+         class="rounded-circle mb-3">
+{% else %}
+    <p><strong>No Photo Available</strong></p>
+{% endif %}
 
-    {% if donor.photo %}
-        <img src="{{ donor.photo.url }}"
-             width="180"
-             height="180"
-             class="rounded-circle mb-3">
-    {% else %}
-        <p><strong>No Photo Available</strong></p>
-    {% endif %}
+<h4>{{ donor.full_name }}</h4>
 
-    <h4>{{ donor.full_name }}</h4>
+<p><strong>Blood Group:</strong> {{ donor.blood_group }}</p>
+<p><strong>Phone:</strong> {{ donor.phone }}</p>
+<p><strong>City:</strong> {{ donor.city }}</p>
+<p><strong>Emergency Contact:</strong> {{ donor.emergency_contact }}</p>
 
-    <p><strong>Blood Group:</strong> {{ donor.blood_group }}</p>
+<hr>
 
-    <p><strong>Phone:</strong> {{ donor.phone }}</p>
-
-    <p><strong>City:</strong> {{ donor.city }}</p>
-
-    <p><strong>Emergency Contact:</strong> {{ donor.emergency_contact }}</p>
-
-    <a href="/donors/" class="btn btn-secondary">
-        Back to Donor List
-    </a>
-    <a href="https://wa.me/91{{ donor.phone }}"
-   class="btn btn-success mt-3"
+<a href="{% url 'donor_detail' donor.id %}"
+   class="btn btn-danger">
+    👁 View Donor
+</a>
+<a href="https://wa.me/91{{ donor.phone }}"
+   class="btn btn-success mt-2"
    target="_blank">
     💬 Contact on WhatsApp
 </a>
-<a href="{% url 'certificate' donor.id %}"
-   class="btn btn-primary mt-3">
 
-    🧾 Download Certificate
+{% if donor.donation_count > 0 %}
 
-</a>
+    <a href="{% url 'certificate' donor.id %}"
+       class="btn btn-primary mt-2">
+        🧾 Download Certificate
+    </a>
 
-</div>
+{% else %}
 
-{% endblock %}
+    <p class="text-muted mt-3">
+        Certificate will be available after a blood donation.
+    </p>
+
+{% endif %}
+
+</div>{% endblock %}

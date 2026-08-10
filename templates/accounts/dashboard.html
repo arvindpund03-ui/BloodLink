@@ -1,300 +1,2054 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block content %}
+<title>BloodLink | Dashboard</title>
+
 <style>
-.dashboard-card{
-    border:none;
-    border-radius:15px;
-    transition:.3s;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-.dashboard-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 10px 20px rgba(0,0,0,.2);
+
+body {
+    font-family: Inter, Arial, sans-serif;
+    background:
+        radial-gradient(circle at 10% 0%, #fff0f2 0%, transparent 30%),
+        #f8f5f5;
+    color: #24191b;
+    font-size: 15px;
 }
-.bg-gradient-red{
-    background:linear-gradient(45deg,#dc3545,#ff6b6b);
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
-.bg-gradient-blue{
-    background:linear-gradient(45deg,#0d6efd,#4dabf7);
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+    width: 100%;
+    min-height: 78px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 5%;
+
+    background: rgba(255,255,255,.94);
+
+    border-bottom: 1px solid #eee1e3;
+
+    backdrop-filter: blur(18px);
+
+    position: sticky;
+    top: 0;
+
+    z-index: 100;
 }
-.bg-gradient-green{
-    background:linear-gradient(45deg,#198754,#51cf66);
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
-</style>
 
-<h2 class="text-danger mb-4">
-    Welcome, {{ user.username }} 👋
-    <div class="row mb-4">
+.logo-icon {
+    width: 45px;
+    height: 45px;
 
-    <div class="col-md-6">
-        <input type="text"
-               class="form-control shadow"
-               placeholder="🔍 Search Donor...">
+    border-radius: 14px;
 
-    </div>
+    background: linear-gradient(135deg,#e9364d,#a91428);
 
-    <div class="col-md-3">
-        <select class="form-select shadow">
-            <option>All Blood Groups</option>
-            <option>A+</option>
-            <option>A-</option>
-            <option>B+</option>
-            <option>B-</option>
-            <option>AB+</option>
-            <option>AB-</option>
-            <option>O+</option>
-            <option>O-</option>
-        </select>
-    </div>
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    <div class="col-md-3">
-        <button class="btn btn-danger w-100 shadow">
-            Search
-        </button>
-    </div>
+    font-size: 21px;
 
-</div>
-</h2><div class="container mt-4">
-    <div class="row">
+    box-shadow:
+        0 8px 22px rgba(190,30,55,.20);
+}
 
-       <div class="col-md-4">
-    <div class="card dashboard-card bg-gradient-red text-white shadow">
-        <div class="card-body text-center p-4">
-            <h1>🩸</h1>
-            <h5>Total Donors</h5>
-            <h2>{{ total_donors }}</h2>
-        </div>
-    </div>
-</div>
+.logo-text {
+    font-size: 23px;
+    font-weight: 900;
 
-<div class="col-md-4">
-    <div class="card dashboard-card bg-gradient-blue text-white shadow">
-        <div class="card-body text-center p-4">
-            <h1>❤️</h1>
-            <h5>Blood Requests</h5>
-            <h2>{{ total_requests }}</h2>
-        </div>
-    </div>
-</div>
+    color: #24191b;
+}
 
-<div class="col-md-4">
-    <div class="card dashboard-card bg-gradient-green text-white shadow">
-        <div class="card-body text-center p-4">
-            <h1>💚</h1>
-            <h5>Available Donors</h5>
-            <h2>{{ available_donors }}</h2>
-        </div>
-    </div>
-</div>
+.logo-sub {
+    font-size: 9px;
 
-<div class="row mt-4">
+    letter-spacing: 2px;
 
-    <div class="col-md-3 mb-3">
-        <a href="/profile/" class="btn btn-primary w-100 p-3 shadow">
-            👤 My Profile
-        </a>
-    </div>
+    color: #9a8589;
 
-    <div class="col-md-3 mb-3">
-        <a href="/donors/" class="btn btn-success w-100 p-3 shadow">
-            🩸 View Donors
-        </a>
-    </div>
+    margin-top: 3px;
+}
 
-    <div class="col-md-3 mb-3">
-        <a href="/request-blood/" class="btn btn-warning w-100 p-3 shadow">
-            🚑 Request Blood
-        </a>
-    </div>
+.nav-menu {
+    display: flex;
+    gap: 30px;
+}
 
-    <div class="col-md-3 mb-3">
-        <a href="/blood-requests/" class="btn btn-danger w-100 p-3 shadow">
-            📋 View Requests
-        </a>
-    </div>
+.nav-menu a {
+    font-size: 13px;
 
-<div class="col-md-3 mb-3">
-        <a href="/download-pdf/" class="btn btn-dark w-100 p-3 shadow">
-            📄 Download PDF
-        </a>
-    </div>
+    color: #6d5c60;
 
-</div>
+    font-weight: 700;
 
-<hr>
+    transition: .2s;
+}
 
-<h3>Blood Group Statistics</h3>
+.nav-menu a:hover {
+    color: #d6253d;
+}
 
-<table class="table table-bordered">
-    <tr>
-        <th>Blood Group</th>
-        <th>Total</th>
-    </tr>
+.user-area {
+    display: flex;
+    align-items: center;
 
-    {% for item in blood_stats %}
-    <tr>
-        <td>{{ item.blood_group }}</td>
-        <td>{{ item.total }}</td>
-    </tr>
-    {% endfor %}
-</table>
+    gap: 12px;
+}
 
-<div class="card shadow p-4 mt-4">
-    <h4 class="text-danger">📊 Blood Group Distribution</h4>
+.avatar-small {
+    width: 41px;
+    height: 41px;
 
-    <div style="width:300px; height:300px; margin:auto;">
-    <canvas id="bloodChart"></canvas>
-</div>
-</div>
+    border-radius: 50%;
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-const ctx = document.getElementById('bloodChart');
+    background:
+        linear-gradient(135deg,#ed4054,#a71629);
 
-new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: [
-            {% for item in blood_stats %}
-            "{{ item.blood_group }}",
-            {% endfor %}
-        ],
-        datasets: [{
-            data: [
-                {% for item in blood_stats %}
-                {{ item.total }},
-                {% endfor %}
-            ],
-            backgroundColor: [
-                "#dc3545",
-                "#0d6efd",
-                "#198754",
-                "#ffc107"
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.logout {
+    color: #d52940;
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.container {
+    width: 90%;
+
+    max-width: 1350px;
+
+    margin: auto;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+    margin-top: 35px;
+
+    min-height: 365px;
+
+    border-radius: 30px;
+
+    padding: 58px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            120deg,
+            #7c1625,
+            #d52d45 52%,
+            #9e1428
+        );
+
+    border: 1px solid rgba(255,255,255,.35);
+
+    box-shadow:
+        0 25px 60px rgba(150,20,40,.20);
+}
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    right: -150px;
+    top: -220px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.10);
+}
+
+.hero::after {
+    content: "♥";
+
+    position: absolute;
+
+    right: 55px;
+    bottom: -100px;
+
+    font-size: 330px;
+
+    color: rgba(255,255,255,.08);
+}
+
+.hero-content {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 760px;
+}
+
+.hero-label {
+    display: inline-flex;
+
+    padding: 9px 15px;
+
+    border-radius: 30px;
+
+    background: rgba(255,255,255,.14);
+
+    border: 1px solid rgba(255,255,255,.20);
+
+    color: white;
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    font-size: 53px;
+
+    line-height: 1.08;
+
+    color: white;
+
+    letter-spacing: -1.5px;
+
+    margin-bottom: 19px;
+}
+
+.hero h1 span {
+    color: #ffe1e5;
+}
+
+.hero p {
+    color: #ffecee;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+
+    max-width: 680px;
+}
+
+.hero-buttons {
+    display: flex;
+
+    gap: 13px;
+
+    margin-top: 31px;
+}
+
+.btn {
+    padding: 14px 22px;
+
+    border-radius: 11px;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    transition: .25s;
+}
+
+.btn-primary {
+    background: white;
+
+    color: #b51d31;
+
+    box-shadow:
+        0 10px 25px rgba(70,0,10,.15);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    color: white;
+
+    border: 1px solid rgba(255,255,255,.40);
+
+    background: rgba(255,255,255,.10);
+}
+
+.btn-outline:hover {
+    background: rgba(255,255,255,.18);
+}
+
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+.stats {
+    display: grid;
+
+    grid-template-columns: repeat(4,1fr);
+
+    gap: 18px;
+
+    margin-top: 23px;
+}
+
+.stat-card {
+    position: relative;
+
+    padding: 26px;
+
+    min-height: 160px;
+
+    border-radius: 20px;
+
+    background: white;
+
+    border: 1px solid #eee1e3;
+
+    box-shadow:
+        0 12px 30px rgba(50,20,25,.06);
+
+    overflow: hidden;
+}
+
+.stat-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    right: -35px;
+    bottom: -35px;
+
+    border-radius: 50%;
+
+    background: #fff0f2;
+}
+
+.stat-icon {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 13px;
+
+    background: #fff0f2;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+.stat-title {
+    margin-top: 19px;
+
+    font-size: 11px;
+
+    color: #8d7a7e;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1.5px;
+
+    font-weight: 700;
+}
+
+.stat-number {
+    font-size: 34px;
+
+    font-weight: 900;
+
+    color: #281b1e;
+
+    margin-top: 5px;
+}
+
+.stat-note {
+    font-size: 11px;
+
+    color: #d42b43;
+
+    margin-top: 5px;
+}
+
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+.section {
+    margin-top: 45px;
+}
+
+.section-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: end;
+
+    margin-bottom: 18px;
+}
+
+.section-title {
+    font-size: 24px;
+
+    font-weight: 850;
+
+    color: #2c2022;
+}
+
+.section-desc {
+    color: #8e7d81;
+
+    font-size: 12px;
+
+    margin-top: 6px;
+}
+
+.view-all {
+    color: #d52b42;
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   QUICK ACTIONS
+===================================================== */
+
+.actions {
+    display: grid;
+
+    grid-template-columns: repeat(4,1fr);
+
+    gap: 16px;
+}
+
+.action {
+    padding: 24px;
+
+    min-height: 165px;
+
+    border-radius: 19px;
+
+    background: white;
+
+    border: 1px solid #eee1e3;
+
+    box-shadow:
+        0 10px 28px rgba(50,20,25,.05);
+
+    transition: .25s;
+}
+
+.action:hover {
+    transform: translateY(-5px);
+
+    border-color: #f0a9b2;
+
+    box-shadow:
+        0 18px 38px rgba(150,20,40,.10);
+}
+
+.action-icon {
+    width: 49px;
+    height: 49px;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff0f2,
+            #ffe3e7
+        );
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+
+    margin-bottom: 19px;
+}
+
+.action h3 {
+    font-size: 15px;
+
+    color: #2c2022;
+
+    margin-bottom: 8px;
+}
+
+.action p {
+    font-size: 12px;
+
+    line-height: 1.65;
+
+    color: #8b7d80;
+}
+
+
+/* =====================================================
+   EMERGENCY
+===================================================== */
+
+.emergency {
+    margin-top: 26px;
+
+    padding: 30px 33px;
+
+    border-radius: 22px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background:
+        linear-gradient(
+            100deg,
+            #fff0f2,
+            #ffe0e5
+        );
+
+    border: 1px solid #f3c3ca;
+
+    box-shadow:
+        0 15px 35px rgba(150,20,40,.08);
+}
+
+.emergency-left {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+.emergency-icon {
+    width: 55px;
+    height: 55px;
+
+    border-radius: 16px;
+
+    background: #d92b43;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+}
+
+.emergency h3 {
+    font-size: 17px;
+
+    color: #54131d;
+
+    margin-bottom: 6px;
+}
+
+.emergency p {
+    color: #8e515a;
+
+    font-size: 12px;
+}
+
+.emergency-btn {
+    background: #c9223a;
+
+    color: white;
+
+    padding: 13px 20px;
+
+    border-radius: 10px;
+
+    font-size: 12px;
+
+    font-weight: 900;
+}
+
+
+/* =====================================================
+   LIVE BLOOD AVAILABILITY
+===================================================== */
+
+.blood-availability-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4,1fr);
+
+    gap: 16px;
+}
+
+.blood-availability-card {
+    background: white;
+
+    border: 1px solid #eee1e3;
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 10px 28px rgba(70,20,30,.06);
+
+    transition: .25s;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.blood-availability-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    right: -45px;
+    top: -45px;
+
+    border-radius: 50%;
+
+    background: #fff0f2;
+}
+
+.blood-availability-card:hover {
+    transform: translateY(-5px);
+
+    border-color: #edafb8;
+
+    box-shadow:
+        0 18px 35px rgba(170,30,50,.12);
+}
+
+.blood-card-top {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.blood-big-circle {
+    width: 58px;
+    height: 58px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e83c52,
+            #a5162b
+        );
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 8px 20px rgba(190,30,50,.20);
+}
+
+.blood-count {
+    text-align: right;
+}
+
+.blood-count strong {
+    display: block;
+
+    font-size: 27px;
+
+    font-weight: 900;
+
+    color: #2d2023;
+}
+
+.blood-count small {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: #96868a;
+}
+
+.blood-group-title {
+    margin-top: 18px;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    color: #342629;
+}
+
+.blood-bar {
+    height: 7px;
+
+    margin-top: 13px;
+
+    background: #f1e7e9;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.blood-bar-fill {
+    height: 100%;
+
+    min-width: 8px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #df3048,
+            #f26a7b
+        );
+
+    border-radius: 20px;
+}
+
+.blood-availability-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 12px;
+
+    font-size: 10px;
+
+    color: #6e8a77;
+
+    font-weight: 700;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #32a65c;
+
+    box-shadow:
+        0 0 8px rgba(50,166,92,.35);
+}
+
+.live-badge {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    background: #edfff3;
+
+    border: 1px solid #ccebd7;
+
+    color: #25854a;
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.live-badge span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #32a65c;
+
+    box-shadow:
+        0 0 8px rgba(50,166,92,.5);
+}
+
+.empty-blood {
+    padding: 30px;
+
+    color: #8d7d81;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   TWO COLUMNS
+===================================================== */
+
+.grid-two {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 21px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card {
+    background: white;
+
+    border: 1px solid #eee1e3;
+
+    border-radius: 21px;
+
+    padding: 27px;
+
+    box-shadow:
+        0 12px 30px rgba(50,20,25,.05);
+}
+
+
+/* =====================================================
+   DONORS
+===================================================== */
+
+.donor-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #f1e5e7;
+}
+
+.donor-row:last-child {
+    border-bottom: none;
+}
+
+.donor-avatar {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f05a6d,
+            #ad1a2d
+        );
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+
+    font-weight: 900;
+}
+
+.donor-details {
+    flex: 1;
+}
+
+.donor-name {
+    font-size: 13px;
+
+    font-weight: 750;
+
+    color: #302326;
+}
+
+.donor-location {
+    margin-top: 5px;
+
+    font-size: 11px;
+
+    color: #948488;
+}
+
+.donor-blood {
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    background: #fff0f2;
+
+    color: #d42b43;
+
+    font-size: 11px;
+
+    font-weight: 900;
+}
+
+.available {
+    margin-left: 4px;
+
+    color: #249b55;
+
+    font-size: 9px;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   REQUESTS
+===================================================== */
+
+.request-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #f1e5e7;
+}
+
+.request-row:last-child {
+    border-bottom: none;
+}
+
+.request-icon {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 12px;
+
+    background: #fff0f2;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 19px;
+}
+
+.request-info {
+    flex: 1;
+}
+
+.request-name {
+    font-size: 13px;
+
+    font-weight: 750;
+
+    color: #302326;
+}
+
+.request-location {
+    margin-top: 5px;
+
+    color: #948488;
+
+    font-size: 11px;
+}
+
+.request-blood {
+    background: #d32942;
+
+    color: white;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+
+    font-weight: 900;
+}
+
+
+/* =====================================================
+   ACTIVITY
+===================================================== */
+
+.activity {
+    margin-top: 25px;
+
+    padding: 27px;
+
+    border-radius: 21px;
+
+    background: white;
+
+    border: 1px solid #eee1e3;
+
+    box-shadow:
+        0 12px 30px rgba(50,20,25,.05);
+}
+
+.activity-item {
+    display: flex;
+
+    gap: 15px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #f1e5e7;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-dot {
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    margin-top: 6px;
+
+    background: #df3048;
+
+    box-shadow:
+        0 0 10px rgba(220,40,65,.30);
+}
+
+.activity-text {
+    font-size: 12px;
+
+    color: #817174;
+
+    line-height: 1.6;
+}
+
+.activity-text strong {
+    color: #2c2022;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   IMPACT
+===================================================== */
+
+.impact {
+    margin-top: 45px;
+
+    padding: 50px;
+
+    border-radius: 27px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8d1829,
+            #d52d45
+        );
+
+    border: 1px solid #e15c6d;
+
+    position: relative;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 45px rgba(160,20,40,.15);
+}
+
+.impact::before {
+    content: "♥";
+
+    position: absolute;
+
+    font-size: 260px;
+
+    color: rgba(255,255,255,.07);
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%,-50%);
+}
+
+.impact-content {
+    position: relative;
+
+    z-index: 2;
+}
+
+.impact h2 {
+    font-size: 32px;
+
+    color: white;
+
+    margin-bottom: 11px;
+}
+
+.impact p {
+    color: #ffe5e9;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+    max-width: 680px;
+
+    margin: auto;
+}
+
+.impact-number {
+    font-size: 46px;
+
+    font-weight: 900;
+
+    color: white;
+
+    margin-top: 21px;
+}
+
+.impact-label {
+    color: #ffd3d9;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+    text-align: center;
+
+    padding: 42px 0;
+
+    color: #9b8b8f;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:1050px) {
+
+    .nav-menu {
+        display: none;
     }
-});
-</script>
-<hr class="my-5">
 
-<h3 class="text-danger mb-3">🩸 Recent Blood Requests</h3>
+    .stats,
+    .actions {
+        grid-template-columns: repeat(2,1fr);
+    }
 
-<div class="table-responsive">
+    .blood-availability-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+}
 
-    <table class="table table-striped table-hover shadow">
+@media(max-width:760px) {
 
-        <thead class="table-danger">
-            <tr>
-                <th>Patient</th>
-                <th>Blood Group</th>
-                <th>City</th>
-                <th>Status</th>
-            </tr>
-        </thead>
+    .container {
+        width: 92%;
+    }
 
-        <tbody>
+    .hero {
+        padding: 38px 28px;
+    }
 
-        {% for request in recent_requests %}
+    .hero h1 {
+        font-size: 39px;
+    }
 
-            <tr>
-                <td>{{ request.patient_name }}</td>
-                <td>{{ request.blood_group }}</td>
-                <td>{{ request.city }}</td>
-                <td>
-                    <span class="badge bg-danger">
-                        {{ request.status }}
-                    </span>
-                </td>
-            </tr>
+    .hero p {
+        font-size: 14px;
+    }
+
+    .grid-two {
+        grid-template-columns: 1fr;
+    }
+
+    .emergency {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 20px;
+    }
+}
+
+@media(max-width:520px) {
+
+    .navbar {
+        padding: 0 4%;
+    }
+
+    .user-name,
+    .logout {
+        display: none;
+    }
+
+    .stats,
+    .actions,
+    .blood-availability-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        min-height: 340px;
+
+        padding: 35px 25px;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .section-title {
+        font-size: 21px;
+    }
+
+    .impact {
+        padding: 35px 20px;
+    }
+
+    .impact h2 {
+        font-size: 27px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <a href="/dashboard/" class="logo">
+
+        <div class="logo-icon">
+            🩸
+        </div>
+
+        <div>
+
+            <div class="logo-text">
+                BloodLink
+            </div>
+
+            <div class="logo-sub">
+                SAVE BLOOD • SAVE LIFE
+            </div>
+
+        </div>
+
+    </a>
+
+
+    <div class="nav-menu">
+
+        <a href="/dashboard/">Dashboard</a>
+
+        <a href="/donors/">Find Donors</a>
+
+        <a href="/request-blood/">Request Blood</a>
+
+        <a href="/blood-requests/">Requests</a>
+
+    </div>
+
+
+    <div class="user-area">
+
+        <div class="avatar-small">
+            {{ request.user.username|first|upper }}
+        </div>
+
+        <span class="user-name">
+            {{ request.user.username }}
+        </span>
+
+        <a href="/logout/" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-label">
+            ❤️ BloodLink Community
+        </div>
+
+        <h1>
+            Welcome back,
+            <span>{{ request.user.username }}</span>
+        </h1>
+
+        <p>
+            Every donor creates hope. Every request connects someone
+            to help. Together, BloodLink brings people closer to the
+            blood they need when every second matters.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="/donors/" class="btn btn-primary">
+                Find Blood Donors →
+            </a>
+
+            <a href="/request-blood/" class="btn btn-outline">
+                Request Blood
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STATISTICS
+===================================================== -->
+
+<section class="stats">
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🩸
+        </div>
+
+        <div class="stat-title">
+            Total Donors
+        </div>
+
+        <div class="stat-number">
+            {{ total_donors }}
+        </div>
+
+        <div class="stat-note">
+            Active community
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📋
+        </div>
+
+        <div class="stat-title">
+            Blood Requests
+        </div>
+
+        <div class="stat-number">
+            {{ total_requests }}
+        </div>
+
+        <div class="stat-note">
+            Requests received
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ❤️
+        </div>
+
+        <div class="stat-title">
+            Available Donors
+        </div>
+
+        <div class="stat-number">
+            {{ available_donors }}
+        </div>
+
+        <div class="stat-note">
+            Ready to help
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ✨
+        </div>
+
+        <div class="stat-title">
+            Lives Impacted
+        </div>
+
+        <div class="stat-number">
+            {{ total_requests }}
+        </div>
+
+        <div class="stat-note">
+            Through BloodLink
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     QUICK ACTIONS
+===================================================== -->
+
+<section class="section">
+
+    <div class="section-header">
+
+        <div>
+
+            <div class="section-title">
+                Quick Actions
+            </div>
+
+            <div class="section-desc">
+                Take action when someone needs help.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="actions">
+
+
+        <a href="/donors/" class="action">
+
+            <div class="action-icon">
+                🔎
+            </div>
+
+            <h3>
+                Find Donors
+            </h3>
+
+            <p>
+                Search available donors by blood group and city.
+            </p>
+
+        </a>
+
+
+        <a href="/request-blood/" class="action">
+
+            <div class="action-icon">
+                🩸
+            </div>
+
+            <h3>
+                Request Blood
+            </h3>
+
+            <p>
+                Submit a blood request and reach matching donors.
+            </p>
+
+        </a>
+
+
+        <a href="/emergency-request/" class="action">
+
+            <div class="action-icon">
+                🚨
+            </div>
+
+            <h3>
+                Emergency Request
+            </h3>
+
+            <p>
+                Quickly create an urgent blood requirement.
+            </p>
+
+        </a>
+
+
+        <a href="/profile/" class="action">
+
+            <div class="action-icon">
+                👤
+            </div>
+
+            <h3>
+                My Profile
+            </h3>
+
+            <p>
+                Keep your donor details and availability updated.
+            </p>
+
+        </a>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     EMERGENCY
+===================================================== -->
+
+<section class="emergency">
+
+    <div class="emergency-left">
+
+        <div class="emergency-icon">
+            🚨
+        </div>
+
+        <div>
+
+            <h3>
+                Need blood urgently?
+            </h3>
+
+            <p>
+                Create an emergency request and reach available donors faster.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <a href="/emergency-request/" class="emergency-btn">
+        Create Emergency Request →
+    </a>
+
+</section>
+
+
+<!-- =====================================================
+     LIVE BLOOD AVAILABILITY
+===================================================== -->
+
+<section class="section">
+
+    <div class="section-header">
+
+        <div>
+
+            <div class="section-title">
+                Live Blood Availability
+            </div>
+
+            <div class="section-desc">
+                Current donor availability by blood group
+            </div>
+
+        </div>
+
+        <div class="live-badge">
+
+            <span></span>
+
+            LIVE
+
+        </div>
+
+    </div>
+
+
+    <div class="blood-availability-grid">
+
+
+        {% for item in blood_stats %}
+
+        <div class="blood-availability-card">
+
+
+            <div class="blood-card-top">
+
+                <div class="blood-big-circle">
+                    {{ item.blood_group }}
+                </div>
+
+                <div class="blood-count">
+
+                    <strong>
+                        {{ item.total }}
+                    </strong>
+
+                    <small>
+                        Donors
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="blood-group-title">
+                {{ item.blood_group }} Blood
+            </div>
+
+
+            <div class="blood-bar">
+
+                <div
+                    class="blood-bar-fill"
+                    style="width: {% if item.total >= 10 %}100{% else %}{{ item.total }}0{% endif %}%;">
+                </div>
+
+            </div>
+
+
+            <div class="blood-availability-status">
+
+                <span class="status-dot"></span>
+
+                Available donors
+
+            </div>
+
+
+        </div>
 
         {% empty %}
 
-            <tr>
-                <td colspan="4" class="text-center">
-                    No Blood Requests Available
-                </td>
-            </tr>
+        <div class="empty-blood">
+            No blood group data available.
+        </div>
 
         {% endfor %}
 
-        </tbody>
 
-    </table>
-
-</div>
-<hr class="my-5">
-
-<h3 class="text-success mb-3">🩸 Latest Donors</h3>
-
-
-<div class="table-responsive">
-
-<table class="table table-hover table-bordered shadow">
-
-    <thead class="table-success">
-        <tr>
-            <th>Name</th>
-            <th>Blood Group</th>
-            <th>City</th>
-            <th>Phone</th>
-        </tr>
-    </thead>
-
-    <tbody>
-
-    {% for donor in latest_donors %}
-
-    <tr>
-        <td>{{ donor.user.first_name }} {{ donor.user.last_name }}</td>
-        <td>{{ donor.blood_group }}</td>
-        <td>{{ donor.city }}</td>
-        <td>{{ donor.phone }}</td>
-    </tr>
-
-    {% empty %}
-
-    <tr>
-        <td colspan="4" class="text-center">
-            No Donors Available
-        </td>
-    </tr>
-
-    {% endfor %}
-
-    </tbody>
-
-</table>
-
-</div>
-<div class="row mt-4">
-
-    <div class="col-md-4">
-        <div class="card shadow text-center p-3">
-            <h1>🩸</h1>
-            <h5>Donate Blood</h5>
-            <p>One donation can save three lives.</p>
-        </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card shadow text-center p-3">
-            <h1>❤️</h1>
-            <h5>Save Lives</h5>
-            <p>Help patients during emergencies.</p>
+</section>
+
+
+<!-- =====================================================
+     LATEST DONORS + RECENT REQUESTS
+===================================================== -->
+
+<section class="section">
+
+    <div class="grid-two">
+
+
+        <!-- LATEST DONORS -->
+
+        <div class="card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <div class="section-title">
+                        Latest Donors
+                    </div>
+
+                    <div class="section-desc">
+                        New members of our lifesaving community
+                    </div>
+
+                </div>
+
+                <a href="/donors/" class="view-all">
+                    View All →
+                </a>
+
+            </div>
+
+
+            {% for donor in latest_donors %}
+
+            <div class="donor-row">
+
+                <div class="donor-avatar">
+                    {{ donor.full_name|first|upper }}
+                </div>
+
+
+                <div class="donor-details">
+
+                    <div class="donor-name">
+                        {{ donor.full_name }}
+                    </div>
+
+                    <div class="donor-location">
+                        📍 {{ donor.city }}
+                    </div>
+
+                </div>
+
+
+                <div class="donor-blood">
+                    {{ donor.blood_group }}
+                </div>
+
+
+                {% if donor.is_available %}
+
+                <div class="available">
+                    ● Available
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+            {% empty %}
+
+            <p style="color:#8d7d81;font-size:13px;">
+                No donors found.
+            </p>
+
+            {% endfor %}
+
         </div>
+
+
+        <!-- RECENT REQUESTS -->
+
+        <div class="card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <div class="section-title">
+                        Recent Requests
+                    </div>
+
+                    <div class="section-desc">
+                        Latest blood requirements
+                    </div>
+
+                </div>
+
+                <a href="/blood-requests/" class="view-all">
+                    View All →
+                </a>
+
+            </div>
+
+
+            {% for request in recent_requests %}
+
+            <div class="request-row">
+
+                <div class="request-icon">
+                    🩸
+                </div>
+
+
+                <div class="request-info">
+
+                    <div class="request-name">
+                        {{ request.patient_name }}
+                    </div>
+
+                    <div class="request-location">
+
+                        📍 {{ request.city }}
+
+                        {% if request.hospital %}
+                            • {{ request.hospital }}
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="request-blood">
+                    {{ request.blood_group }}
+                </div>
+
+
+            </div>
+
+            {% empty %}
+
+            <p style="color:#8d7d81;font-size:13px;">
+                No recent blood requests.
+            </p>
+
+            {% endfor %}
+
+        </div>
+
+
     </div>
 
-    <div class="col-md-4">
-        <div class="card shadow text-center p-3">
-            <h1>🏥</h1>
-            <h5>Emergency Support</h5>
-            <p>24×7 BloodLink Assistance.</p>
+</section>
+
+
+<!-- =====================================================
+     ACTIVITY
+===================================================== -->
+
+<section class="section">
+
+    <div class="section-header">
+
+        <div>
+
+            <div class="section-title">
+                BloodLink Activity
+            </div>
+
+            <div class="section-desc">
+                Your platform at work
+            </div>
+
         </div>
+
     </div>
 
-</div>
-{% endblock %}
+
+    <div class="activity">
+
+
+        <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <div class="activity-text">
+
+                <strong>
+                    {{ total_donors }}
+                </strong>
+
+                donors are registered in the BloodLink community.
+
+            </div>
+
+        </div>
+
+
+        <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <div class="activity-text">
+
+                <strong>
+                    {{ available_donors }}
+                </strong>
+
+                donors are currently marked as available.
+
+            </div>
+
+        </div>
+
+
+        <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <div class="activity-text">
+
+                <strong>
+                    {{ total_requests }}
+                </strong>
+
+                blood requests have been submitted.
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     IMPACT
+===================================================== -->
+
+<section class="impact">
+
+    <div class="impact-content">
+
+        <h2>
+            Every Drop Counts ❤️
+        </h2>
+
+        <p>
+            A single donation can become someone's second chance.
+            Stay available, keep your profile updated and help
+            BloodLink connect donors with people who need them.
+        </p>
+
+
+        <div class="impact-number">
+            {{ total_donors }}
+        </div>
+
+
+        <div class="impact-label">
+            People Making A Difference
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    BLOODLINK • SAVE BLOOD • SAVE LIFE
+
+</footer>
+
+
+</main>
+
+</body>
+</html>

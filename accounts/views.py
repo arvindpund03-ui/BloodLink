@@ -15,6 +15,8 @@ from django.contrib import messages
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from datetime import datetime
+from django.conf import settings
+import os
 from .models import (
     UserProfile,
     BloodRequest,
@@ -26,7 +28,9 @@ from .forms import (
     RegistrationForm,
     UserProfileForm,
     BloodRequestForm,
+    EmergencyRequestForm,
 )
+
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -74,9 +78,10 @@ def home(request):
             "recent_requests": recent_requests,
         },
     )
+# Register View
+# Register View
 
-
-#Register View
+# Register View
 
 def register(request):
 
@@ -86,15 +91,11 @@ def register(request):
 
         if form.is_valid():
 
-            user = form.save(commit=False)
-
-            user.set_password(form.cleaned_data["password"])
-
-            user.save()
+            user = form.save()
 
             messages.success(
                 request,
-                "Registration Successful"
+                "Registration successful! Please login."
             )
 
             return redirect("/login/")
@@ -104,25 +105,23 @@ def register(request):
         form = RegistrationForm()
 
     return render(
-        request,
-        "accounts/registration.html",
-        {
-            "form": form
-        }
-    )
-
-
-#Login View
+    request,
+    "accounts/registration.html",
+    {
+        "form": form
+    }
+)
+    
+# Login View
 
 class UserLoginView(LoginView):
 
     template_name = "accounts/login.html"
 
-#Dashboard
+# Dashboard
 
 @login_required
 def dashboard(request):
-
     total_donors = UserProfile.objects.count()
 
     total_requests = BloodRequest.objects.count()
@@ -380,104 +379,469 @@ def mark_donation(request, id):
     return redirect("/dashboard/")
 
 @login_required
-def donation_certificate(request, id):
+def download_pdf(request, id):
 
-    donor = UserProfile.objects.filter(
-        id=id,
-        user=request.user
-    ).first()
+    donor = UserProfile.objects.filter(id=id).first()
 
-    # दुसऱ्या user चा certificate access करण्याचा प्रयत्न
-    if not donor:
-        messages.error(
-            request,
-            "You are not authorized to access this certificate."
+    if donor is None:
+        return HttpResponse("Donor not found.")
+
+    if donor.donation_count < 1:
+        return HttpResponse(
+            "Certificate is available after at least one blood donation."
         )
-        return redirect("/dashboard/")
 
-    # Donation केलेली नसेल
-    if donor.donation_count <= 0:
-        messages.error(
-            request,
-            "Certificate is available only after completing a blood donation."
-        )
-        return redirect("/dashboard/")
+    # -----------------------------
+    # PDF RESPONSE
+    # -----------------------------
 
     response = HttpResponse(
         content_type="application/pdf"
     )
 
     response["Content-Disposition"] = (
-        'attachment; filename="Donation_Certificate.pdf"'
+        'attachment; filename="BloodLink_Certificate.pdf"'
     )
+
+    # A4 size
+    width, height = A4
 
     p = canvas.Canvas(
         response,
         pagesize=A4
     )
 
-    p.setFont(
-        "Helvetica-Bold",
-        24
+    # -----------------------------
+    # COLORS
+    # -----------------------------
+
+    red = colors.HexColor("#9E3F43")
+    gold = colors.HexColor("#B99A5B")
+    dark = colors.HexColor("#252B35")
+    light_red = colors.HexColor("#C88A8D")
+
+    # -----------------------------
+    # OUTER BORDER
+    # -----------------------------
+
+    p.setStrokeColor(red)
+    p.setLineWidth(5)
+
+    p.rect(
+        28,
+        28,
+        width - 56,
+        height - 56
+    )
+
+    # -----------------------------
+    # INNER BORDER
+    # -----------------------------
+
+    p.setStrokeColor(gold)
+    p.setLineWidth(1)
+
+    p.rect(
+        39,
+        39,
+        width - 78,
+        height - 78
+    )
+
+    # -----------------------------
+    # INNER LIGHT BORDER
+    # -----------------------------
+
+    p.setStrokeColor(colors.HexColor("#D8D8D8"))
+    p.setLineWidth(0.6)
+
+    p.rect(
+        47,
+        47,
+        width - 94,
+        height - 94
+    )
+
+    # -----------------------------
+    # BLOODLINK
+    # -----------------------------
+
+    p.setFillColor(red)
+    p.setFont("Helvetica-Bold", 24)
+
+    p.drawCentredString(
+        width / 2,
+        height - 95,
+        "BloodLink"
+    )
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica-Bold", 8)
+
+    p.drawCentredString(
+        width / 2,
+        height - 116,
+        "SAVE BLOOD • SAVE LIFE"
+    )
+
+    # Gold separator
+    p.setStrokeColor(gold)
+    p.setLineWidth(1)
+
+    p.line(
+        150,
+        height - 135,
+        width - 150,
+        height - 135
+    )
+
+    # -----------------------------
+    # CERTIFICATE TITLE
+    # -----------------------------
+
+    p.setFillColor(red)
+    p.setFont("Helvetica-Bold", 29)
+
+    p.drawCentredString(
+        width / 2,
+        height - 185,
+        "CERTIFICATE"
+    )
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica-Bold", 18)
+
+    p.drawCentredString(
+        width / 2,
+        height - 212,
+        "OF APPRECIATION"
+    )
+
+    p.setStrokeColor(gold)
+    p.setLineWidth(1)
+
+    p.line(
+        165,
+        height - 230,
+        width - 165,
+        height - 230
+    )
+
+    # -----------------------------
+    # PRESENTED TO
+    # -----------------------------
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica", 11)
+
+    p.drawCentredString(
+        width / 2,
+        height - 270,
+        "This certificate is proudly presented to"
+    )
+
+    # Donor Name
+    p.setFillColor(red)
+    p.setFont("Helvetica-Bold", 23)
+
+    p.drawCentredString(
+        width / 2,
+        height - 305,
+        donor.full_name
+    )
+
+    # Name underline
+    p.setStrokeColor(gold)
+    p.setLineWidth(1)
+
+    p.line(
+        150,
+        height - 317,
+        width - 150,
+        height - 317
+    )
+
+    # -----------------------------
+    # APPRECIATION MESSAGE
+    # -----------------------------
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica", 10.5)
+
+    p.drawCentredString(
+        width / 2,
+        height - 350,
+        "in sincere appreciation for voluntarily donating blood"
     )
 
     p.drawCentredString(
-        300,
-        780,
-        "Blood Donation Certificate"
+        width / 2,
+        height - 368,
+        "and making a meaningful contribution toward saving lives."
     )
 
-    p.setFont(
-        "Helvetica",
-        16
+    # -----------------------------
+    # DONOR INFORMATION BOX
+    # -----------------------------
+
+    box_x = 80
+    box_y = height - 535
+    box_w = 280
+    box_h = 125
+
+    p.setStrokeColor(light_red)
+    p.setLineWidth(1.2)
+
+    p.roundRect(
+        box_x,
+        box_y,
+        box_w,
+        box_h,
+        12
+    )
+
+    # Heading
+    p.setFillColor(red)
+    p.setFont("Helvetica-Bold", 11)
+
+    p.drawString(
+        box_x + 18,
+        box_y + box_h - 25,
+        "DONOR INFORMATION"
+    )
+
+    # Heading line
+    p.setStrokeColor(gold)
+    p.setLineWidth(1)
+
+    p.line(
+        box_x + 18,
+        box_y + box_h - 35,
+        box_x + box_w - 18,
+        box_y + box_h - 35
+    )
+
+    # Information
+    p.setFillColor(dark)
+    p.setFont("Helvetica-Bold", 9.5)
+
+    p.drawString(box_x + 18, box_y + 72, "Blood Group")
+    p.drawString(box_x + 18, box_y + 48, "City")
+    p.drawString(box_x + 18, box_y + 24, "Donation Count")
+
+    p.setFont("Helvetica", 9.5)
+
+    p.drawString(
+        box_x + 125,
+        box_y + 72,
+        f":  {donor.blood_group}"
+    )
+
+    p.drawString(
+        box_x + 125,
+        box_y + 48,
+        f":  {donor.city}"
+    )
+
+    p.drawString(
+        box_x + 125,
+        box_y + 24,
+        f":  {donor.donation_count}"
+    )
+
+    # -----------------------------
+    # BLOOD GROUP CIRCLE
+    # -----------------------------
+
+    circle_x = width - 135
+    circle_y = height - 465
+    radius = 43
+
+    p.setStrokeColor(red)
+    p.setLineWidth(3)
+
+    p.circle(
+        circle_x,
+        circle_y,
+        radius
+    )
+
+    p.setFillColor(red)
+    p.setFont("Helvetica-Bold", 22)
+
+    p.drawCentredString(
+        circle_x,
+        circle_y + 5,
+        donor.blood_group
+    )
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica-Bold", 5.5)
+
+    p.drawCentredString(
+        circle_x,
+        circle_y - 15,
+        "BLOOD GROUP"
+    )
+
+    # -----------------------------
+    # VERIFIED BADGE
+    # -----------------------------
+
+    badge_y = circle_y - 78
+    badge_radius = 34
+
+    p.setStrokeColor(gold)
+    p.setLineWidth(2)
+
+    p.circle(
+        circle_x,
+        badge_y,
+        badge_radius
+    )
+
+    p.setFillColor(red)
+    p.setFont("Helvetica-Bold", 6.5)
+
+    p.drawCentredString(
+        circle_x,
+        badge_y + 7,
+        "VERIFIED"
     )
 
     p.drawCentredString(
-        300,
-        720,
-        f"This certificate is awarded to {donor.full_name}"
+        circle_x,
+        badge_y - 3,
+        "BLOODLINK"
     )
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica-Bold", 5.5)
 
     p.drawCentredString(
-        300,
-        690,
-        "For Voluntarily Donating Blood"
+        circle_x,
+        badge_y - 14,
+        "DONOR"
     )
+
+    # Donor ID
+    donor_id = f"BLK{donor.id:06d}"
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica", 7)
 
     p.drawCentredString(
-        300,
-        660,
-        f"Blood Group: {donor.blood_group}"
+        circle_x,
+        badge_y - 58,
+        f"Donor ID: {donor_id}"
     )
+
+    # -----------------------------
+    # DONATION DATE
+    # -----------------------------
+
+    today = datetime.now()
+
+    date_text = today.strftime("%d %B %Y")
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica-Bold", 9)
+
+    p.drawString(
+        90,
+        height - 575,
+        "DONATION DATE"
+    )
+
+    p.setFont("Helvetica", 9)
+
+    p.drawString(
+        90,
+        height - 592,
+        date_text
+    )
+
+    # -----------------------------
+    # CERTIFICATE ID
+    # -----------------------------
+
+    certificate_id = f"BL-CERT-{donor.id:06d}"
+
+    p.setFont("Helvetica-Bold", 9)
+
+    p.drawString(
+        90,
+        height - 630,
+        "CERTIFICATE ID"
+    )
+
+    p.setFont("Helvetica", 9)
+
+    p.drawString(
+        90,
+        height - 647,
+        certificate_id
+    )
+
+    # -----------------------------
+    # SIGNATURE
+    # -----------------------------
+
+    signature_x = width - 155
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica-Oblique", 16)
 
     p.drawCentredString(
-        300,
-        630,
-        f"City: {donor.city}"
+        signature_x,
+        height - 620,
+        "BloodLink Team"
     )
+
+    p.setStrokeColor(red)
+    p.setLineWidth(1.5)
+
+    p.line(
+        signature_x - 70,
+        height - 630,
+        signature_x + 70,
+        height - 630
+    )
+
+    p.setFillColor(dark)
+    p.setFont("Helvetica", 6.5)
 
     p.drawCentredString(
-        300,
-        600,
-        f"Donation Count: {donor.donation_count}"
+        signature_x,
+        height - 645,
+        "AUTHORIZED SIGNATURE"
     )
+
+    # -----------------------------
+    # FOOTER
+    # -----------------------------
+
+    p.setFillColor(red)
+    p.setFont("Helvetica-Bold", 9)
 
     p.drawCentredString(
-        300,
-        570,
-        f"Date: {datetime.now().strftime('%d-%m-%Y')}"
+        width / 2,
+        92,
+        "EVERY DROP COUNTS. EVERY DONOR MATTERS."
     )
 
-    p.setFont(
-        "Helvetica-Bold",
-        14
-    )
+    p.setFillColor(dark)
+    p.setFont("Helvetica", 6.5)
 
     p.drawCentredString(
-        300,
-        520,
-        "Thank You For Saving A Life!"
+        width / 2,
+        75,
+        "Issued by BloodLink • Saving lives through voluntary blood donation"
     )
+
+    # -----------------------------
+    # SAVE PDF
+    # -----------------------------
 
     p.showPage()
     p.save()
@@ -485,573 +849,31 @@ def donation_certificate(request, id):
     return response
 
 @login_required
-def download_pdf(request):
+def emergency_request(request):
 
-    # Get logged-in user's donor profile
-    donor = UserProfile.objects.filter(
-        user=request.user
-    ).first()
+    if request.method == "POST":
 
-    # Profile not found
-    if not donor:
-        messages.error(
-            request,
-            "Please complete your donor profile first."
-        )
-        return redirect("/profile/")
+        form = EmergencyRequestForm(request.POST)
 
-    # Certificate only after donation
-    if donor.donation_count <= 0:
-        messages.error(
-            request,
-            "Certificate is available only after completing a blood donation."
-        )
-        return redirect("/dashboard/")
+        if form.is_valid():
 
-    # Create PDF response
-    response = HttpResponse(
-        content_type="application/pdf"
-    )
+            emergency = form.save()
 
-    response["Content-Disposition"] = (
-        'attachment; filename="BloodLink_Donation_Certificate.pdf"'
-    )
+            messages.success(
+                request,
+                "Emergency request submitted successfully!"
+            )
 
-    # Create PDF
-    p = canvas.Canvas(
-        response,
-        pagesize=A4
-    )
-
-    width, height = A4
-
-    # =====================================
-    # BACKGROUND
-    # =====================================
-
-    p.setFillColor(colors.white)
-
-    p.rect(
-        0,
-        0,
-        width,
-        height,
-        fill=1,
-        stroke=0
-    )
-
-    # =====================================
-    # OUTER RED BORDER
-    # =====================================
-
-    p.setStrokeColor(
-        colors.HexColor("#b71c1c")
-    )
-
-    p.setLineWidth(8)
-
-    p.rect(
-        20,
-        20,
-        width - 40,
-        height - 40,
-        fill=0,
-        stroke=1
-    )
-
-    # =====================================
-    # INNER RED BORDER
-    # =====================================
-
-    p.setStrokeColor(
-        colors.HexColor("#d32f2f")
-    )
-
-    p.setLineWidth(2)
-
-    p.rect(
-        35,
-        35,
-        width - 70,
-        height - 70,
-        fill=0,
-        stroke=1
-    )
-
-    # =====================================
-    # LOGO
-    # =====================================
-
-    logo_path = os.path.join(
-        settings.BASE_DIR,
-        "bloodlink",
-        "static",
-        "image",
-        "logo.png"
-    )
-
-    if os.path.exists(logo_path):
-
-        p.drawImage(
-            logo_path,
-            235,
-            720,
-            width=125,
-            height=65,
-            preserveAspectRatio=True,
-            mask="auto"
-        )
+            return redirect("/dashboard/")
 
     else:
 
-        # Fallback if logo is missing
-        p.setFillColor(
-            colors.HexColor("#d71920")
-        )
-
-        p.setFont(
-            "Helvetica-Bold",
-            30
-        )
-
-        p.drawCentredString(
-            width / 2,
-            745,
-            "BloodLink"
-        )
-
-    # =====================================
-    # TAGLINE
-    # =====================================
-
-    p.setFillColor(
-        colors.HexColor("#263238")
-    )
-
-    p.setFont(
-        "Helvetica",
-        9
-    )
-
-    p.drawCentredString(
-        width / 2,
-        710,
-        "SAVE BLOOD, SAVE LIFE"
-    )
-
-    # =====================================
-    # CERTIFICATE TITLE
-    # =====================================
-
-    p.setFillColor(
-        colors.HexColor("#9e0000")
-    )
-
-    p.setFont(
-        "Helvetica-Bold",
-        30
-    )
-
-    p.drawCentredString(
-        width / 2,
-        655,
-        "CERTIFICATE"
-    )
-
-    p.setFillColor(
-        colors.HexColor("#263238")
-    )
-
-    p.setFont(
-        "Helvetica-Bold",
-        17
-    )
-
-    p.drawCentredString(
-        width / 2,
-        625,
-        "OF APPRECIATION"
-    )
-
-    # Decorative line
-    p.setStrokeColor(
-        colors.HexColor("#b71c1c")
-    )
-
-    p.setLineWidth(1)
-
-    p.line(
-        155,
-        608,
-        width - 155,
-        608
-    )
-
-    # =====================================
-    # PRESENTED TO
-    # =====================================
-
-    p.setFillColor(
-        colors.HexColor("#263238")
-    )
-
-    p.setFont(
-        "Helvetica",
-        13
-    )
-
-    p.drawCentredString(
-        width / 2,
-        565,
-        "This certificate is proudly presented to"
-    )
-
-    # =====================================
-    # DONOR NAME
-    # =====================================
-
-    p.setFillColor(
-        colors.HexColor("#9e0000")
-    )
-
-    p.setFont(
-        "Helvetica-Bold",
-        25
-    )
-
-    p.drawCentredString(
-        width / 2,
-        525,
-        donor.full_name
-    )
-
-    p.setStrokeColor(
-        colors.HexColor("#b71c1c")
-    )
-
-    p.line(
-        145,
-        507,
-        width - 145,
-        507
-    )
-
-    # =====================================
-    # APPRECIATION MESSAGE
-    # =====================================
-
-    p.setFillColor(
-        colors.HexColor("#263238")
-    )
-
-    p.setFont(
-        "Helvetica",
-        12
-    )
-
-    p.drawCentredString(
-        width / 2,
-        475,
-        "in sincere appreciation for voluntarily donating blood"
-    )
-
-    p.drawCentredString(
-        width / 2,
-        453,
-        "and helping save precious lives."
-    )
-
-    # =====================================
-    # THANK YOU
-    # =====================================
-
-    p.setFillColor(
-        colors.HexColor("#9e0000")
-    )
-
-    p.setFont(
-        "Helvetica-Oblique",
-        16
-    )
-
-    p.drawCentredString(
-        width / 2,
-        415,
-        "Your kindness is a gift of life."
-    )
-
-    p.setFont(
-        "Helvetica-Bold",
-        14
-    )
-
-    p.drawCentredString(
-        width / 2,
-        390,
-        "♥  Thank You!  ♥"
-    )
-
-    # =====================================
-    # DONOR DETAILS BOX
-    # =====================================
-
-    box_x = 75
-    box_y = 205
-    box_width = 315
-    box_height = 145
-
-    p.setStrokeColor(
-        colors.HexColor("#b71c1c")
-    )
-
-    p.setLineWidth(1.5)
-
-    p.roundRect(
-        box_x,
-        box_y,
-        box_width,
-        box_height,
-        10,
-        fill=0,
-        stroke=1
-    )
-
-    # Blood Group
-    p.setFillColor(
-        colors.HexColor("#263238")
-    )
-
-    p.setFont(
-        "Helvetica-Bold",
-        11
-    )
-
-    p.drawString(
-        box_x + 18,
-        box_y + 112,
-        "Blood Group"
-    )
-
-    p.setFont(
-        "Helvetica",
-        11
-    )
-
-    p.drawString(
-        box_x + 140,
-        box_y + 112,
-        f": {donor.blood_group}"
-    )
-
-    # City
-    p.setFont(
-        "Helvetica-Bold",
-        11
-    )
-
-    p.drawString(
-        box_x + 18,
-        box_y + 84,
-        "City"
-    )
-
-    p.setFont(
-        "Helvetica",
-        11
-    )
-
-    p.drawString(
-        box_x + 140,
-        box_y + 84,
-        f": {donor.city}"
-    )
-
-    # Date
-    p.setFont(
-        "Helvetica-Bold",
-        11
-    )
-
-    p.drawString(
-        box_x + 18,
-        box_y + 56,
-        "Date"
-    )
-
-    p.setFont(
-        "Helvetica",
-        11
-    )
-
-    p.drawString(
-        box_x + 140,
-        box_y + 56,
-        f": {datetime.now().strftime('%d-%m-%Y')}"
-    )
-
-    # Donor ID
-    p.setFont(
-        "Helvetica-Bold",
-        11
-    )
-
-    p.drawString(
-        box_x + 18,
-        box_y + 28,
-        "Donor ID"
-    )
-
-    p.setFont(
-        "Helvetica",
-        11
-    )
-
-    p.drawString(
-        box_x + 140,
-        box_y + 28,
-        f": BLK{donor.id:05d}"
-    )
-
-    # =====================================
-    # BLOOD DONOR HERO BADGE
-    # =====================================
-
-    badge_x = 475
-    badge_y = 275
-
-    p.setFillColor(
-        colors.HexColor("#b71c1c")
-    )
-
-    p.circle(
-        badge_x,
-        badge_y,
-        58,
-        fill=1,
-        stroke=0
-    )
-
-    p.setStrokeColor(colors.white)
-
-    p.setLineWidth(2)
-
-    p.circle(
-        badge_x,
-        badge_y,
-        45,
-        fill=0,
-        stroke=1
-    )
-
-    # Plus sign
-    p.setFillColor(colors.white)
-
-    p.rect(
-        badge_x - 4,
-        badge_y - 18,
-        8,
-        36,
-        fill=1,
-        stroke=0
-    )
-
-    p.rect(
-        badge_x - 18,
-        badge_y - 4,
-        36,
-        8,
-        fill=1,
-        stroke=0
-    )
-
-    p.setFont(
-        "Helvetica-Bold",
-        8
-    )
-
-    p.drawCentredString(
-        badge_x,
-        badge_y - 31,
-        "BLOOD DONOR"
-    )
-
-    p.drawCentredString(
-        badge_x,
-        badge_y - 42,
-        "HERO"
-    )
-
-    # =====================================
-    # SIGNATURE
-    # =====================================
-
-    p.setFillColor(
-        colors.HexColor("#263238")
-    )
-
-    p.setFont(
-        "Helvetica-Oblique",
-        17
-    )
-
-    p.drawCentredString(
-        470,
-        155,
-        "BloodLink Team"
+        form = EmergencyRequestForm()
+
+    return render(
+        request,
+        "accounts/emergency_request.html",
+        {
+            "form": form
+        }
     )
-
-    p.setStrokeColor(
-        colors.HexColor("#263238")
-    )
-
-    p.line(
-        400,
-        142,
-        540,
-        142
-    )
-
-    p.setFont(
-        "Helvetica",
-        9
-    )
-
-    p.drawCentredString(
-        470,
-        127,
-        "Authorized Signature"
-    )
-
-    p.drawCentredString(
-        470,
-        113,
-        "BloodLink Team"
-    )
-
-    # =====================================
-    # BOTTOM MESSAGE
-    # =====================================
-
-    p.setFillColor(
-        colors.HexColor("#9e0000")
-    )
-
-    p.setFont(
-        "Helvetica-Oblique",
-        10
-    )
-
-    p.drawCentredString(
-        width / 2,
-        70,
-        "Every drop you donate creates a ripple of hope."
-    )
-
-    # =====================================
-    # FINISH PDF
-    # =====================================
-
-    p.showPage()
-    p.save()
-
-    return response

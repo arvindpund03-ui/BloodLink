@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+import uuid
 
+
+# =========================================================
+# USER PROFILE
+# =========================================================
 
 class UserProfile(models.Model):
 
@@ -52,9 +58,10 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.full_name
 
-from django.utils import timezone
-import uuid
 
+# =========================================================
+# DONATION CERTIFICATE
+# =========================================================
 
 class DonationCertificate(models.Model):
 
@@ -73,11 +80,20 @@ class DonationCertificate(models.Model):
         default=uuid.uuid4
     )
 
-
     def __str__(self):
         return self.certificate_number
 
+
+# =========================================================
+# NORMAL BLOOD REQUEST
+# =========================================================
+
 class BloodRequest(models.Model):
+
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Fulfilled", "Fulfilled"),
+    ]
 
     patient_name = models.CharField(
         max_length=100
@@ -109,15 +125,9 @@ class BloodRequest(models.Model):
         blank=True
     )
 
-    units_required = models.IntegerField()
-
-
-
-
-    STATUS_CHOICES = [
-        ("Pending", "Pending"),
-        ("Fulfilled", "Fulfilled"),
-    ]
+    units_required = models.PositiveIntegerField(
+        default=1
+    )
 
     status = models.CharField(
         max_length=20,
@@ -125,16 +135,103 @@ class BloodRequest(models.Model):
         default="Pending"
     )
 
-
     def __str__(self):
         return self.patient_name
 
 
+# =========================================================
+# 🚨 EMERGENCY BLOOD REQUEST
+# =========================================================
+
+class EmergencyRequest(models.Model):
+
+    EMERGENCY_TYPE_CHOICES = [
+        ("Accident", "Accident"),
+        ("Surgery", "Surgery"),
+        ("Emergency", "Emergency"),
+        ("Other", "Other"),
+    ]
+
+    URGENCY_CHOICES = [
+        ("CRITICAL", "CRITICAL"),
+        ("HIGH", "HIGH"),
+        ("NORMAL", "NORMAL"),
+    ]
+
+    STATUS_CHOICES = [
+        ("ACTIVE", "ACTIVE"),
+        ("MATCHED", "MATCHED"),
+        ("COMPLETED", "COMPLETED"),
+        ("CANCELLED", "CANCELLED"),
+    ]
+
+    patient_name = models.CharField(
+        max_length=100
+    )
+
+    blood_group = models.CharField(
+        max_length=10
+    )
+
+    units_required = models.PositiveIntegerField(
+        default=1
+    )
+
+    hospital_name = models.CharField(
+        max_length=200
+    )
+
+    city = models.CharField(
+        max_length=100
+    )
+
+    contact_number = models.CharField(
+        max_length=15
+    )
+
+    emergency_type = models.CharField(
+        max_length=50,
+        choices=EMERGENCY_TYPE_CHOICES,
+        default="Accident"
+    )
+
+    urgency = models.CharField(
+        max_length=20,
+        choices=URGENCY_CHOICES,
+        default="HIGH"
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="ACTIVE"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return (
+            f"{self.patient_name} - "
+            f"{self.blood_group} - "
+            f"{self.emergency_type}"
+        )
+
+
+# =========================================================
+# OTP VERIFICATION
+# =========================================================
+
 class OTPVerification(models.Model):
 
-    mobile = models.CharField(max_length=15)
+    mobile = models.CharField(
+        max_length=15
+    )
 
-    otp = models.CharField(max_length=6)
+    otp = models.CharField(
+        max_length=6
+    )
 
     created_at = models.DateTimeField(
         auto_now_add=True
@@ -144,7 +241,5 @@ class OTPVerification(models.Model):
         default=False
     )
 
-
     def __str__(self):
         return self.mobile
-
