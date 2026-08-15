@@ -243,3 +243,94 @@ class OTPVerification(models.Model):
 
     def __str__(self):
         return self.mobile
+
+
+# =========================================================
+# 🔔 NOTIFICATION
+# =========================================================
+
+class Notification(models.Model):
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="notifications"
+    )
+
+    title = models.CharField(
+        max_length=200
+    )
+
+    message = models.TextField()
+
+    phone = models.CharField(
+        max_length=15,
+        blank=True,
+        null=True
+    )
+
+    is_read = models.BooleanField(
+        default=False
+    )
+
+    emergency = models.ForeignKey(
+        EmergencyRequest,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="notifications"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.title}"
+
+
+# =========================================================
+# 🚨 EMERGENCY RESPONSE
+# =========================================================
+
+class EmergencyResponse(models.Model):
+
+    RESPONSE_CHOICES = [
+        ("PENDING", "PENDING"),
+        ("ACCEPTED", "ACCEPTED"),
+        ("REJECTED", "REJECTED"),
+    ]
+
+    emergency = models.ForeignKey(
+        EmergencyRequest,
+        on_delete=models.CASCADE,
+        related_name="responses"
+    )
+
+    donor = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name="emergency_responses"
+    )
+
+    response = models.CharField(
+        max_length=20,
+        choices=RESPONSE_CHOICES,
+        default="PENDING"
+    )
+
+    responded_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return (
+            f"{self.donor.full_name} - "
+            f"{self.emergency.patient_name} - "
+            f"{self.response}"
+        )

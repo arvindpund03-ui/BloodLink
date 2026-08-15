@@ -148,4 +148,21 @@ path(
     name="contact"
 ),
 
+path(
+    "notifications/",
+    views.notifications,
+    name="notifications"
+),
+
+path(
+    "emergency/<int:emergency_id>/accept/",
+    views.accept_emergency,
+    name="accept_emergency"
+),
+
+path(
+    "emergency/<int:emergency_id>/reject/",
+    views.reject_emergency,
+    name="reject_emergency"
+),
 ]

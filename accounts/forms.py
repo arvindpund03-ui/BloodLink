@@ -2,24 +2,94 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import UserProfile, BloodRequest, EmergencyRequest
+from .models import (
+    UserProfile,
+    BloodRequest,
+    EmergencyRequest,
+)
 
+
+# =========================================================
+# REGISTRATION FORM
+# =========================================================
 
 class RegistrationForm(UserCreationForm):
 
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            "class": "form-control",
+            "placeholder": "Enter email"
+        })
+    )
+
+    full_name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Enter full name"
+        })
+    )
+
+    blood_group = forms.CharField(
+        max_length=10,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Example: A+"
+        })
+    )
+
+    phone = forms.CharField(
+        max_length=15,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Enter phone number"
+        })
+    )
+
+    city = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Enter city"
+        })
+    )
+
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = [
+            "username",
+            "email",
+            "password1",
+            "password2",
+            "full_name",
+            "blood_group",
+            "phone",
+            "city",
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Remove username help text
-        self.fields["username"].help_text = ""
+        self.fields["username"].widget.attrs.update({
+            "class": "form-control",
+            "placeholder": "Enter username"
+        })
 
-        # Remove password help text
-        self.fields["password1"].help_text = ""
-        self.fields["password2"].help_text = ""
+        self.fields["password1"].widget.attrs.update({
+            "class": "form-control",
+            "placeholder": "Enter password"
+        })
+
+        self.fields["password2"].widget.attrs.update({
+            "class": "form-control",
+            "placeholder": "Confirm password"
+        })
+
+
+# =========================================================
+# USER PROFILE FORM
+# =========================================================
 
 class UserProfileForm(forms.ModelForm):
 
@@ -31,10 +101,56 @@ class UserProfileForm(forms.ModelForm):
             "blood_group",
             "phone",
             "city",
-            "is_available",
             "photo",
+            "emergency_contact",
+            "is_available",
+            "location",
         ]
 
+        widgets = {
+            "full_name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter full name"
+            }),
+
+            "blood_group": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Example: A+"
+            }),
+
+            "phone": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter phone number"
+            }),
+
+            "city": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter city"
+            }),
+
+            "photo": forms.ClearableFileInput(attrs={
+                "class": "form-control"
+            }),
+
+            "emergency_contact": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter emergency contact"
+            }),
+
+            "is_available": forms.CheckboxInput(attrs={
+                "class": "form-check-input"
+            }),
+
+            "location": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter location"
+            }),
+        }
+
+
+# =========================================================
+# NORMAL BLOOD REQUEST FORM
+# =========================================================
 
 class BloodRequestForm(forms.ModelForm):
 
@@ -46,10 +162,51 @@ class BloodRequestForm(forms.ModelForm):
             "blood_group",
             "city",
             "hospital",
+            "contact_number",
             "units_required",
             "status",
         ]
 
+        widgets = {
+            "patient_name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter patient name"
+            }),
+
+            "blood_group": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Example: A+"
+            }),
+
+            "city": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter city"
+            }),
+
+            "hospital": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter hospital name"
+            }),
+
+            "contact_number": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter contact number"
+            }),
+
+            "units_required": forms.NumberInput(attrs={
+                "class": "form-control",
+                "min": 1
+            }),
+
+            "status": forms.Select(attrs={
+                "class": "form-select"
+            }),
+        }
+
+
+# =========================================================
+# EMERGENCY BLOOD REQUEST FORM
+# =========================================================
 
 class EmergencyRequestForm(forms.ModelForm):
 
@@ -65,44 +222,49 @@ class EmergencyRequestForm(forms.ModelForm):
             "contact_number",
             "emergency_type",
             "urgency",
+            "status",
         ]
 
         widgets = {
             "patient_name": forms.TextInput(attrs={
                 "class": "form-control",
-                "placeholder": "Patient Name",
+                "placeholder": "Enter patient name"
             }),
 
             "blood_group": forms.TextInput(attrs={
                 "class": "form-control",
-                "placeholder": "Blood Group e.g. O+",
+                "placeholder": "Example: A+"
             }),
 
             "units_required": forms.NumberInput(attrs={
                 "class": "form-control",
-                "min": "1",
+                "min": 1
             }),
 
             "hospital_name": forms.TextInput(attrs={
                 "class": "form-control",
-                "placeholder": "Hospital Name",
+                "placeholder": "Enter hospital name"
             }),
 
             "city": forms.TextInput(attrs={
                 "class": "form-control",
-                "placeholder": "City",
+                "placeholder": "Enter city"
             }),
 
             "contact_number": forms.TextInput(attrs={
                 "class": "form-control",
-                "placeholder": "Emergency Contact Number",
+                "placeholder": "Enter contact number"
             }),
 
             "emergency_type": forms.Select(attrs={
-                "class": "form-select",
+                "class": "form-select"
             }),
 
             "urgency": forms.Select(attrs={
-                "class": "form-select",
+                "class": "form-select"
+            }),
+
+            "status": forms.Select(attrs={
+                "class": "form-select"
             }),
         }

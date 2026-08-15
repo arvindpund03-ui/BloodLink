@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import UserProfile, BloodRequest
-
+from .models import Notification
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -62,3 +62,25 @@ class BloodRequestAdmin(admin.ModelAdmin):
         "city",
     ]
 print("UserProfile admin loaded")
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "user",
+        "title",
+        "is_read",
+        "created_at",
+    )
+
+    list_filter = (
+        "is_read",
+        "created_at",
+    )
+
+    search_fields = (
+        "user__username",
+        "title",
+        "message",
+    )

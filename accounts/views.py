@@ -17,20 +17,31 @@ from reportlab.lib import colors
 from datetime import datetime
 from django.conf import settings
 import os
+from .models import Notification
 from .models import (
     UserProfile,
     BloodRequest,
     OTPVerification,
     DonationCertificate,
+    Notification,
+    EmergencyRequest,
+    EmergencyResponse,
 )
 
 from .forms import (
     RegistrationForm,
     UserProfileForm,
-    BloodRequestForm,
     EmergencyRequestForm,
+    BloodRequestForm,
 )
 
+def create_notification(user, title, message):
+
+    Notification.objects.create(
+        user=user,
+        title=title,
+        message=message,
+    )
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -78,6 +89,12 @@ def home(request):
             "recent_requests": recent_requests,
         },
     )
+
+def user_logout(request):
+
+    logout(request)
+
+    return redirect("/login/")    
 # Register View
 # Register View
 
@@ -122,6 +139,7 @@ class UserLoginView(LoginView):
 
 @login_required
 def dashboard(request):
+
     total_donors = UserProfile.objects.count()
 
     total_requests = BloodRequest.objects.count()
@@ -140,6 +158,11 @@ def dashboard(request):
 
     recent_requests = BloodRequest.objects.order_by("-id")[:5]
 
+    unread_notifications = Notification.objects.filter(
+        user=request.user,
+        is_read=False
+    ).count()
+
     return render(
         request,
         "accounts/dashboard.html",
@@ -150,16 +173,101 @@ def dashboard(request):
             "blood_stats": blood_stats,
             "latest_donors": latest_donors,
             "recent_requests": recent_requests,
+            "unread_notifications": unread_notifications,
         },
     )
 
-#Logout
+@login_required
+def request_blood(request):
 
-def user_logout(request):
+    if request.method == "POST":
 
-    logout(request)
+        form = BloodRequestForm(request.POST)
 
-    return redirect("/login/")
+        if form.is_valid():
+
+            blood_request = form.save()
+
+            matching_donors = UserProfile.objects.filter(
+                blood_group=blood_request.blood_group,
+                city__iexact=blood_request.city,
+                is_available=True
+            )
+
+            for donor in matching_donors:
+
+                Notification.objects.create(
+                    user=donor.user,
+                    title="New Blood Request",
+                    message=(
+                        f"Patient: {blood_request.patient_name}\n"
+                        f"Blood Group: {blood_request.blood_group}\n"
+                        f"City: {blood_request.city}\n"
+                        f"Hospital: {blood_request.hospital}\n"
+                        f"📞 Contact: {blood_request.contact_number}\n\n"
+                        "If you are available, please contact the patient."
+                    ),
+                    phone=blood_request.contact_number,
+                )
+
+            return redirect("blood_requests")
+
+    else:
+        form = BloodRequestForm()
+
+    return render(
+        request,
+        "accounts/request_blood.html",
+        {"form": form}
+    )
+
+@login_required
+def notifications(request):
+
+    notification_list = Notification.objects.filter(
+        user=request.user
+    ).select_related(
+        "emergency"
+    ).order_by("-created_at")
+
+    unread_notifications = notification_list.filter(
+        is_read=False
+    ).count()
+
+    # -----------------------------------------
+    # Get current donor profile
+    # -----------------------------------------
+
+    donor = UserProfile.objects.filter(
+        user=request.user
+    ).first()
+
+    # -----------------------------------------
+    # Add response status to every notification
+    # -----------------------------------------
+
+    for notification in notification_list:
+
+        notification.response_status = None
+
+        if notification.emergency and donor:
+
+            response = EmergencyResponse.objects.filter(
+                emergency=notification.emergency,
+                donor=donor
+            ).first()
+
+            if response:
+                notification.response_status = response.response
+
+    return render(
+        request,
+        "accounts/notifications.html",
+        {
+            "notifications": notification_list,
+            "unread_notifications": unread_notifications,
+        },
+    )
 
 #Profile
 
@@ -245,7 +353,6 @@ def donor_detail(request, id):
         }
     )
 
-
 @login_required
 def request_blood(request):
 
@@ -257,34 +364,50 @@ def request_blood(request):
 
             blood_request = form.save()
 
-            emails = UserProfile.objects.filter(
-                blood_group=blood_request.blood_group,
-                city=blood_request.city,
-                is_available=True
-            ).exclude(
-                user__email=""
-            ).values_list(
-                "user__email",
-                flat=True
-            )
+            # -----------------------------------------
+            # Send email to available donors
+            # -----------------------------------------
 
-            if emails:
-                send_mail(
-                    subject="🩸 Urgent Blood Request - BloodLink",
-                    message=f"""
+            subject = "🩸 New Blood Request"
+
+            message = f"""
 New Blood Request
 
-Patient: {blood_request.patient_name}
+Patient Name: {blood_request.patient_name}
 Blood Group: {blood_request.blood_group}
 City: {blood_request.city}
+Hospital: {blood_request.hospital}
+Contact Number: {blood_request.contact_number}
+Units Required: {blood_request.units_required}
 
 If you are available, please contact the patient.
 
 BloodLink Team
-""",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=list(emails),
-                    fail_silently=False,
+"""
+
+            # Get available donors with matching blood group
+            donors = UserProfile.objects.filter(
+                blood_group__iexact=blood_request.blood_group,
+                is_available=True
+            ).exclude(
+                user__email=""
+            )
+
+            recipient_list = [
+                donor.user.email
+                for donor in donors
+                if donor.user.email
+            ]
+
+            # Send email
+            if recipient_list:
+
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    recipient_list,
+                    fail_silently=True,
                 )
 
             messages.success(
@@ -292,18 +415,18 @@ BloodLink Team
                 "Blood request submitted successfully!"
             )
 
-            return redirect("/dashboard/")
+            return redirect("dashboard")
 
     else:
+
         form = BloodRequestForm()
 
     return render(
         request,
         "accounts/request_blood.html",
-        {
-            "form": form
-        }
+        {"form": form}
     )
+
 
 @login_required
 def blood_request_list(request):
@@ -847,7 +970,6 @@ def download_pdf(request, id):
     p.save()
 
     return response
-
 @login_required
 def emergency_request(request):
 
@@ -859,9 +981,90 @@ def emergency_request(request):
 
             emergency = form.save()
 
+            # -----------------------------------------
+            # Find matching available donors
+            # -----------------------------------------
+
+            donors = UserProfile.objects.filter(
+                blood_group__iexact=emergency.blood_group,
+                city__iexact=emergency.city,
+                is_available=True
+            ).exclude(
+                user__email=""
+            ).order_by(
+                "-donation_count",
+                "id"
+            )
+
+            # -----------------------------------------
+            # Create website notifications
+            # -----------------------------------------
+
+            for donor in donors:
+
+                Notification.objects.create(
+                    user=donor.user,
+                    title="🚨 EMERGENCY BLOOD REQUEST",
+                    message=(
+                        f"Emergency Type: {emergency.emergency_type}\n"
+                        f"Urgency: {emergency.urgency}\n\n"
+                        f"Patient: {emergency.patient_name}\n"
+                        f"Blood Group: {emergency.blood_group}\n"
+                        f"Units Required: {emergency.units_required}\n"
+                        f"Hospital: {emergency.hospital_name}\n"
+                        f"City: {emergency.city}\n"
+                        f"📞 Contact: {emergency.contact_number}\n\n"
+                        "If you are available, please respond below."
+                    ),
+                    phone=emergency.contact_number,
+                    emergency=emergency,
+                )
+
+            # -----------------------------------------
+            # Send emergency email
+            # -----------------------------------------
+
+            recipient_list = [
+                donor.user.email
+                for donor in donors
+                if donor.user.email
+            ]
+
+            if recipient_list:
+
+                subject = "🚨 URGENT BLOOD REQUEST - BloodLink"
+
+                message = f"""
+🚨 EMERGENCY BLOOD REQUEST
+
+Emergency Type: {emergency.emergency_type}
+Urgency: {emergency.urgency}
+
+Patient Name: {emergency.patient_name}
+Blood Group: {emergency.blood_group}
+Units Required: {emergency.units_required}
+
+Hospital: {emergency.hospital_name}
+City: {emergency.city}
+Contact Number: {emergency.contact_number}
+
+If you are available and medically eligible to donate,
+please contact the patient/hospital.
+
+BloodLink Emergency Team
+"""
+
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    recipient_list,
+                    fail_silently=True,
+                )
+
             messages.success(
                 request,
-                "Emergency request submitted successfully!"
+                "🚨 Emergency blood request submitted successfully!"
             )
 
             return redirect("/dashboard/")
@@ -877,3 +1080,132 @@ def emergency_request(request):
             "form": form
         }
     )
+# =========================================================
+# ACCEPT EMERGENCY
+# =========================================================
+
+@login_required
+def accept_emergency(request, emergency_id):
+
+    if request.method != "POST":
+        return redirect("notifications")
+
+    emergency = EmergencyRequest.objects.filter(
+        id=emergency_id,
+        status="ACTIVE"
+    ).first()
+
+    if not emergency:
+
+        messages.error(
+            request,
+            "This emergency request is no longer active."
+        )
+
+        return redirect("notifications")
+
+    donor = UserProfile.objects.filter(
+        user=request.user
+    ).first()
+
+    if not donor:
+
+        messages.error(
+            request,
+            "Donor profile not found."
+        )
+
+        return redirect("notifications")
+
+    # Create or update donor response
+    response, created = EmergencyResponse.objects.get_or_create(
+        emergency=emergency,
+        donor=donor,
+        defaults={
+            "response": "ACCEPTED",
+            "responded_at": datetime.now(),
+        }
+    )
+
+    if not created:
+
+        response.response = "ACCEPTED"
+        response.responded_at = datetime.now()
+
+        response.save()
+
+    # Emergency matched
+    emergency.status = "MATCHED"
+    emergency.save()
+
+    # Donor is no longer available
+    donor.is_available = False
+    donor.save()
+
+    messages.success(
+        request,
+        "❤️ Thank you! You have accepted this emergency blood request."
+    )
+
+    return redirect("notifications")
+
+
+# =========================================================
+# REJECT EMERGENCY
+# =========================================================
+
+@login_required
+def reject_emergency(request, emergency_id):
+
+    if request.method != "POST":
+        return redirect("notifications")
+
+    emergency = EmergencyRequest.objects.filter(
+        id=emergency_id
+    ).first()
+
+    if not emergency:
+
+        messages.error(
+            request,
+            "Emergency request not found."
+        )
+
+        return redirect("notifications")
+
+    donor = UserProfile.objects.filter(
+        user=request.user
+    ).first()
+
+    if not donor:
+
+        messages.error(
+            request,
+            "Donor profile not found."
+        )
+
+        return redirect("notifications")
+
+    # Create or update response
+    response, created = EmergencyResponse.objects.get_or_create(
+        emergency=emergency,
+        donor=donor,
+        defaults={
+            "response": "REJECTED",
+            "responded_at": datetime.now(),
+        }
+    )
+
+    if not created:
+
+        response.response = "REJECTED"
+        response.responded_at = datetime.now()
+
+        response.save()
+
+    messages.info(
+        request,
+        "❌ You have declined this emergency blood request."
+    )
+
+    return redirect("notifications")
