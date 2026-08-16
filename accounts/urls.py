@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from .api_views import api_home
 urlpatterns = [
 
 # =========================
@@ -165,4 +165,10 @@ path(
     views.reject_emergency,
     name="reject_emergency"
 ),
+path(
+    "api/", 
+    api_home, 
+    name="api_home"
+),
+
 ]
