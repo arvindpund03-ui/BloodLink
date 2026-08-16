@@ -220,7 +220,7 @@ def request_blood(request):
         "accounts/request_blood.html",
         {"form": form}
     )
-
+    
 @login_required
 def notifications(request):
 
