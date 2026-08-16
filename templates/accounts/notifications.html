@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">
+                🔔 Notifications
+            </h2>
+            <p class="text-muted mb-0">
+                Your latest BloodLink notifications
+            </p>
+        </div>
+    </div>
+
+
+    {% if notifications %}
+
+        {% for notification in notifications %}
+
+            <div class="card shadow-sm mb-3">
+
+                <div class="card-body">
+
+                    <!-- Notification Title -->
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+                            <h5 class="mb-1">
+                                {{ notification.title }}
+                            </h5>
+
+                            {% if notification.message %}
+                                <p class="text-muted mb-2">
+                                    {{ notification.message }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        {% if notification.is_read %}
+                            <span class="badge bg-secondary">
+                                Read
+                            </span>
+                        {% else %}
+                            <span class="badge bg-primary">
+                                New
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Notification Date -->
+                    {% if notification.created_at %}
+                        <small class="text-muted">
+                            {{ notification.created_at|date:"d M Y, h:i A" }}
+                        </small>
+                    {% endif %}
+
+
+                    <!-- Emergency Notification -->
+                    {% if notification.emergency %}
+
+                        <div class="mt-3 p-3 border border-danger rounded bg-light">
+
+                            <h6 class="text-danger fw-bold">
+                                🚨 Emergency Response
+                            </h6>
+
+                            {% if notification.response_status == "ACCEPTED" %}
+
+                                <p class="text-success fw-bold mb-1">
+                                    ✅ Response Accepted
+                                </p>
+
+                                <p class="mb-0">
+                                    You have accepted this emergency blood request.
+                                </p>
+
+                            {% elif notification.response_status == "REJECTED" %}
+
+                                <p class="text-danger fw-bold mb-1">
+                                    ❌ Response Rejected
+                                </p>
+
+                                <p class="mb-0">
+                                    This emergency response was rejected.
+                                </p>
+
+                            {% elif notification.response_status == "PENDING" %}
+
+                                <p class="text-warning fw-bold mb-1">
+                                    ⏳ Response Pending
+                                </p>
+
+                                <p class="mb-0">
+                                    Your response is currently pending.
+                                </p>
+
+                            {% else %}
+
+                                <p class="text-muted mb-0">
+                                    Emergency request received.
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Blood Request Information -->
+                    {% if notification.blood_group %}
+
+                        <div class="mt-3">
+
+                            <span class="badge bg-danger">
+                                🩸 Blood Group:
+                                {{ notification.blood_group }}
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Location -->
+                    {% if notification.location %}
+
+                        <div class="mt-2">
+
+                            <small class="text-muted">
+                                📍 {{ notification.location }}
+                            </small>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <!-- No Notifications -->
+        <div class="card shadow-sm">
+
+            <div class="card-body text-center py-5">
+
+                <div style="font-size: 50px;">
+                    🔕
+                </div>
+
+                <h4 class="mt-3">
+                    No Notifications
+                </h4>
+
+                <p class="text-muted">
+                    You don't have any notifications right now.
+                </p>
+
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                    Go to Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
