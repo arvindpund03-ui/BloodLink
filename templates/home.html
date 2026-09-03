@@ -1,103 +1,306 @@
 {% extends "base.html" %}
-
 {% load static %}
 
 {% block content %}
 
-<!-- =========================
-     HOME PAGE
-========================= -->
+<style>
+    /* ==============================
+       BLOODLINK HOME PAGE
+    ============================== */
 
-<div class="container py-4">
+    .home-page {
+        padding: 20px 0 40px;
+    }
+
+    /* Hero */
+    .hero-section {
+        background: linear-gradient(135deg, #b30000, #e63946);
+        color: white;
+        border-radius: 24px;
+        padding: 55px 25px;
+        text-align: center;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+    }
+
+    .blood-drop {
+        font-size: 70px;
+        line-height: 1;
+        margin-bottom: 20px;
+    }
+
+    .hero-section h1 {
+        font-size: 48px;
+        font-weight: 800;
+        margin-bottom: 20px;
+    }
+
+    .hero-section p {
+        font-size: 21px;
+        max-width: 750px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* Buttons */
+    .hero-buttons {
+        margin-top: 35px;
+    }
+
+    .hero-btn {
+        display: inline-block;
+        border: none;
+        border-radius: 50px;
+        padding: 14px 28px;
+        margin: 7px;
+        font-size: 18px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .hero-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+    }
+
+    .register-btn {
+        background: white;
+        color: #222;
+    }
+
+    .donor-btn {
+        background: #198754;
+        color: white;
+    }
+
+    .request-btn {
+        background: #ffc107;
+        color: #111;
+    }
+
+    /* Section title */
+    .section-title {
+        text-align: center;
+        margin: 55px 0 30px;
+    }
+
+    .section-title h2 {
+        font-weight: 800;
+        color: #222;
+    }
+
+    .section-title p {
+        color: #777;
+        font-size: 17px;
+    }
+
+    /* Statistics */
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px 20px;
+        text-align: center;
+        height: 100%;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: 0.3s;
+        border: 1px solid #eee;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.13);
+    }
+
+    .stat-icon {
+        font-size: 45px;
+        margin-bottom: 10px;
+    }
+
+    .stat-card h5 {
+        font-weight: 700;
+        margin-top: 10px;
+    }
+
+    .stat-number {
+        font-size: 38px;
+        font-weight: 800;
+        margin: 10px 0;
+    }
+
+    .stat-card p {
+        color: #777;
+        margin-bottom: 0;
+    }
+
+    /* Emergency */
+    .emergency-section {
+        margin-top: 55px;
+        background: linear-gradient(135deg, #dc3545, #8b0000);
+        color: white;
+        border-radius: 22px;
+        padding: 40px 20px;
+        text-align: center;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.15);
+    }
+
+    .emergency-icon {
+        font-size: 55px;
+    }
+
+    .emergency-section h2 {
+        font-weight: 800;
+        margin-top: 10px;
+    }
+
+    .emergency-section p {
+        font-size: 18px;
+    }
+
+    .phone-number {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 15px 0;
+    }
+
+    .email {
+        font-size: 17px;
+    }
+
+    /* Information */
+    .info-section {
+        margin-top: 60px;
+        background: white;
+        border-radius: 22px;
+        padding: 35px 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .info-drop {
+        font-size: 80px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .info-section h2 {
+        color: #dc3545;
+        font-weight: 800;
+    }
+
+    .info-section p {
+        font-size: 17px;
+        line-height: 1.7;
+        color: #666;
+    }
+
+    .info-points {
+        margin-top: 20px;
+    }
+
+    .info-point {
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+
+        .home-page {
+            padding-top: 15px;
+        }
+
+        .hero-section {
+            padding: 40px 18px;
+            border-radius: 20px;
+        }
+
+        .blood-drop {
+            font-size: 60px;
+        }
+
+        .hero-section h1 {
+            font-size: 34px;
+            line-height: 1.2;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+        }
+
+        .hero-buttons {
+            margin-top: 25px;
+        }
+
+        .hero-btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 14px 15px;
+            font-size: 17px;
+        }
+
+        .section-title {
+            margin-top: 40px;
+        }
+
+        .stat-number {
+            font-size: 34px;
+        }
+
+        .emergency-section {
+            padding: 35px 18px;
+        }
+
+        .phone-number {
+            font-size: 21px;
+        }
+
+        .info-section {
+            padding: 30px 20px;
+        }
+    }
+</style>
 
 
-    <!-- =========================
-         BANNER
-    ========================== -->
-
-    <div class="mb-4">
-
-        <img
-            src="{% static 'images/banner.jpg' %}"
-            alt="BloodLink Blood Donation"
-            class="img-fluid w-100 rounded shadow"
-            style="
-                height:300px;
-                object-fit:cover;
-            "
-        >
-
-    </div>
-
+<div class="home-page">
 
     <!-- =========================
          HERO SECTION
     ========================== -->
 
-    <div
-        class="text-center text-white rounded shadow p-4 p-md-5"
-        style="
-            background:linear-gradient(
-                135deg,
-                #b30000,
-                #e63946
-            );
-        "
-    >
+    <div class="container">
 
-        <div
-            style="
-                font-size:55px;
-                margin-bottom:10px;
-            "
-        >
-            🩸
-        </div>
+        <div class="hero-section">
 
+            <div class="blood-drop">
+                🩸
+            </div>
 
-        <h1 class="fw-bold display-5">
+            <h1>
+                Donate Blood,<br>
+                Save Lives
+            </h1>
 
-            Donate Blood,
-            <br class="d-md-none">
-            Save Lives
+            <p>
+                Your one donation can save up to three lives.
+                Join BloodLink and become a lifesaver today.
+            </p>
 
-        </h1>
+            <div class="hero-buttons">
 
+                <a href="/register/" class="hero-btn register-btn">
+                    ❤️ Register
+                </a>
 
-        <p class="lead mt-3">
+                <a href="/donors/" class="hero-btn donor-btn">
+                    🩸 View Donors
+                </a>
 
-            Your one donation can save up to three lives.
-            Join BloodLink and become a lifesaver today.
+                <a href="/request-blood/" class="hero-btn request-btn">
+                    🚑 Request Blood
+                </a>
 
-        </p>
-
-
-        <!-- BUTTONS -->
-
-        <div class="mt-4">
-
-            <a
-                href="/register/"
-                class="btn btn-light btn-lg m-1 px-4"
-            >
-                ❤️ Register
-            </a>
-
-
-            <a
-                href="/donors/"
-                class="btn btn-success btn-lg m-1 px-4"
-            >
-                🩸 View Donors
-            </a>
-
-
-            <a
-                href="/request-blood/"
-                class="btn btn-warning btn-lg m-1 px-4"
-            >
-                🚑 Request Blood
-            </a>
+            </div>
 
         </div>
 
@@ -108,105 +311,97 @@
          STATISTICS
     ========================== -->
 
-    <div class="row g-4 mt-4">
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>
+                BloodLink at a Glance
+            </h2>
+
+            <p>
+                Together, we can make a difference.
+            </p>
+
+        </div>
 
 
-        <!-- TOTAL DONORS -->
+        <div class="row g-4">
 
-        <div class="col-12 col-md-4">
+            <!-- Total Donors -->
 
-            <div class="card shadow text-center h-100">
+            <div class="col-12 col-md-4">
 
-                <div class="card-body p-4">
+                <div class="stat-card">
 
-                    <div style="font-size:45px;">
+                    <div class="stat-icon">
                         🩸
                     </div>
 
-                    <h5 class="mt-2">
+                    <h5>
                         Total Donors
                     </h5>
 
-                    <h2 class="text-danger fw-bold">
-
+                    <div class="stat-number text-danger">
                         {{ total_donors }}
+                    </div>
 
-                    </h2>
-
-                    <p class="text-muted mb-0">
-
-                        Our registered blood donors.
-
+                    <p>
+                        Registered blood donors
                     </p>
 
                 </div>
 
             </div>
 
-        </div>
 
+            <!-- Blood Requests -->
 
-        <!-- BLOOD REQUESTS -->
+            <div class="col-12 col-md-4">
 
-        <div class="col-12 col-md-4">
+                <div class="stat-card">
 
-            <div class="card shadow text-center h-100">
-
-                <div class="card-body p-4">
-
-                    <div style="font-size:45px;">
+                    <div class="stat-icon">
                         ❤️
                     </div>
 
-                    <h5 class="mt-2">
+                    <h5>
                         Blood Requests
                     </h5>
 
-                    <h2 class="text-primary fw-bold">
-
+                    <div class="stat-number text-primary">
                         {{ total_requests }}
+                    </div>
 
-                    </h2>
-
-                    <p class="text-muted mb-0">
-
-                        People who need blood.
-
+                    <p>
+                        People who need blood
                     </p>
 
                 </div>
 
             </div>
 
-        </div>
 
+            <!-- Available Donors -->
 
-        <!-- AVAILABLE DONORS -->
+            <div class="col-12 col-md-4">
 
-        <div class="col-12 col-md-4">
+                <div class="stat-card">
 
-            <div class="card shadow text-center h-100">
-
-                <div class="card-body p-4">
-
-                    <div style="font-size:45px;">
+                    <div class="stat-icon">
                         💚
                     </div>
 
-                    <h5 class="mt-2">
+                    <h5>
                         Available Donors
                     </h5>
 
-                    <h2 class="text-success fw-bold">
-
+                    <div class="stat-number text-success">
                         {{ available_donors }}
+                    </div>
 
-                    </h2>
-
-                    <p class="text-muted mb-0">
-
-                        Donors currently available.
-
+                    <p>
+                        Donors ready to help
                     </p>
 
                 </div>
@@ -222,52 +417,36 @@
          EMERGENCY SECTION
     ========================== -->
 
-    <div class="mt-5">
+    <div class="container">
 
-        <div
-            class="text-center text-white rounded shadow p-4 p-md-5"
-            style="
-                background:linear-gradient(
-                    135deg,
-                    #dc3545,
-                    #8b0000
-                );
-            "
-        >
+        <div class="emergency-section">
 
-            <div style="font-size:50px;">
+            <div class="emergency-icon">
                 🚑
             </div>
 
-
-            <h2 class="fw-bold">
+            <h2>
                 Emergency Blood Help
             </h2>
 
-
-            <p class="mt-3">
-
+            <p>
                 Need blood urgently?
                 Contact the BloodLink support team.
-
             </p>
 
-
-            <h4>
+            <div class="phone-number">
                 📞 +91 8007916170
-            </h4>
+            </div>
 
-
-            <p>
+            <div class="email">
                 📧 bloodlink@gmail.com
-            </p>
+            </div>
 
+            <a href="/request-blood/"
+               class="hero-btn register-btn mt-3">
 
-            <a
-                href="/request-blood/"
-                class="btn btn-light btn-lg px-4"
-            >
                 🚑 Request Blood Now
+
             </a>
 
         </div>
@@ -279,71 +458,81 @@
          INFORMATION SECTION
     ========================== -->
 
-    <div class="row align-items-center g-4 mt-5 mb-4">
+    <div class="container">
+
+        <div class="info-section">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-5 text-center">
+
+                    <div class="info-drop">
+                        🩸
+                    </div>
+
+                    <h3 class="fw-bold text-danger">
+                        Be a Hero
+                    </h3>
+
+                    <p>
+                        Every drop matters.
+                        Your blood donation can give someone
+                        another chance at life.
+                    </p>
+
+                </div>
 
 
-        <!-- IMAGE -->
+                <div class="col-md-7">
 
-        <div class="col-12 col-md-6">
+                    <h2>
+                        Be a Hero, Donate Blood ❤️
+                    </h2>
 
-            <img
-                src="{% static 'images/banner.jpg' %}"
-                alt="Blood Donation"
-                class="img-fluid w-100 rounded shadow"
-            >
+                    <p class="mt-3">
+                        Blood donation is a simple act that can
+                        make a huge difference in someone's life.
+                    </p>
 
-        </div>
-
-
-        <!-- TEXT -->
-
-        <div class="col-12 col-md-6">
-
-            <span class="badge bg-danger mb-2">
-
-                SAVE LIVES
-
-            </span>
+                    <p>
+                        BloodLink connects blood donors with
+                        people who need blood during emergencies.
+                    </p>
 
 
-            <h2 class="text-danger fw-bold">
+                    <div class="info-points">
 
-                Be a Hero,
-                Donate Blood ❤️
+                        <div class="info-point">
+                            ✅ Find blood donors easily
+                        </div>
 
-            </h2>
+                        <div class="info-point">
+                            ✅ Request blood during emergencies
+                        </div>
 
+                        <div class="info-point">
+                            ✅ Help save lives in your community
+                        </div>
 
-            <p class="lead mt-3">
-
-                Blood donation is a simple act that can
-                make a huge difference in someone's life.
-
-            </p>
-
-
-            <p class="text-muted">
-
-                Join BloodLink and connect with people
-                who need blood during emergencies.
-                Your donation can give someone another
-                chance at life.
-
-            </p>
+                    </div>
 
 
-            <a
-                href="/register/"
-                class="btn btn-danger btn-lg px-4"
-            >
-                🩸 Become a Donor
-            </a>
+                    <a href="/register/"
+                       class="btn btn-danger btn-lg rounded-pill px-4 mt-3">
+
+                        🩸 Become a Donor
+
+                    </a>
+
+                </div>
+
+            </div>
 
         </div>
 
     </div>
 
-
 </div>
+
 
 {% endblock %}
