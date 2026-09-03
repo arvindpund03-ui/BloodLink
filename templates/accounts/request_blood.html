@@ -8,18 +8,15 @@
         🩸 Blood Request Form
     </h2>
 
-
     <form method="POST">
 
         {% csrf_token %}
 
         {{ form.as_p }}
 
-
         <button type="submit" class="btn btn-danger">
             Submit Request
         </button>
-
 
         <a href="/dashboard/" class="btn btn-secondary">
             Back to Dashboard
@@ -28,6 +25,5 @@
     </form>
 
 </div>
-
 
 {% endblock %}

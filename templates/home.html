@@ -3,20 +3,30 @@
 
 {% block content %}
 
-<!-- Banner Image -->
-<div class="container mt-4">
-    {% load static %}
+<!-- ================= BANNER ================= -->
 
-<img src="{% static 'image/banner.jpg' %}"
-     class="img-fluid rounded shadow w-100"
-     alt="Banner">
+<div class="container mt-4">
+
+    <img src="{% static 'images/banner.jpg' %}"
+         class="main-banner"
+         alt="Blood Donation Banner">
+
 </div>
 
-<!-- Hero Section -->
-<div class="container mt-5">
-    <div class="bg-danger text-white text-center p-5 rounded shadow">
 
-        <h1 class="display-4">🩸 Donate Blood, Save Lives</h1>
+<!-- ================= HERO ================= -->
+
+<div class="container mt-4">
+
+    <div class="hero text-center">
+
+        <div class="mb-3" style="font-size: 50px;">
+            🩸
+        </div>
+
+        <h1 class="display-4">
+            Donate Blood, Save Lives
+        </h1>
 
         <p class="lead mt-3">
             Your one donation can save up to three lives.
@@ -24,111 +34,226 @@
         </p>
 
         <div class="mt-4">
-            <a href="/register/" class="btn btn-light btn-lg me-2">Register</a>
 
-            <a href="/donors/" class="btn btn-success btn-lg me-2">View Donors</a>
-
-            <a href="/request-blood/" class="btn btn-warning btn-lg">
-                Request Blood
+            <a href="/register/"
+               class="btn btn-light btn-custom me-md-2">
+                ❤️ Register as Donor
             </a>
+
+            <a href="/donors/"
+               class="btn btn-success btn-custom me-md-2">
+                🩸 Find Donors
+            </a>
+
+            <a href="/request-blood/"
+               class="btn btn-warning btn-custom">
+                🚑 Request Blood
+            </a>
+
         </div>
 
     </div>
+
 </div>
 
-<!-- Statistics -->
+
+<!-- ================= STATISTICS ================= -->
+
 <div class="container mt-5">
-    <div class="row">
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold">
+            BloodLink at a Glance
+        </h2>
+
+        <p class="text-muted">
+            Together, we can make a difference.
+        </p>
+
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Donors -->
 
         <div class="col-md-4">
-            <div class="card text-center shadow border-danger">
-                <div class="card-body">
-                    <h2>🩸</h2>
-                    <h4>Total Donors</h4>
-                    <h2 class="text-danger">{{ total_donors }}</h2>
-                    <p>Join our growing donor community.</p>
+
+            <div class="card text-center h-100 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="stat-icon">
+                        🩸
+                    </div>
+
+                    <h5 class="mt-3">
+                        Total Donors
+                    </h5>
+
+                    <h2 class="text-danger fw-bold">
+                        {{ total_donors }}
+                    </h2>
+
+                    <p class="text-muted">
+                        Join our growing donor community.
+                    </p>
+
                 </div>
+
             </div>
+
         </div>
 
-        <div class="col-md-4">
-            <div class="card text-center shadow border-primary">
-                <div class="card-body">
-                    <h2>❤️</h2>
-                    <h4>Blood Requests</h4>
-                    <h2 class="text-primary">{{ total_requests }}</h2>
-                    <p>Help patients in urgent need.</p>
-                </div>
-            </div>
-        </div>
+
+        <!-- Requests -->
 
         <div class="col-md-4">
-            <div class="card text-center shadow border-success">
-                <div class="card-body">
-                    <h2>💚</h2>
-                    <h4>Available Donors</h4>
-                    <h2 class="text-success">{{ available_donors }}</h2>
-                    <p>Ready donors available for emergency.</p>
+
+            <div class="card text-center h-100 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="stat-icon">
+                        ❤️
+                    </div>
+
+                    <h5 class="mt-3">
+                        Blood Requests
+                    </h5>
+
+                    <h2 class="text-primary fw-bold">
+                        {{ total_requests }}
+                    </h2>
+
+                    <p class="text-muted">
+                        Help patients in urgent need.
+                    </p>
+
                 </div>
+
             </div>
+
+        </div>
+
+
+        <!-- Available -->
+
+        <div class="col-md-4">
+
+            <div class="card text-center h-100 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="stat-icon">
+                        💚
+                    </div>
+
+                    <h5 class="mt-3">
+                        Available Donors
+                    </h5>
+
+                    <h2 class="text-success fw-bold">
+                        {{ available_donors }}
+                    </h2>
+
+                    <p class="text-muted">
+                        Ready donors available for emergencies.
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
+
 </div>
 
-<!-- Emergency Contact -->
+
+<!-- ================= EMERGENCY ================= -->
+
+<div class="container mt-5">
+
+    <div class="emergency text-center">
+
+        <div style="font-size: 50px;">
+            🚑
+        </div>
+
+        <h2 class="fw-bold mt-2">
+            Emergency Blood Help
+        </h2>
+
+        <p class="mt-3">
+            Need blood urgently?
+            Contact the BloodLink support team.
+        </p>
+
+        <h4>
+            📞 +91 8007916170
+        </h4>
+
+        <p>
+            📧 bloodlink@gmail.com
+        </p>
+
+        <a href="/request-blood/"
+           class="btn btn-light btn-custom mt-2">
+            Request Blood Now
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ================= INFORMATION ================= -->
+
 <div class="container mt-5 mb-5">
-    <div class="card bg-danger text-white shadow">
-        <div class="card-body text-center">
 
-            <h2>🚑 Emergency Blood Help</h2>
+    <div class="row align-items-center g-5">
 
-            <p class="mt-3">
-                Need blood urgently? Contact BloodLink support team.
+        <div class="col-md-6">
+
+            <img src="{% static 'images/banner.jpg' %}"
+                 class="info-img"
+                 alt="Blood Donation">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <span class="badge bg-danger mb-3">
+                SAVE LIVES
+            </span>
+
+            <h2 class="fw-bold text-danger">
+                Be a Hero, Donate Blood ❤️
+            </h2>
+
+            <p class="lead mt-3">
+                Blood donation is a simple act that can make
+                a huge difference in someone's life.
             </p>
 
-            <h4>📞 +91 8007916170</h4>
+            <p class="text-muted">
+                Join BloodLink and connect with people who
+                need blood during emergencies.
+                Your small contribution can give someone
+                another chance at life.
+            </p>
 
-            <h5>📧 bloodlink@gmail.com</h5>
-
-            <a href="/request-blood/" class="btn btn-light mt-3">
-                Request Blood Now
+            <a href="/register/"
+               class="btn btn-danger btn-custom">
+                🩸 Become a Donor
             </a>
 
         </div>
-    </div>
-</div>
-
-<!-- Blood Donation Information -->
-<div class="container mt-5 mb-5">
-    <div class="row align-items-center">
-
-        <div class="col-md-6">
-            {% load static %}
-
-<img src="{% static 'image/banner.jpg' %}"
-     class="img-fluid rounded shadow w-100"
-     alt="Banner">
-        </div>
-
-        <div class="col-md-6">
-            <h2 class="text-danger">Be a Hero, Donate Blood ❤️</h2>
-
-            <p class="lead">
-                Blood donation is a simple act that can make a huge difference in someone's life.
-            </p>
-
-            <p>
-                Join BloodLink and connect with people who need blood during emergencies.
-            </p>
-
-            <a href="/register/" class="btn btn-danger">
-                Become a Donor
-            </a>
-
-        </div>
 
     </div>
+
 </div>
 
 {% endblock %}

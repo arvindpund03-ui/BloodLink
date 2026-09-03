@@ -1,6 +1,10 @@
 from django.urls import path
 from . import views
-from .api_views import api_home
+from .api_views import (
+    api_home,
+    api_login,
+    api_donors,
+)
 urlpatterns = [
 
 # =========================
@@ -169,6 +173,18 @@ path(
     "api/", 
     api_home, 
     name="api_home"
+),
+
+path(
+    "api/login/",
+     api_login, 
+     name="api_login"
+),
+
+path(
+    "api/donors/",
+     api_donors, 
+     name="api_donors"
 ),
 
 ]
