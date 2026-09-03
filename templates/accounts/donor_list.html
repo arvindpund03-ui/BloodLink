@@ -2,100 +2,621 @@
 
 {% block content %}
 
-<h2 class="text-danger mb-3">
-    🩸 Blood Donor List
-</h2>
+<style>
+    .donor-page {
+        min-height: 80vh;
+        padding: 40px 0 70px;
+        background: #f8f9fa;
+    }
 
-<form method="GET">
-    <label>Blood Group:</label>
-    <select name="blood_group">
-        <option value="">All</option>
-        <option value="A+">A+</option>
-        <option value="A">A</option>
-        <option value="B+">B+</option>
-        <option value="B">B</option>
-        <option value="O+">O+</option>
-        <option value="AB+">AB+</option>
-    </select>
+    .page-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-    <label>City:</label>
-    <input type="text" name="city" placeholder="Enter city">
+    .page-header h1 {
+        color: #b30000;
+        font-weight: 800;
+        font-size: 36px;
+        margin-bottom: 8px;
+    }
 
-    <button type="submit">Search</button>
-</form>
+    .page-header p {
+        color: #6c757d;
+        margin: 0;
+    }
+
+    /* SEARCH CARD */
+
+    .search-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 35px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .search-title {
+        color: #102a43;
+        font-size: 21px;
+        font-weight: 800;
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #343a40;
+        margin-bottom: 7px;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+        padding: 12px 14px;
+        border: 1px solid #dee2e6;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #b30000;
+        box-shadow: 0 0 0 0.2rem rgba(179, 0, 0, 0.10);
+    }
+
+    .search-btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 30px;
+        background: linear-gradient(135deg, #b30000, #e53935);
+        color: white;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .search-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .clear-btn {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        color: #b30000;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .available-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 15px;
+        font-weight: 600;
+        color: #198754;
+    }
+
+    .available-check input {
+        width: 18px;
+        height: 18px;
+        accent-color: #198754;
+    }
+
+    /* RESULT */
+
+    .result-count {
+        margin-bottom: 20px;
+        color: #495057;
+        font-weight: 700;
+    }
+
+    /* DONOR CARD */
+
+    .donor-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        height: 100%;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        transition: 0.25s ease;
+    }
+
+    .donor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    /* PHOTO */
+
+    .donor-photo {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #f8d7da;
+        margin-bottom: 15px;
+    }
+
+    .default-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 0 auto 15px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: linear-gradient(135deg, #b30000, #e53935);
+        color: #fff;
+
+        font-size: 40px;
+        border: 4px solid #f8d7da;
+    }
+
+    /* NAME */
+
+    .donor-name {
+        color: #102a43;
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    /* BLOOD GROUP */
+
+    .blood-badge {
+        display: inline-block;
+        padding: 7px 15px;
+        border-radius: 30px;
+        background: #b30000;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    /* INFO */
+
+    .donor-info {
+        color: #6c757d;
+        font-size: 14px;
+        margin: 7px 0;
+    }
+
+    /* AVAILABLE */
+
+    .available-badge {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 13px;
+        border-radius: 30px;
+        background: #d1e7dd;
+        color: #146c43;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .unavailable-badge {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 13px;
+        border-radius: 30px;
+        background: #f8d7da;
+        color: #842029;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    /* PROFILE BUTTON */
+
+    .view-btn {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 10px 22px;
+        border-radius: 30px;
+        background: #102a43;
+        color: white;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .view-btn:hover {
+        background: #071d2f;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    /* EMPTY */
+
+    .empty-box {
+        background: white;
+        border-radius: 20px;
+        padding: 55px 20px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+    }
+
+    .empty-icon {
+        font-size: 55px;
+        margin-bottom: 15px;
+    }
+
+    .empty-box h3 {
+        color: #102a43;
+        font-weight: 800;
+    }
+
+    .empty-box p {
+        color: #6c757d;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 768px) {
+
+        .donor-page {
+            padding: 25px 0 50px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+        }
+
+        .search-card {
+            padding: 20px;
+        }
+
+        .donor-card {
+            padding: 22px;
+        }
+
+    }
+</style>
+
+
+<div class="donor-page">
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="page-header">
+
+            <h1>🩸 Find Blood Donors</h1>
+
+            <p>
+                Find the right blood donor quickly when you need help.
+            </p>
+
         </div>
 
 
-        <div class="col-md-4">
-            <label class="form-label">City</label>
+        <!-- SMART SEARCH -->
 
-            <input type="text" 
-                   name="city" 
-                   class="form-control"
-                   placeholder="Enter city">
+        <div class="search-card">
+
+            <div class="search-title">
+                🔎 Smart Donor Search
+            </div>
+
+            <form method="GET">
+
+                <div class="row g-3">
+
+                    <!-- BLOOD GROUP -->
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Blood Group
+                        </label>
+
+                        <select
+                            name="blood_group"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Blood Groups
+                            </option>
+
+                            <option value="A+"
+                                {% if selected_blood_group == "A+" %}selected{% endif %}>
+                                A+
+                            </option>
+
+                            <option value="A-"
+                                {% if selected_blood_group == "A-" %}selected{% endif %}>
+                                A-
+                            </option>
+
+                            <option value="B+"
+                                {% if selected_blood_group == "B+" %}selected{% endif %}>
+                                B+
+                            </option>
+
+                            <option value="B-"
+                                {% if selected_blood_group == "B-" %}selected{% endif %}>
+                                B-
+                            </option>
+
+                            <option value="O+"
+                                {% if selected_blood_group == "O+" %}selected{% endif %}>
+                                O+
+                            </option>
+
+                            <option value="O-"
+                                {% if selected_blood_group == "O-" %}selected{% endif %}>
+                                O-
+                            </option>
+
+                            <option value="AB+"
+                                {% if selected_blood_group == "AB+" %}selected{% endif %}>
+                                AB+
+                            </option>
+
+                            <option value="AB-"
+                                {% if selected_blood_group == "AB-" %}selected{% endif %}>
+                                AB-
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CITY -->
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            City
+                        </label>
+
+                        <input
+                            type="text"
+                            name="city"
+                            class="form-control"
+                            placeholder="Enter city e.g. Pune"
+                            value="{{ selected_city }}"
+                        >
+
+                    </div>
+
+
+                    <!-- SEARCH -->
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Search
+                        </label>
+
+                        <button
+                            type="submit"
+                            class="search-btn"
+                        >
+                            🔎 Search Donors
+                        </button>
+
+                        <a
+                            href="{% url 'donors' %}"
+                            class="clear-btn"
+                        >
+                            ↻ Clear Filters
+                        </a>
+
+                    </div>
+
+
+                    <!-- AVAILABLE -->
+
+                    <div class="col-12">
+
+                        <label class="available-check">
+
+                            <input
+                                type="checkbox"
+                                name="available"
+                                value="1"
+                                {% if available_only %}checked{% endif %}
+                            >
+
+                            <span>
+                                🟢 Show available donors only
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </form>
+
         </div>
 
 
-        <div class="col-md-4 mt-4">
-            <button class="btn btn-danger">
-                Search
-            </button>
-        </div>
+        <!-- RESULTS -->
+
+        {% if donors %}
+
+            <div class="result-count">
+
+                🩸 {{ donors|length }} donor{{ donors|length|pluralize }} found
+
+            </div>
+
+
+            <div class="row g-4">
+
+                {% for donor in donors %}
+
+                    <div class="col-12 col-md-6 col-lg-4">
+
+                        <div class="donor-card">
+
+
+                            <!-- PROFILE PHOTO -->
+
+                            {% if donor.profile_photo %}
+
+                                <img
+                                    src="{{ donor.profile_photo.url }}"
+                                    class="donor-photo"
+                                    alt="Donor"
+                                    onerror="
+                                        this.style.display='none';
+                                        this.nextElementSibling.style.display='flex';
+                                    "
+                                >
+
+                                <div
+                                    class="default-avatar"
+                                    style="display:none;"
+                                >
+                                    🩸
+                                </div>
+
+                            {% else %}
+
+                                <div class="default-avatar">
+                                    🩸
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- NAME -->
+
+                            <div class="donor-name">
+
+                                {% if donor.user.get_full_name %}
+
+                                    {{ donor.user.get_full_name }}
+
+                                {% else %}
+
+                                    {{ donor.user.username }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- BLOOD GROUP -->
+
+                            <div class="blood-badge">
+
+                                🩸 {{ donor.blood_group|default:"Unknown" }}
+
+                            </div>
+
+
+                            <!-- CITY -->
+
+                            {% if donor.city %}
+
+                                <div class="donor-info">
+
+                                    📍 {{ donor.city }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- PHONE -->
+
+                            {% if donor.phone %}
+
+                                <div class="donor-info">
+
+                                    📞 {{ donor.phone }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- AVAILABILITY -->
+
+                            {% if donor.is_available %}
+
+                                <div class="available-badge">
+
+                                    🟢 Available to Donate
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="unavailable-badge">
+
+                                    🔴 Currently Unavailable
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- VIEW PROFILE -->
+
+                            <br>
+
+                            <a
+                                href="{% url 'donor_detail' donor.id %}"
+                                class="view-btn"
+                            >
+                                View Profile
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <!-- NO RESULTS -->
+
+            <div class="empty-box">
+
+                <div class="empty-icon">
+                    🩸
+                </div>
+
+                <h3>
+                    No Donors Found
+                </h3>
+
+                <p>
+                    No donor matches your search.
+                    Try another blood group or city.
+                </p>
+
+                <a
+                    href="{% url 'donors' %}"
+                    class="view-btn"
+                >
+                    View All Donors
+                </a>
+
+            </div>
+
+        {% endif %}
 
     </div>
 
-</form>
-
-
-<table class="table table-bordered table-striped shadow">
-
-<tr class="table-danger">
-    <th>Name</th>
-    <th>Blood Group</th>
-    <th>Phone</th>
-    <th>City</th>
-</tr>
-
-
-{% for donor in donors %}
-
-<tr>
-
-<td>
-<a href="/donor/{{ donor.id }}/">
-    {{ donor.full_name }}
-</a>
-</td>
-
-<td>{{ donor.blood_group }}</td>
-
-<td>{{ donor.phone }}</td>
-
-<td>{{ donor.city }}</td>
-
-</tr>
-
-
-{% empty %}
-{% if donor.photo %}
-    <img src="{{ donor.photo.url }}"
-         width="60"
-         height="60"
-         class="rounded-circle">
-{% else %}
-    <img src="https://via.placeholder.com/60"
-         class="rounded-circle">
-{% endif %}
-<tr>
-<td colspan="4" class="text-center">
-    No donors found
-</td>
-</tr>
-
-{% endfor %}
-
-
-</table>
-
+</div>
 
 {% endblock %}
