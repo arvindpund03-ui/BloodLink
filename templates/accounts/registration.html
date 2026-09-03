@@ -1,10 +1,13 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Register | BloodLink</title>
+    <title>Create Account | BloodLink</title>
 
     <style>
         * {
@@ -21,12 +24,17 @@
             justify-content: center;
             align-items: center;
             padding: 30px 15px;
+            color: #222;
         }
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
 
         .register-wrapper {
             width: 100%;
-            max-width: 1000px;
-            min-height: 620px;
+            max-width: 1050px;
+            min-height: 650px;
             background: #ffffff;
             border-radius: 24px;
             overflow: hidden;
@@ -35,12 +43,14 @@
             box-shadow: 0 20px 60px rgba(120, 20, 20, 0.18);
         }
 
-        /* LEFT SIDE */
+        /* =========================
+           LEFT PANEL
+        ========================= */
 
         .left-panel {
-            background: linear-gradient(160deg, #b71c1c, #e53935);
+            background: linear-gradient(160deg, #b30000, #e53935);
             color: white;
-            padding: 55px 45px;
+            padding: 50px 45px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -51,23 +61,23 @@
         .left-panel::before {
             content: "";
             position: absolute;
-            width: 280px;
-            height: 280px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.08);
-            top: -100px;
-            left: -100px;
+            background: rgba(255, 255, 255, 0.08);
+            top: -120px;
+            left: -120px;
         }
 
         .left-panel::after {
             content: "";
             position: absolute;
-            width: 220px;
-            height: 220px;
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.07);
-            bottom: -80px;
-            right: -80px;
+            background: rgba(255, 255, 255, 0.07);
+            bottom: -100px;
+            right: -100px;
         }
 
         .brand {
@@ -79,18 +89,22 @@
         }
 
         .tagline {
-            font-size: 14px;
-            letter-spacing: 1.5px;
+            font-size: 13px;
+            letter-spacing: 2px;
             opacity: 0.9;
-            margin-bottom: 45px;
+            margin-bottom: 35px;
             position: relative;
             z-index: 1;
         }
 
+        /* =========================
+           BLOOD DROP
+        ========================= */
+
         .blood-drop {
-            width: 100px;
+            width: 110px;
             height: 130px;
-            margin: 0 auto 35px;
+            margin: 0 auto 25px;
             position: relative;
             z-index: 1;
         }
@@ -98,7 +112,7 @@
         .drop {
             width: 90px;
             height: 110px;
-            background: rgba(255,255,255,0.95);
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 60% 60% 60% 60%;
             transform: rotate(45deg);
             margin: 10px auto;
@@ -115,6 +129,10 @@
             top: 35px;
         }
 
+        /* =========================
+           LEFT CONTENT
+        ========================= */
+
         .left-title {
             font-size: 27px;
             font-weight: 700;
@@ -127,13 +145,13 @@
         .left-text {
             font-size: 15px;
             line-height: 1.7;
-            opacity: 0.9;
+            opacity: 0.92;
             position: relative;
             z-index: 1;
         }
 
         .benefits {
-            margin-top: 30px;
+            margin-top: 28px;
             position: relative;
             z-index: 1;
         }
@@ -147,16 +165,20 @@
         }
 
         .check {
-            width: 22px;
-            height: 22px;
+            width: 23px;
+            height: 23px;
+            min-width: 23px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.20);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
         }
 
-        /* RIGHT SIDE */
+        /* =========================
+           RIGHT PANEL
+        ========================= */
 
         .right-panel {
             padding: 45px 55px;
@@ -168,15 +190,19 @@
         .form-heading {
             font-size: 30px;
             color: #222;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 8px;
         }
 
         .form-subheading {
             color: #777;
             font-size: 14px;
-            margin-bottom: 28px;
+            margin-bottom: 25px;
         }
+
+        /* =========================
+           DJANGO FORM
+        ========================= */
 
         form p {
             margin-bottom: 16px;
@@ -185,70 +211,108 @@
         form label {
             display: block;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             color: #333;
             margin-bottom: 7px;
         }
 
-        input,
-        select,
-        textarea {
+        form input,
+        form select,
+        form textarea {
             width: 100%;
             padding: 12px 14px;
             border: 1px solid #ddd;
-            border-radius: 9px;
+            border-radius: 10px;
             font-size: 14px;
             background: #fafafa;
-            transition: 0.2s ease;
+            color: #222;
+            transition: all 0.2s ease;
         }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
+        form input::placeholder,
+        form textarea::placeholder {
+            color: #999;
+        }
+
+        form input:focus,
+        form select:focus,
+        form textarea:focus {
             outline: none;
-            border-color: #d32f2f;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(211,47,47,0.08);
+            border-color: #c62828;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.10);
         }
 
-        .errorlist {
-            list-style: none;
-            color: #d32f2f;
-            font-size: 12px;
-            margin: 5px 0;
-            padding: 0;
+        /* =========================
+           HIDE DJANGO HELP TEXT
+        ========================= */
+
+        form .helptext,
+        form small,
+        form p small,
+        form .form-text {
+            display: none !important;
         }
+
+        /* Hide Django help lists */
+        form p ul {
+            display: none !important;
+        }
+
+        form ul.helptext {
+            display: none !important;
+        }
+
+        /* =========================
+           DJANGO ERRORS
+        ========================= */
+
+        form .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0 0;
+            color: #c62828;
+            font-size: 12px;
+        }
+
+        form .errorlist li {
+            margin-bottom: 3px;
+        }
+
+        /* =========================
+           LOCATION SECTION
+        ========================= */
 
         .location-section {
             margin-top: 8px;
-            padding: 15px;
+            padding: 16px;
             background: #fff8f8;
             border: 1px solid #f0d5d5;
-            border-radius: 10px;
+            border-radius: 12px;
         }
 
         .location-title {
             font-size: 13px;
             font-weight: 700;
             color: #444;
-            margin-bottom: 8px;
+            margin-bottom: 9px;
         }
 
         .location-input {
-            margin-bottom: 9px;
+            margin-bottom: 10px;
         }
 
         .location-btn {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #d32f2f;
+            padding: 11px;
+            border: 1px solid #c62828;
             background: white;
             color: #c62828;
-            border-radius: 8px;
+            border-radius: 9px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
         .location-btn:hover {
@@ -256,25 +320,41 @@
             color: white;
         }
 
+        .location-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* =========================
+           REGISTER BUTTON
+        ========================= */
+
         .register-btn {
             width: 100%;
             padding: 14px;
             border: none;
-            border-radius: 9px;
-            background: linear-gradient(90deg, #c62828, #e53935);
+            border-radius: 10px;
+            background: linear-gradient(90deg, #b30000, #e53935);
             color: white;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             margin-top: 20px;
-            box-shadow: 0 8px 18px rgba(198,40,40,0.22);
-            transition: 0.2s;
+            box-shadow: 0 8px 18px rgba(198, 40, 40, 0.22);
+            transition: all 0.2s ease;
         }
 
         .register-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(198,40,40,0.28);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(198, 40, 40, 0.28);
         }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        /* =========================
+           LOGIN LINK
+        ========================= */
 
         .login-link {
             text-align: center;
@@ -293,30 +373,63 @@
             text-decoration: underline;
         }
 
+        /* =========================
+           MESSAGES
+        ========================= */
+
         .messages {
             margin-bottom: 15px;
         }
 
         .message {
-            padding: 10px;
-            border-radius: 8px;
+            padding: 11px 13px;
+            border-radius: 9px;
             background: #e8f5e9;
             color: #2e7d32;
             font-size: 13px;
+            border: 1px solid #c8e6c9;
         }
 
-        /* MOBILE */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 800px) {
+
+            body {
+                padding: 15px;
+                align-items: flex-start;
+            }
 
             .register-wrapper {
                 grid-template-columns: 1fr;
                 max-width: 550px;
+                margin: 10px auto;
             }
 
             .left-panel {
-                padding: 35px 30px;
+                padding: 35px 25px;
                 text-align: center;
+            }
+
+            .brand {
+                font-size: 32px;
+            }
+
+            .tagline {
+                margin-bottom: 25px;
+            }
+
+            .blood-drop {
+                margin-bottom: 20px;
+            }
+
+            .left-title {
+                font-size: 24px;
+            }
+
+            .left-text {
+                font-size: 14px;
             }
 
             .benefits {
@@ -324,16 +437,49 @@
                 display: inline-block;
             }
 
-            .blood-drop {
-                margin-bottom: 20px;
-            }
-
             .right-panel {
-                padding: 35px 28px;
+                padding: 35px 25px;
             }
 
             .form-heading {
                 font-size: 26px;
+            }
+        }
+
+        /* =========================
+           SMALL MOBILE
+        ========================= */
+
+        @media (max-width: 420px) {
+
+            body {
+                padding: 8px;
+            }
+
+            .register-wrapper {
+                border-radius: 18px;
+            }
+
+            .left-panel {
+                padding: 30px 20px;
+            }
+
+            .right-panel {
+                padding: 30px 18px;
+            }
+
+            .form-heading {
+                font-size: 24px;
+            }
+
+            form input,
+            form select,
+            form textarea {
+                padding: 12px;
+            }
+
+            .register-btn {
+                font-size: 15px;
             }
         }
     </style>
@@ -343,12 +489,14 @@
 
 <div class="register-wrapper">
 
-    <!-- LEFT PANEL -->
+    <!-- =========================
+         LEFT PANEL
+    ========================= -->
 
     <div class="left-panel">
 
         <div class="brand">
-            BloodLink
+            🩸 BloodLink
         </div>
 
         <div class="tagline">
@@ -372,17 +520,17 @@
 
             <div class="benefit">
                 <span class="check">✓</span>
-                Find blood donors
+                <span>Find blood donors</span>
             </div>
 
             <div class="benefit">
                 <span class="check">✓</span>
-                Request blood quickly
+                <span>Request blood quickly</span>
             </div>
 
             <div class="benefit">
                 <span class="check">✓</span>
-                Help save lives
+                <span>Help save lives</span>
             </div>
 
         </div>
@@ -390,7 +538,9 @@
     </div>
 
 
-    <!-- RIGHT PANEL -->
+    <!-- =========================
+         RIGHT PANEL
+    ========================= -->
 
     <div class="right-panel">
 
@@ -402,16 +552,25 @@
             Register with BloodLink to start helping others.
         </div>
 
+
+        <!-- DJANGO MESSAGES -->
+
         {% if messages %}
             <div class="messages">
+
                 {% for message in messages %}
+
                     <div class="message">
                         {{ message }}
                     </div>
+
                 {% endfor %}
+
             </div>
         {% endif %}
 
+
+        <!-- REGISTRATION FORM -->
 
         <form method="POST">
 
@@ -448,16 +607,28 @@
             </div>
 
 
-            <button type="submit" class="register-btn">
+            <!-- CREATE ACCOUNT -->
+
+            <button
+                type="submit"
+                class="register-btn"
+            >
                 Create My Account
             </button>
 
         </form>
 
 
+        <!-- LOGIN -->
+
         <div class="login-link">
+
             Already have an account?
-            <a href="/login/">Login</a>
+
+            <a href="/login/">
+                Login
+            </a>
+
         </div>
 
     </div>
@@ -465,31 +636,44 @@
 </div>
 
 
+<!-- =========================
+     LOCATION JAVASCRIPT
+========================= -->
+
 <script>
 
 function getLocation() {
 
-    const locationInput = document.getElementById("location");
+    const locationInput =
+        document.getElementById("location");
 
     if (!navigator.geolocation) {
 
-        alert("Geolocation is not supported by your browser.");
+        alert(
+            "Geolocation is not supported by your browser."
+        );
 
         return;
     }
 
-    locationInput.value = "Getting location...";
+    locationInput.value =
+        "Getting location...";
 
     navigator.geolocation.getCurrentPosition(
 
         function(position) {
 
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
 
             locationInput.value =
-                latitude.toFixed(4) + ", " +
+                latitude.toFixed(4) +
+                ", " +
                 longitude.toFixed(4);
+
         },
 
         function(error) {
@@ -499,8 +683,17 @@ function getLocation() {
             alert(
                 "Unable to get your location. Please allow location permission."
             );
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
         }
+
     );
+
 }
 
 </script>
