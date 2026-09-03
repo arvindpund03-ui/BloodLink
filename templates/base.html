@@ -1,302 +1,133 @@
-{% load static %}
+<style>
 
-<!DOCTYPE html>
-<html lang="en">
+    :root {
+        --blood-red: #b30000;
+        --blood-red-dark: #8b0000;
+        --navy: #102a43;
+        --navy-dark: #071d2f;
+        --light-bg: #f4f7fb;
+        --white: #ffffff;
+        --text: #243447;
+    }
 
-<head>
-    <meta charset="UTF-8">
+    body {
+        margin: 0;
+        padding: 0;
+        background: var(--light-bg);
+        font-family: Arial, sans-serif;
+        color: var(--text);
+    }
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    /* NAVBAR */
 
-    <title>BloodLink</title>
+    .navbar {
+        background: linear-gradient(
+            135deg,
+            var(--blood-red),
+            var(--blood-red-dark)
+        ) !important;
 
-    <!-- Bootstrap -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+    }
 
-    <style>
+    .navbar-brand {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
+    .nav-link {
+        font-weight: 600;
+        margin: 0 3px;
+        border-radius: 20px;
+        padding: 8px 12px !important;
+        transition: 0.25s;
+    }
 
-        /* NAVBAR */
+    .nav-link:hover {
+        background: rgba(255, 255, 255, 0.18);
+    }
 
-        .navbar {
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
+    /* PAGE */
+
+    main {
+        min-height: 65vh;
+    }
+
+    /* CARDS */
+
+    .card {
+        border: none;
+        border-radius: 18px;
+        background: var(--white);
+        box-shadow: 0 5px 18px rgba(16, 42, 67, 0.08);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(16, 42, 67, 0.15);
+    }
+
+    /* BUTTONS */
+
+    .btn {
+        border-radius: 30px;
+        font-weight: 700;
+        transition: 0.25s;
+    }
+
+    .btn-danger {
+        background: var(--blood-red);
+        border-color: var(--blood-red);
+    }
+
+    .btn-danger:hover {
+        background: var(--blood-red-dark);
+        border-color: var(--blood-red-dark);
+        transform: translateY(-1px);
+    }
+
+    /* FOOTER */
+
+    footer {
+        margin-top: 50px;
+        background: linear-gradient(
+            135deg,
+            var(--navy-dark),
+            var(--navy)
+        ) !important;
+    }
+
+    footer a {
+        transition: 0.2s;
+    }
+
+    footer a:hover {
+        color: #ff6b6b !important;
+        padding-left: 4px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 768px) {
 
         .navbar-brand {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 23px;
         }
 
         .nav-link {
-            font-weight: 500;
+            margin: 2px 0;
         }
 
-        /* CARDS */
-
-        .card {
-            border: none;
-            border-radius: 18px;
-            transition: 0.3s;
+        .container {
+            max-width: 100%;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        main {
+            min-height: 70vh;
         }
 
-        /* BUTTONS */
+    }
 
-        .btn {
-            border-radius: 30px;
-            font-weight: 600;
-        }
-
-        /* FOOTER */
-
-        footer {
-            margin-top: 50px;
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 768px) {
-
-            .navbar-brand {
-                font-size: 23px;
-            }
-
-            .container {
-                max-width: 100%;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<!-- =========================
-     NAVBAR
-========================= -->
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-danger sticky-top">
-
-    <div class="container">
-
-        <a class="navbar-brand" href="/">
-            🩸 BloodLink
-        </a>
-
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarMenu"
-            aria-controls="navbarMenu"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-        >
-
-            <span class="navbar-toggler-icon"></span>
-
-        </button>
-
-
-        <div
-            class="collapse navbar-collapse"
-            id="navbarMenu"
-        >
-
-            <ul class="navbar-nav ms-auto">
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/">
-                        🏠 Home
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/donors/">
-                        🩸 Donors
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="{% url 'notifications' %}">
-                        🔔 Notifications
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="/request-blood/">
-                        🚑 Request Blood
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="/about/">
-                        ℹ️ About
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="/contact/">
-                        📞 Contact
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="/profile/">
-                        👤 Profile
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="/logout/">
-                        🚪 Logout
-                    </a>
-                </li>
-
-            </ul>
-
-        </div>
-
-    </div>
-
-</nav>
-
-
-<!-- =========================
-     PAGE CONTENT
-========================= -->
-
-<main>
-
-    {% block content %}
-
-    {% endblock %}
-
-</main>
-
-
-<!-- =========================
-     FOOTER
-========================= -->
-
-<footer class="bg-dark text-white">
-
-    <div class="container py-5">
-
-        <div class="row">
-
-            <div class="col-md-6 text-center text-md-start">
-
-                <h3 class="fw-bold">
-                    🩸 BloodLink
-                </h3>
-
-                <p>
-                    Donate Blood, Save Lives ❤️
-                </p>
-
-                <p class="text-secondary">
-                    Connecting blood donors with people
-                    who need blood during emergencies.
-                </p>
-
-            </div>
-
-
-            <div class="col-md-6 text-center text-md-start">
-
-                <h5 class="fw-bold">
-                    Quick Links
-                </h5>
-
-                <div class="d-flex flex-column gap-2">
-
-                    <a
-                        href="/"
-                        class="text-white text-decoration-none"
-                    >
-                        Home
-                    </a>
-
-                    <a
-                        href="/donors/"
-                        class="text-white text-decoration-none"
-                    >
-                        Donors
-                    </a>
-
-                    <a
-                        href="/request-blood/"
-                        class="text-white text-decoration-none"
-                    >
-                        Request Blood
-                    </a>
-
-                    <a
-                        href="/contact/"
-                        class="text-white text-decoration-none"
-                    >
-                        Contact
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <hr class="border-secondary">
-
-        <div class="text-center">
-
-            <p class="mb-1">
-                © 2026 BloodLink
-            </p>
-
-            <small class="text-secondary">
-                Blood Donation Management System
-            </small>
-
-            <p class="mt-2 mb-0">
-                Developed by
-                <strong>Arvind Pund</strong>
-            </p>
-
-        </div>
-
-    </div>
-
-</footer>
-
-
-<!-- Bootstrap JS -->
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-</script>
-
-</body>
-
-</html>
+</style>
