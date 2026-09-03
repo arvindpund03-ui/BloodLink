@@ -32,7 +32,7 @@ class UserProfile(models.Model):
     )
 
     photo = models.ImageField(
-        upload_to="c:\Users\DELL\Pictures\arvind2.jpg",
+        upload_to="profile_photos/",
         blank=True,
         null=True
     )
