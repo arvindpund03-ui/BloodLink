@@ -4,52 +4,44 @@
 {% block content %}
 
 <style>
-    /* ==============================
-       BLOODLINK HOME PAGE
-    ============================== */
-
     .home-page {
-        padding: 20px 0 40px;
+        padding: 25px 0 50px;
     }
 
-    /* Hero */
     .hero-section {
         background: linear-gradient(135deg, #b30000, #e63946);
         color: white;
         border-radius: 24px;
         padding: 55px 25px;
         text-align: center;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.18);
     }
 
     .blood-drop {
         font-size: 70px;
-        line-height: 1;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
     }
 
     .hero-section h1 {
         font-size: 48px;
         font-weight: 800;
-        margin-bottom: 20px;
+        line-height: 1.2;
     }
 
     .hero-section p {
-        font-size: 21px;
         max-width: 750px;
-        margin: 0 auto;
+        margin: 20px auto;
+        font-size: 20px;
         line-height: 1.6;
     }
 
-    /* Buttons */
     .hero-buttons {
-        margin-top: 35px;
+        margin-top: 30px;
     }
 
     .hero-btn {
         display: inline-block;
-        border: none;
+        border: 0;
         border-radius: 50px;
         padding: 14px 28px;
         margin: 7px;
@@ -61,12 +53,12 @@
 
     .hero-btn:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.20);
     }
 
     .register-btn {
         background: white;
-        color: #222;
+        color: #111;
     }
 
     .donor-btn {
@@ -79,7 +71,6 @@
         color: #111;
     }
 
-    /* Section title */
     .section-title {
         text-align: center;
         margin: 55px 0 30px;
@@ -87,15 +78,12 @@
 
     .section-title h2 {
         font-weight: 800;
-        color: #222;
     }
 
     .section-title p {
         color: #777;
-        font-size: 17px;
     }
 
-    /* Statistics */
     .stat-card {
         background: white;
         border-radius: 20px;
@@ -104,22 +92,20 @@
         height: 100%;
         box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         transition: 0.3s;
-        border: 1px solid #eee;
     }
 
     .stat-card:hover {
-        transform: translateY(-7px);
+        transform: translateY(-6px);
         box-shadow: 0 14px 30px rgba(0,0,0,0.13);
     }
 
     .stat-icon {
         font-size: 45px;
-        margin-bottom: 10px;
     }
 
     .stat-card h5 {
         font-weight: 700;
-        margin-top: 10px;
+        margin-top: 12px;
     }
 
     .stat-number {
@@ -130,10 +116,9 @@
 
     .stat-card p {
         color: #777;
-        margin-bottom: 0;
+        margin: 0;
     }
 
-    /* Emergency */
     .emergency-section {
         margin-top: 55px;
         background: linear-gradient(135deg, #dc3545, #8b0000);
@@ -153,33 +138,22 @@
         margin-top: 10px;
     }
 
-    .emergency-section p {
-        font-size: 18px;
-    }
-
     .phone-number {
-        font-size: 24px;
+        font-size: 23px;
         font-weight: 700;
         margin: 15px 0;
     }
 
-    .email {
-        font-size: 17px;
-    }
-
-    /* Information */
     .info-section {
-        margin-top: 60px;
+        margin-top: 55px;
         background: white;
         border-radius: 22px;
-        padding: 35px 25px;
+        padding: 40px 25px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     }
 
     .info-drop {
-        font-size: 80px;
-        text-align: center;
-        margin-bottom: 15px;
+        font-size: 85px;
     }
 
     .info-section h2 {
@@ -188,21 +162,16 @@
     }
 
     .info-section p {
+        color: #666;
         font-size: 17px;
         line-height: 1.7;
-        color: #666;
-    }
-
-    .info-points {
-        margin-top: 20px;
     }
 
     .info-point {
-        margin-bottom: 12px;
         font-weight: 600;
+        margin: 12px 0;
     }
 
-    /* Mobile */
     @media (max-width: 768px) {
 
         .home-page {
@@ -220,22 +189,16 @@
 
         .hero-section h1 {
             font-size: 34px;
-            line-height: 1.2;
         }
 
         .hero-section p {
             font-size: 18px;
         }
 
-        .hero-buttons {
-            margin-top: 25px;
-        }
-
         .hero-btn {
             display: block;
             width: 100%;
             margin: 10px 0;
-            padding: 14px 15px;
             font-size: 17px;
         }
 
@@ -251,10 +214,6 @@
             padding: 35px 18px;
         }
 
-        .phone-number {
-            font-size: 21px;
-        }
-
         .info-section {
             padding: 30px 20px;
         }
@@ -264,10 +223,7 @@
 
 <div class="home-page">
 
-    <!-- =========================
-         HERO SECTION
-    ========================== -->
-
+    <!-- HERO -->
     <div class="container">
 
         <div class="hero-section">
@@ -307,10 +263,7 @@
     </div>
 
 
-    <!-- =========================
-         STATISTICS
-    ========================== -->
-
+    <!-- STATISTICS -->
     <div class="container">
 
         <div class="section-title">
@@ -325,10 +278,7 @@
 
         </div>
 
-
         <div class="row g-4">
-
-            <!-- Total Donors -->
 
             <div class="col-12 col-md-4">
 
@@ -355,8 +305,6 @@
             </div>
 
 
-            <!-- Blood Requests -->
-
             <div class="col-12 col-md-4">
 
                 <div class="stat-card">
@@ -381,8 +329,6 @@
 
             </div>
 
-
-            <!-- Available Donors -->
 
             <div class="col-12 col-md-4">
 
@@ -413,10 +359,7 @@
     </div>
 
 
-    <!-- =========================
-         EMERGENCY SECTION
-    ========================== -->
-
+    <!-- EMERGENCY -->
     <div class="container">
 
         <div class="emergency-section">
@@ -438,15 +381,13 @@
                 📞 +91 8007916170
             </div>
 
-            <div class="email">
+            <div>
                 📧 bloodlink@gmail.com
             </div>
 
             <a href="/request-blood/"
                class="hero-btn register-btn mt-3">
-
                 🚑 Request Blood Now
-
             </a>
 
         </div>
@@ -454,10 +395,7 @@
     </div>
 
 
-    <!-- =========================
-         INFORMATION SECTION
-    ========================== -->
-
+    <!-- INFORMATION -->
     <div class="container">
 
         <div class="info-section">
@@ -489,7 +427,7 @@
                         Be a Hero, Donate Blood ❤️
                     </h2>
 
-                    <p class="mt-3">
+                    <p>
                         Blood donation is a simple act that can
                         make a huge difference in someone's life.
                     </p>
@@ -499,8 +437,7 @@
                         people who need blood during emergencies.
                     </p>
 
-
-                    <div class="info-points">
+                    <div class="mt-3">
 
                         <div class="info-point">
                             ✅ Find blood donors easily
@@ -516,12 +453,9 @@
 
                     </div>
 
-
                     <a href="/register/"
                        class="btn btn-danger btn-lg rounded-pill px-4 mt-3">
-
                         🩸 Become a Donor
-
                     </a>
 
                 </div>
