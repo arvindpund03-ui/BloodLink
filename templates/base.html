@@ -3,20 +3,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         {% block title %}BloodLink{% endblock %}
     </title>
 
-    <style>
+    <meta name="description"
+          content="BloodLink - Connecting blood donors with people in need.">
 
+    <style>
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         html {
@@ -24,1069 +25,973 @@
         }
 
         body {
-            margin: 0;
             font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
                 "Segoe UI",
+                Roboto,
                 Arial,
                 sans-serif;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #fff5f8,
-                    #f8f2ff,
-                    #eef4ff
-                );
-
-            color: #482052;
+            background: #f5f7fb;
+            color: #172033;
+            min-height: 100vh;
         }
 
+        a {
+            text-decoration: none;
+        }
 
-        /* =====================================================
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        /* =========================
            SIDEBAR
-        ===================================================== */
+        ========================= */
 
-        .blood-sidebar {
-
+        .sidebar {
             position: fixed;
-
             left: 0;
             top: 0;
-            bottom: 0;
-
             width: 260px;
-
-            padding: 18px 14px;
-
-            overflow-y: auto;
-
-            z-index: 999;
+            height: 100vh;
 
             background:
                 linear-gradient(
                     180deg,
-                    #ff416c 0%,
-                    #c43cff 48%,
-                    #667eea 100%
+                    #24104f 0%,
+                    #32156d 42%,
+                    #172d70 100%
+                );
+
+            color: white;
+            z-index: 1000;
+
+            display: flex;
+            flex-direction: column;
+
+            box-shadow:
+                8px 0 30px rgba(31, 41, 55, 0.12);
+
+            overflow-y: auto;
+        }
+
+        /* =========================
+           BRAND
+        ========================= */
+
+        .brand {
+            padding: 25px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,.10);
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f43f5e,
+                    #ef4444
                 );
 
             box-shadow:
-                8px 0 30px
-                rgba(100, 40, 130, 0.18);
+                0 8px 22px rgba(244,63,94,.30);
+
+            font-size: 25px;
         }
 
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* =====================================================
-           PROFESSIONAL BLOODLINK LOGO
-        ===================================================== */
+        .brand-text strong {
+            font-size: 21px;
+            line-height: 1;
 
-        .brand-logo {
+            font-weight: 900;
+            letter-spacing: -.5px;
+
+            color: #ffffff;
+        }
+
+        .brand-text small {
+            margin-top: 6px;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            letter-spacing: 1.1px;
+
+            color: #93c5fd;
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================= */
+
+        .sidebar-nav {
+            padding: 18px 13px;
+            flex: 1;
+        }
+
+        .nav-label {
+            padding: 8px 12px 10px;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1.2px;
+
+            color: rgba(255,255,255,.45);
+
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            position: relative;
 
             display: flex;
-
             align-items: center;
 
             gap: 12px;
 
-            padding:
-                8px 7px
-                22px;
+            width: 100%;
 
-            margin-bottom: 8px;
+            padding: 12px 13px;
+            margin-bottom: 5px;
+
+            border-radius: 13px;
+
+            color: rgba(255,255,255,.78);
+
+            font-size: 13px;
+            font-weight: 650;
+
+            transition:
+                background .2s ease,
+                color .2s ease,
+                transform .2s ease;
         }
 
+        .nav-link:hover {
+            color: #ffffff;
 
-        .brand-icon {
+            background: rgba(255,255,255,.10);
 
-            position: relative;
+            transform: translateX(3px);
+        }
 
-            width: 55px;
-            height: 55px;
+        .nav-link.active {
+            color: #ffffff;
 
-            min-width: 55px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(124,58,237,.95),
+                    rgba(37,99,235,.92)
+                );
+
+            box-shadow:
+                0 8px 20px rgba(37,99,235,.20);
+        }
+
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+
+            flex-shrink: 0;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
+
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.08);
+
+            font-size: 16px;
+        }
+
+        .nav-link.active .nav-icon {
+            background: rgba(255,255,255,.14);
+        }
+
+        /* =========================
+           SAVE A LIFE BOX
+        ========================= */
+
+        .save-life {
+            margin: 8px 13px 15px;
+
+            padding: 17px;
 
             border-radius: 18px;
 
             background:
                 linear-gradient(
                     135deg,
-                    #ff1744,
-                    #ff4f81,
-                    #c43cff
-                );
-
-            border:
-                2px solid
-                rgba(255,255,255,0.42);
-
-            box-shadow:
-                0 10px 28px
-                rgba(80, 20, 120, 0.30);
-
-            overflow: hidden;
-        }
-
-
-        .brand-icon::before {
-
-            content: "";
-
-            position: absolute;
-
-            width: 78px;
-            height: 78px;
-
-            right: -38px;
-            top: -42px;
-
-            border-radius: 50%;
-
-            background:
-                rgba(255,255,255,0.18);
-        }
-
-
-        .brand-icon::after {
-
-            content: "";
-
-            position: absolute;
-
-            width: 25px;
-            height: 25px;
-
-            left: -12px;
-            bottom: -13px;
-
-            border-radius: 50%;
-
-            background:
-                rgba(255,255,255,0.12);
-        }
-
-
-        .brand-icon span {
-
-            position: relative;
-
-            z-index: 3;
-
-            font-size: 29px;
-
-            filter:
-                drop-shadow(
-                    0 3px 5px
-                    rgba(0,0,0,0.20)
-                );
-        }
-
-
-        .brand-text {
-
-            min-width: 0;
-        }
-
-
-        .brand-text strong {
-
-            display: block;
-
-            color: #fff;
-
-            font-size: 21px;
-
-            line-height: 1.1;
-
-            font-weight: 950;
-
-            letter-spacing: 0.2px;
-        }
-
-
-        .brand-text small {
-
-            display: block;
-
-            margin-top: 5px;
-
-            color:
-                rgba(255,255,255,0.82);
-
-            font-size: 8px;
-
-            font-weight: 750;
-
-            letter-spacing: 0.7px;
-        }
-
-
-        /* =====================================================
-           SIDEBAR MENU
-        ===================================================== */
-
-        .sidebar-menu {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 6px;
-        }
-
-
-        .sidebar-menu a {
-
-            position: relative;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            padding: 12px 13px;
-
-            border-radius: 14px;
-
-            color:
-                rgba(255,255,255,0.91);
-
-            text-decoration: none;
-
-            font-size: 12px;
-
-            font-weight: 750;
-
-            transition:
-                all 0.23s ease;
-        }
-
-
-        .sidebar-menu a:hover {
-
-            color: #fff;
-
-            transform:
-                translateX(4px);
-
-            background:
-                rgba(255,255,255,0.15);
-
-            box-shadow:
-                0 7px 18px
-                rgba(70,20,100,0.12);
-        }
-
-
-        .sidebar-menu a.active {
-
-            color: #542765;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #fff3a6,
-                    #ffe47a
+                    rgba(244,63,94,.95),
+                    rgba(190,24,93,.95)
                 );
 
             box-shadow:
-                0 9px 22px
-                rgba(255,205,60,0.25);
+                0 12px 25px rgba(190,24,93,.22);
         }
 
-
-        .sidebar-menu a.active::before {
-
-            content: "";
-
-            position: absolute;
-
-            left: -14px;
-
-            width: 4px;
-            height: 27px;
-
-            border-radius:
-                0 5px 5px 0;
-
-            background: #fff;
-        }
-
-
-        .menu-icon {
-
-            width: 34px;
-            height: 34px;
-
-            min-width: 34px;
+        .save-life-icon {
+            width: 36px;
+            height: 36px;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
 
-            border-radius: 10px;
+            margin-bottom: 9px;
 
-            background:
-                rgba(255,255,255,0.13);
+            border-radius: 11px;
 
-            font-size: 16px;
+            background: rgba(255,255,255,.15);
+
+            font-size: 18px;
         }
 
-
-        .sidebar-menu a.active .menu-icon {
-
-            background:
-                rgba(255,255,255,0.58);
-        }
-
-
-        /* =====================================================
-           SIDEBAR BOTTOM
-        ===================================================== */
-
-        .sidebar-bottom {
-
-            margin-top: 22px;
-
-            padding: 14px 8px 4px;
-
-            border-top:
-                1px solid
-                rgba(255,255,255,0.18);
-        }
-
-
-        .sidebar-help {
-
-            padding: 14px;
-
-            border-radius: 17px;
-
-            background:
-                rgba(255,255,255,0.13);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.12);
-        }
-
-
-        .sidebar-help-title {
-
-            color: #fff;
-
-            font-size: 11px;
-
-            font-weight: 850;
+        .save-life strong {
+            display: block;
 
             margin-bottom: 5px;
+
+            font-size: 14px;
+            font-weight: 850;
         }
 
+        .save-life p {
+            color: rgba(255,255,255,.80);
 
-        .sidebar-help-text {
-
-            color:
-                rgba(255,255,255,0.75);
-
-            font-size: 9px;
-
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.5;
         }
 
+        /* =========================
+           MAIN AREA
+        ========================= */
 
-        /* =====================================================
-           MAIN CONTENT
-        ===================================================== */
-
-        .main-content {
-
+        .main-wrapper {
             min-height: 100vh;
 
             margin-left: 260px;
 
-            padding: 0;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* =========================
+           TOPBAR
+        ========================= */
 
-        /* =====================================================
-           TOP HEADER
-        ===================================================== */
-
-        .top-header {
-
+        .topbar {
             position: sticky;
-
             top: 0;
 
-            z-index: 100;
-
-            min-height: 64px;
+            height: 72px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
-            padding:
-                12px 25px;
+            padding: 0 30px;
 
-            background:
-                rgba(255,255,255,0.88);
+            background: rgba(255,255,255,.94);
 
-            backdrop-filter:
-                blur(15px);
+            border-bottom: 1px solid #e8eaf0;
 
-            border-bottom:
-                1px solid
-                #eadff1;
+            backdrop-filter: blur(14px);
 
-            box-shadow:
-                0 5px 20px
-                rgba(75,44,101,0.05);
+            z-index: 900;
         }
 
+        .topbar-title {
+            display: flex;
+            flex-direction: column;
+        }
 
-        .header-title {
+        .topbar-title strong {
+            color: #172033;
 
-            color: #512568;
-
-            font-size: 14px;
-
+            font-size: 17px;
             font-weight: 850;
         }
 
-
-        .header-subtitle {
-
+        .topbar-title span {
             margin-top: 2px;
 
-            color: #987ba3;
+            color: #64748b;
 
-            font-size: 9px;
+            font-size: 11px;
         }
 
-
-        .header-badge {
-
-            display: inline-flex;
-
+        .topbar-right {
+            display: flex;
             align-items: center;
+            gap: 12px;
+        }
 
-            gap: 6px;
+        .notification-btn {
+            width: 40px;
+            height: 40px;
 
-            padding:
-                8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-            border-radius: 20px;
+            border-radius: 12px;
 
-            color: #8b2fae;
+            background: #f1f5ff;
+
+            color: #4c1d95;
+
+            font-size: 18px;
+
+            transition: .2s ease;
+        }
+
+        .notification-btn:hover {
+            background: #e0e7ff;
+
+            transform: translateY(-2px);
+        }
+
+        .top-user {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 5px 10px 5px 5px;
+
+            border-radius: 30px;
+
+            background: #f8fafc;
+
+            border: 1px solid #edf0f5;
+        }
+
+        .top-avatar {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            color: white;
 
             background:
                 linear-gradient(
                     135deg,
-                    #fff0f5,
-                    #f2e8ff
+                    #7c3aed,
+                    #2563eb
                 );
 
-            border:
-                1px solid #ead7f0;
-
-            font-size: 9px;
-
+            font-size: 14px;
             font-weight: 800;
         }
 
+        .top-user span {
+            color: #334155;
 
-        /* =====================================================
-           PAGE CONTENT
-        ===================================================== */
+            font-size: 12px;
+            font-weight: 700;
+        }
 
-        .page-content {
+        /* =========================
+           CONTENT
+        ========================= */
 
+        .content {
             width: 100%;
-
             max-width: 1500px;
 
             margin: 0 auto;
 
-            padding:
-                24px 27px 40px;
+            padding: 28px 30px 35px;
+
+            flex: 1;
         }
 
-
-        /* =====================================================
+        /* =========================
            FOOTER
-        ===================================================== */
+        ========================= */
 
-        .site-footer {
-
+        .footer {
             margin-left: 260px;
 
-            padding:
-                18px 25px;
+            padding: 18px 30px;
 
             text-align: center;
 
-            color: #987ba3;
+            background: #ffffff;
 
-            background:
-                rgba(255,255,255,0.72);
+            border-top: 1px solid #e8eaf0;
 
-            border-top:
-                1px solid #eadff1;
+            color: #64748b;
 
-            font-size: 9px;
+            font-size: 11px;
         }
 
+        .footer strong {
+            color: #6d28d9;
+            font-weight: 800;
+        }
 
         .footer-heart {
-
-            color: #ff416c;
-
-            font-size: 12px;
+            color: #ef4444;
+            font-size: 13px;
         }
 
-
-        /* =====================================================
-           MOBILE MENU BUTTON
-        ===================================================== */
+        /* =========================
+           MOBILE BUTTON
+        ========================= */
 
         .mobile-menu-btn {
-
             display: none;
 
             width: 42px;
             height: 42px;
 
             border: none;
-
-            border-radius: 13px;
-
-            color: #fff;
-
-            cursor: pointer;
-
-            font-size: 20px;
+            border-radius: 12px;
 
             background:
                 linear-gradient(
                     135deg,
-                    #ff416c,
-                    #c43cff
+                    #6d28d9,
+                    #2563eb
                 );
 
-            box-shadow:
-                0 7px 18px
-                rgba(196,60,255,0.22);
+            color: white;
+
+            font-size: 20px;
+
+            cursor: pointer;
         }
 
-
-        /* =====================================================
-           MOBILE OVERLAY
-        ===================================================== */
-
         .sidebar-overlay {
-
             display: none;
 
             position: fixed;
 
             inset: 0;
 
-            z-index: 998;
+            background: rgba(15,23,42,.55);
 
-            background:
-                rgba(50,20,65,0.38);
-
-            backdrop-filter:
-                blur(3px);
+            z-index: 950;
         }
 
+        /* =========================
+           MESSAGES
+        ========================= */
 
-        /* =====================================================
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 13px 16px;
+
+            margin-bottom: 8px;
+
+            border-radius: 12px;
+
+            font-size: 13px;
+            font-weight: 650;
+
+            background: #eef2ff;
+            color: #3730a3;
+
+            border: 1px solid #e0e7ff;
+        }
+
+        .message.success {
+            background: #ecfdf5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+
+        .message.error {
+            background: #fff1f2;
+            color: #be123c;
+            border-color: #fecdd3;
+        }
+
+        .message.warning {
+            background: #fff7ed;
+            color: #c2410c;
+            border-color: #fed7aa;
+        }
+
+        /* =========================
+           SCROLLBAR
+        ========================= */
+
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.16);
+            border-radius: 10px;
+        }
+
+        /* =========================
            RESPONSIVE
-        ===================================================== */
+        ========================= */
 
         @media (max-width: 900px) {
 
-            .blood-sidebar {
+            .sidebar {
+                transform: translateX(-100%);
 
-                transform:
-                    translateX(-105%);
-
-                transition:
-                    transform 0.28s ease;
+                transition: transform .25s ease;
             }
 
-
-            .blood-sidebar.open {
-
-                transform:
-                    translateX(0);
+            .sidebar.open {
+                transform: translateX(0);
             }
 
-
-            .sidebar-overlay.show {
-
+            .sidebar-overlay.active {
                 display: block;
             }
 
-
-            .main-content {
-
+            .main-wrapper {
                 margin-left: 0;
             }
 
-
-            .site-footer {
-
+            .footer {
                 margin-left: 0;
             }
-
 
             .mobile-menu-btn {
-
                 display: flex;
-
                 align-items: center;
                 justify-content: center;
             }
 
+            .topbar {
+                height: 66px;
 
-            .top-header {
-
-                padding:
-                    10px 16px;
+                padding: 0 18px;
             }
 
-
-            .page-content {
-
-                padding:
-                    18px 16px 30px;
-            }
-        }
-
-
-        @media (max-width: 480px) {
-
-            .brand-logo {
-
-                padding-bottom: 18px;
-            }
-
-
-            .brand-icon {
-
-                width: 50px;
-                height: 50px;
-
-                min-width: 50px;
-            }
-
-
-            .brand-text strong {
-
-                font-size: 19px;
-            }
-
-
-            .header-title {
-
-                font-size: 12px;
-            }
-
-
-            .header-subtitle {
-
+            .topbar-title {
                 display: none;
             }
 
-
-            .header-badge {
-
-                padding:
-                    7px 9px;
-
-                font-size: 8px;
-            }
-
-
-            .page-content {
-
-                padding:
-                    14px 11px 25px;
+            .content {
+                padding: 20px 17px 30px;
             }
         }
 
+        @media (max-width: 500px) {
+
+            .topbar {
+                padding: 0 13px;
+            }
+
+            .top-user span {
+                display: none;
+            }
+
+            .content {
+                padding: 17px 12px 25px;
+            }
+
+            .footer {
+                padding: 15px 12px;
+            }
+        }
     </style>
 
+    {% block extra_css %}{% endblock %}
 </head>
 
 
 <body>
 
-
-    <!-- =====================================================
-         MOBILE OVERLAY
-    ====================================================== -->
-
-    <div
-        class="sidebar-overlay"
-        id="sidebarOverlay"
-        onclick="closeSidebar()">
-    </div>
-
-
-    <!-- =====================================================
+    <!-- =========================
          SIDEBAR
-    ====================================================== -->
+    ========================== -->
 
-    <aside class="blood-sidebar"
-           id="bloodSidebar">
+    <aside class="sidebar" id="sidebar">
 
+        <div class="brand">
 
-        <!-- PROFESSIONAL LOGO -->
+            <a href="/" class="brand-logo">
 
-        <div class="brand-logo">
+                <div class="brand-icon">
+                    🩸
+                </div>
 
-            <div class="brand-icon">
-                <span>🩸</span>
-            </div>
+                <div class="brand-text">
+                    <strong>BloodLink</strong>
 
-            <div class="brand-text">
+                    <small>
+                        SAVE • DONATE • CONNECT
+                    </small>
+                </div>
 
-                <strong>
-                    BloodLink
-                </strong>
-
-                <small>
-                    SAVE • DONATE • CONNECT
-                </small>
-
-            </div>
+            </a>
 
         </div>
 
 
-        <!-- MENU -->
+        <nav class="sidebar-nav">
 
-        <nav class="sidebar-menu">
+            <div class="nav-label">
+                Main Menu
+            </div>
 
 
             <a href="/"
-               class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+               class="nav-link {% if request.path == '/' %}active{% endif %}">
 
-                <div class="menu-icon">
-                    🏠
-                </div>
+                <span class="nav-icon">🏠</span>
 
-                <span>
-                    Home
-                </span>
+                <span>Home</span>
 
             </a>
 
 
             <a href="/dashboard/"
-               class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+               class="nav-link {% if '/dashboard/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    📊
-                </div>
+                <span class="nav-icon">📊</span>
 
-                <span>
-                    Dashboard
-                </span>
+                <span>Dashboard</span>
 
             </a>
 
 
             <a href="/donors/"
-               class="{% if request.resolver_match.url_name == 'donor_list' or request.resolver_match.url_name == 'donors' %}active{% endif %}">
+               class="nav-link {% if '/donors/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    🩸
-                </div>
+                <span class="nav-icon">🩸</span>
 
-                <span>
-                    Donor Directory
-                </span>
+                <span>Donor Directory</span>
 
             </a>
 
 
             <a href="/notifications/"
-               class="{% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
+               class="nav-link {% if '/notifications/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    🔔
-                </div>
+                <span class="nav-icon">🔔</span>
 
-                <span>
-                    Notifications
-                </span>
+                <span>Notifications</span>
 
             </a>
 
 
+            <div class="nav-label" style="margin-top:12px;">
+                Blood Services
+            </div>
+
+
             <a href="/request-blood/"
-               class="{% if request.resolver_match.url_name == 'request_blood' %}active{% endif %}">
+               class="nav-link {% if '/request-blood/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    📋
-                </div>
+                <span class="nav-icon">📋</span>
 
-                <span>
-                    Request Blood
-                </span>
+                <span>Request Blood</span>
 
             </a>
 
 
             <a href="/emergency-request/"
-               class="{% if request.resolver_match.url_name == 'emergency_request' %}active{% endif %}">
+               class="nav-link {% if '/emergency-request/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    🚨
-                </div>
+                <span class="nav-icon">🚨</span>
 
-                <span>
-                    Emergency
-                </span>
+                <span>Emergency</span>
 
             </a>
 
 
             <a href="/blood-requests/"
-               class="{% if request.resolver_match.url_name == 'blood_request_list' %}active{% endif %}">
+               class="nav-link {% if '/blood-requests/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    📑
-                </div>
+                <span class="nav-icon">📑</span>
 
-                <span>
-                    Blood Requests
-                </span>
+                <span>Blood Requests</span>
 
             </a>
 
 
+            <div class="nav-label" style="margin-top:12px;">
+                Information
+            </div>
+
+
             <a href="/about/"
-               class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+               class="nav-link {% if '/about/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    💜
-                </div>
+                <span class="nav-icon">💜</span>
 
-                <span>
-                    About
-                </span>
+                <span>About</span>
 
             </a>
 
 
             <a href="/contact/"
-               class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+               class="nav-link {% if '/contact/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    📞
-                </div>
+                <span class="nav-icon">📞</span>
 
-                <span>
-                    Contact
-                </span>
+                <span>Contact</span>
 
             </a>
 
 
             <a href="/profile/"
-               class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+               class="nav-link {% if '/profile/' in request.path %}active{% endif %}">
 
-                <div class="menu-icon">
-                    👤
-                </div>
+                <span class="nav-icon">👤</span>
 
-                <span>
-                    My Profile
-                </span>
+                <span>My Profile</span>
 
             </a>
 
 
-            <a href="/logout/">
+            <a href="/logout/" class="nav-link">
 
-                <div class="menu-icon">
-                    🚪
-                </div>
+                <span class="nav-icon">🚪</span>
 
-                <span>
-                    Logout
-                </span>
+                <span>Logout</span>
 
             </a>
-
 
         </nav>
 
 
-        <!-- SIDEBAR HELP -->
+        <!-- SAVE LIFE -->
 
-        <div class="sidebar-bottom">
+        <div class="save-life">
 
-            <div class="sidebar-help">
-
-                <div class="sidebar-help-title">
-                    ❤️ Save a Life
-                </div>
-
-                <div class="sidebar-help-text">
-                    Your blood donation can give
-                    someone another chance at life.
-                </div>
-
+            <div class="save-life-icon">
+                ❤️
             </div>
 
-        </div>
+            <strong>
+                Save a Life
+            </strong>
 
+            <p>
+                Your blood donation can give someone
+                another chance at life.
+            </p>
+
+        </div>
 
     </aside>
 
 
-    <!-- =====================================================
-         MAIN
-    ====================================================== -->
+    <!-- OVERLAY -->
 
-    <main class="main-content">
-
-
-        <!-- TOP HEADER -->
-
-        <header class="top-header">
+    <div class="sidebar-overlay"
+         id="sidebarOverlay"
+         onclick="closeSidebar()">
+    </div>
 
 
-            <div style="display:flex;
-                        align-items:center;
-                        gap:12px;">
+    <!-- =========================
+         MAIN WRAPPER
+    ========================== -->
 
-                <button
-                    class="mobile-menu-btn"
-                    onclick="toggleSidebar()">
+    <div class="main-wrapper">
 
-                    ☰
+        <!-- TOPBAR -->
 
-                </button>
+        <header class="topbar">
 
+            <button
+                class="mobile-menu-btn"
+                onclick="openSidebar()"
+                aria-label="Open menu">
 
-                <div>
+                ☰
 
-                    <div class="header-title">
-                        BloodLink
-                    </div>
-
-                    <div class="header-subtitle">
-                        Blood Donation & Emergency Support
-                    </div>
-
-                </div>
-
-            </div>
+            </button>
 
 
-            <div class="header-badge">
+            <div class="topbar-title">
 
-                ❤️
+                <strong>
+                    BloodLink
+                </strong>
 
                 <span>
-                    Together We Save Lives
+                    Blood Donation & Emergency Support
                 </span>
 
             </div>
 
 
+            <div class="topbar-right">
+
+                {% if request.user.is_authenticated %}
+
+                    <a href="/notifications/"
+                       class="notification-btn"
+                       aria-label="Notifications">
+
+                        🔔
+
+                    </a>
+
+
+                    <a href="/profile/"
+                       class="top-user">
+
+                        <div class="top-avatar">
+                            {{ request.user.username|first|upper }}
+                        </div>
+
+                        <span>
+                            {{ request.user.username }}
+                        </span>
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
         </header>
 
 
-        <!-- PAGE -->
+        <!-- CONTENT -->
 
-        <div class="page-content">
+        <main class="content">
+
+            {% if messages %}
+
+                <div class="messages">
+
+                    {% for message in messages %}
+
+                        <div class="message
+                            {% if message.tags %}
+                                {{ message.tags }}
+                            {% endif %}">
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
 
             {% block content %}
+
             {% endblock %}
 
-        </div>
+        </main>
+
+    </div>
 
 
-    </main>
+    <!-- FOOTER -->
 
+    <footer class="footer">
 
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
+        <span class="footer-heart">♥</span>
 
-    <footer class="site-footer">
+        <strong>BloodLink</strong>
 
-        <span class="footer-heart">
-            ♥
-        </span>
+        — Connecting donors, saving lives.
 
-        BloodLink —
-
-        Connecting donors,
-        saving lives.
-
-        <span class="footer-heart">
-            ♥
-        </span>
+        <span class="footer-heart">♥</span>
 
     </footer>
 
 
-    <!-- =====================================================
-         JAVASCRIPT
-    ====================================================== -->
+    <!-- =========================
+         MOBILE SIDEBAR JS
+    ========================== -->
 
     <script>
 
-        function toggleSidebar() {
+        function openSidebar() {
 
             const sidebar =
-                document.getElementById("bloodSidebar");
+                document.getElementById("sidebar");
 
             const overlay =
                 document.getElementById("sidebarOverlay");
 
-            sidebar.classList.toggle("open");
+            sidebar.classList.add("open");
 
-            overlay.classList.toggle("show");
+            overlay.classList.add("active");
         }
 
 
         function closeSidebar() {
 
             const sidebar =
-                document.getElementById("bloodSidebar");
+                document.getElementById("sidebar");
 
             const overlay =
                 document.getElementById("sidebarOverlay");
 
             sidebar.classList.remove("open");
 
-            overlay.classList.remove("show");
+            overlay.classList.remove("active");
         }
 
 
-        /* Close mobile sidebar after clicking a link */
+        document.addEventListener(
+            "keydown",
+            function(event) {
 
-        document
-            .querySelectorAll(".blood-sidebar a")
+                if (event.key === "Escape") {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+
+        document.querySelectorAll(".nav-link")
             .forEach(function(link) {
 
                 link.addEventListener(
@@ -1096,7 +1001,9 @@
                         if (
                             window.innerWidth <= 900
                         ) {
+
                             closeSidebar();
+
                         }
 
                     }
@@ -1106,6 +1013,8 @@
 
     </script>
 
+
+    {% block extra_js %}{% endblock %}
 
 </body>
 </html>
