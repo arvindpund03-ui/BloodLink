@@ -2,7 +2,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,469 +16,519 @@
         }
 
         body {
+            font-family: "Segoe UI", Arial, sans-serif;
             min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(135deg, #fff5f5, #f8e4e4);
+            background:
+                radial-gradient(circle at 10% 10%, rgba(111, 66, 193, 0.35), transparent 32%),
+                radial-gradient(circle at 90% 85%, rgba(0, 191, 255, 0.25), transparent 32%),
+                linear-gradient(135deg, #160b35 0%, #24105b 45%, #071f4d 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Background Decorations */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(2px);
+            z-index: 0;
+        }
+
+        .circle-one {
+            width: 280px;
+            height: 280px;
+            background: rgba(255, 92, 92, 0.12);
+            top: -100px;
+            right: -80px;
+        }
+
+        .circle-two {
+            width: 220px;
+            height: 220px;
+            background: rgba(0, 212, 255, 0.10);
+            bottom: -80px;
+            left: -60px;
+        }
+
+        /* Main Wrapper */
+        .page-wrapper {
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 30px 15px;
-            color: #222;
+            justify-content: center;
+            padding: 35px 18px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* =========================
-           MAIN CONTAINER
-        ========================= */
-
-        .register-wrapper {
+        .register-container {
             width: 100%;
-            max-width: 1050px;
-            min-height: 650px;
-            background: #ffffff;
-            border-radius: 24px;
-            overflow: hidden;
+            max-width: 1080px;
             display: grid;
-            grid-template-columns: 42% 58%;
-            box-shadow: 0 20px 60px rgba(120, 20, 20, 0.18);
+            grid-template-columns: 0.9fr 1.1fr;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.40);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
-        /* =========================
-           LEFT PANEL
-        ========================= */
-
-        .left-panel {
-            background: linear-gradient(160deg, #b30000, #e53935);
-            color: white;
-            padding: 50px 45px;
+        /* Left Branding */
+        .brand-panel {
+            position: relative;
+            padding: 55px 42px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(112, 63, 202, 0.95),
+                    rgba(47, 72, 190, 0.90)
+                );
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;
             overflow: hidden;
         }
 
-        .left-panel::before {
+        .brand-panel::before {
             content: "";
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: 230px;
+            height: 230px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.08);
-            top: -120px;
-            left: -120px;
+            top: -90px;
+            right: -80px;
         }
 
-        .left-panel::after {
+        .brand-panel::after {
             content: "";
             position: absolute;
-            width: 250px;
-            height: 250px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.07);
-            bottom: -100px;
-            right: -100px;
+            background: rgba(255, 92, 92, 0.10);
+            bottom: -90px;
+            left: -60px;
         }
 
-        .brand {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 8px;
+        .brand-content {
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
-        .tagline {
-            font-size: 13px;
-            letter-spacing: 2px;
-            opacity: 0.9;
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
             margin-bottom: 35px;
-            position: relative;
-            z-index: 1;
         }
 
-        /* =========================
-           BLOOD DROP
-        ========================= */
-
-        .blood-drop {
-            width: 110px;
-            height: 130px;
-            margin: 0 auto 25px;
-            position: relative;
-            z-index: 1;
+        .logo-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff5c64, #ff3d57);
+            box-shadow: 0 12px 30px rgba(255, 61, 87, 0.35);
+            font-size: 31px;
         }
 
-        .drop {
-            width: 90px;
-            height: 110px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 60% 60% 60% 60%;
-            transform: rotate(45deg);
-            margin: 10px auto;
-            position: relative;
+        .logo-text strong {
+            display: block;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
         }
 
-        .drop::after {
-            content: "♥";
-            position: absolute;
-            color: #c62828;
-            font-size: 34px;
-            transform: rotate(-45deg);
-            left: 28px;
-            top: 35px;
-        }
-
-        /* =========================
-           LEFT CONTENT
-        ========================= */
-
-        .left-title {
-            font-size: 27px;
+        .logo-text span {
+            display: block;
+            margin-top: 3px;
+            font-size: 10px;
             font-weight: 700;
-            line-height: 1.3;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.75);
         }
 
-        .left-text {
+        .brand-panel h1 {
+            font-size: 42px;
+            line-height: 1.12;
+            margin-bottom: 18px;
+            letter-spacing: -1.2px;
+        }
+
+        .brand-panel h1 span {
+            color: #ff7a82;
+        }
+
+        .brand-panel > .brand-content > p {
+            color: rgba(255, 255, 255, 0.82);
+            line-height: 1.75;
             font-size: 15px;
-            line-height: 1.7;
-            opacity: 0.92;
-            position: relative;
-            z-index: 1;
+            max-width: 420px;
         }
 
+        /* Benefits */
         .benefits {
-            margin-top: 28px;
-            position: relative;
-            z-index: 1;
+            margin-top: 35px;
+            display: grid;
+            gap: 15px;
         }
 
         .benefit {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            font-size: 14px;
+            gap: 13px;
+            padding: 13px 15px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.10);
         }
 
-        .check {
-            width: 23px;
-            height: 23px;
-            min-width: 23px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.20);
+        .benefit-icon {
+            width: 39px;
+            height: 39px;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-        }
-
-        /* =========================
-           RIGHT PANEL
-        ========================= */
-
-        .right-panel {
-            padding: 45px 55px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .form-heading {
-            font-size: 30px;
-            color: #222;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .form-subheading {
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        /* =========================
-           DJANGO FORM
-        ========================= */
-
-        form p {
-            margin-bottom: 16px;
-        }
-
-        form label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 7px;
-        }
-
-        form input,
-        form select,
-        form textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 14px;
-            background: #fafafa;
-            color: #222;
-            transition: all 0.2s ease;
-        }
-
-        form input::placeholder,
-        form textarea::placeholder {
-            color: #999;
-        }
-
-        form input:focus,
-        form select:focus,
-        form textarea:focus {
-            outline: none;
-            border-color: #c62828;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.10);
-        }
-
-        /* =========================
-           HIDE DJANGO HELP TEXT
-        ========================= */
-
-        form .helptext,
-        form small,
-        form p small,
-        form .form-text {
-            display: none !important;
-        }
-
-        /* Hide Django help lists */
-        form p ul {
-            display: none !important;
-        }
-
-        form ul.helptext {
-            display: none !important;
-        }
-
-        /* =========================
-           DJANGO ERRORS
-        ========================= */
-
-        form .errorlist {
-            list-style: none;
-            padding: 0;
-            margin: 5px 0 0;
-            color: #c62828;
-            font-size: 12px;
-        }
-
-        form .errorlist li {
-            margin-bottom: 3px;
-        }
-
-        /* =========================
-           LOCATION SECTION
-        ========================= */
-
-        .location-section {
-            margin-top: 8px;
-            padding: 16px;
-            background: #fff8f8;
-            border: 1px solid #f0d5d5;
             border-radius: 12px;
+            background: rgba(255, 255, 255, 0.14);
+            font-size: 18px;
         }
 
-        .location-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #444;
-            margin-bottom: 9px;
+        .benefit strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 2px;
         }
 
-        .location-input {
-            margin-bottom: 10px;
+        .benefit small {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 11px;
         }
 
-        .location-btn {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #c62828;
-            background: white;
-            color: #c62828;
-            border-radius: 9px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        /* Form Panel */
+        .form-panel {
+            background: rgba(255, 255, 255, 0.97);
+            color: #172033;
+            padding: 45px 45px 40px;
         }
 
-        .location-btn:hover {
-            background: #c62828;
-            color: white;
+        .form-header {
+            margin-bottom: 28px;
         }
 
-        .location-btn:active {
-            transform: scale(0.98);
+        .form-header .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 12px;
+            border-radius: 30px;
+            background: #f0eaff;
+            color: #6534bd;
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 13px;
         }
 
-        /* =========================
-           REGISTER BUTTON
-        ========================= */
-
-        .register-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #b30000, #e53935);
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 20px;
-            box-shadow: 0 8px 18px rgba(198, 40, 40, 0.22);
-            transition: all 0.2s ease;
+        .form-header h2 {
+            font-size: 31px;
+            color: #161d2d;
+            margin-bottom: 7px;
+            letter-spacing: -0.7px;
         }
 
-        .register-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(198, 40, 40, 0.28);
-        }
-
-        .register-btn:active {
-            transform: translateY(0);
-        }
-
-        /* =========================
-           LOGIN LINK
-        ========================= */
-
-        .login-link {
-            text-align: center;
-            margin-top: 20px;
-            color: #777;
+        .form-header p {
+            color: #70798b;
             font-size: 14px;
         }
 
-        .login-link a {
-            color: #c62828;
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* =========================
-           MESSAGES
-        ========================= */
-
+        /* Django Messages */
         .messages {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .message {
-            padding: 11px 13px;
-            border-radius: 9px;
-            background: #e8f5e9;
-            color: #2e7d32;
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-bottom: 8px;
             font-size: 13px;
-            border: 1px solid #c8e6c9;
+            font-weight: 600;
         }
 
-        /* =========================
-           MOBILE
-        ========================= */
+        .message.success {
+            background: #e8fff3;
+            color: #087a48;
+            border: 1px solid #b9f0d3;
+        }
 
-        @media (max-width: 800px) {
+        .message.error {
+            background: #fff0f2;
+            color: #c62845;
+            border: 1px solid #ffc8d0;
+        }
 
-            body {
-                padding: 15px;
-                align-items: flex-start;
-            }
+        .message.warning {
+            background: #fff8e7;
+            color: #9b6900;
+            border: 1px solid #ffe2a3;
+        }
 
-            .register-wrapper {
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 800;
+            color: #384257;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #f04c5c;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 49px;
+            border: 1px solid #dfe3ec;
+            border-radius: 13px;
+            padding: 0 14px 0 44px;
+            outline: none;
+            background: #f9faff;
+            color: #20283a;
+            font-size: 13px;
+            transition: all 0.25s ease;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #6f42c1;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(111, 66, 193, 0.10);
+        }
+
+        .form-group input::placeholder {
+            color: #a3aaba;
+        }
+
+        /* Password Button */
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 6px;
+            color: #697386;
+        }
+
+        .password-input {
+            padding-right: 45px !important;
+        }
+
+        /* Errors */
+        .field-error {
+            margin-top: 6px;
+            color: #d93452;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .non-field-errors {
+            background: #fff0f2;
+            color: #c62845;
+            border: 1px solid #ffc8d0;
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-size: 12px;
+        }
+
+        /* Help Text */
+        .help-text {
+            margin-top: 6px;
+            color: #8a92a2;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* Submit */
+        .submit-btn {
+            width: 100%;
+            height: 53px;
+            border: none;
+            border-radius: 14px;
+            margin-top: 25px;
+            cursor: pointer;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            background: linear-gradient(135deg, #6f42c1, #315fe8);
+            box-shadow: 0 13px 28px rgba(73, 74, 205, 0.25);
+            transition: all 0.25s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 17px 35px rgba(73, 74, 205, 0.32);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Login */
+        .login-text {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 13px;
+            color: #788193;
+        }
+
+        .login-text a {
+            color: #5f35bd;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .login-text a:hover {
+            color: #e64d5b;
+        }
+
+        /* Security Note */
+        .security-note {
+            margin-top: 20px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #f5f7ff;
+            border: 1px solid #e7eaff;
+            color: #687286;
+            font-size: 10px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .register-container {
                 grid-template-columns: 1fr;
-                max-width: 550px;
-                margin: 10px auto;
+                max-width: 650px;
             }
 
-            .left-panel {
-                padding: 35px 25px;
-                text-align: center;
+            .brand-panel {
+                padding: 35px 32px;
             }
 
-            .brand {
-                font-size: 32px;
-            }
-
-            .tagline {
-                margin-bottom: 25px;
-            }
-
-            .blood-drop {
-                margin-bottom: 20px;
-            }
-
-            .left-title {
-                font-size: 24px;
-            }
-
-            .left-text {
-                font-size: 14px;
+            .brand-panel h1 {
+                font-size: 34px;
             }
 
             .benefits {
-                text-align: left;
-                display: inline-block;
+                grid-template-columns: 1fr 1fr;
             }
 
-            .right-panel {
-                padding: 35px 25px;
-            }
-
-            .form-heading {
-                font-size: 26px;
+            .form-panel {
+                padding: 35px 30px;
             }
         }
 
-        /* =========================
-           SMALL MOBILE
-        ========================= */
-
-        @media (max-width: 420px) {
-
-            body {
-                padding: 8px;
+        @media (max-width: 600px) {
+            .page-wrapper {
+                padding: 15px;
             }
 
-            .register-wrapper {
-                border-radius: 18px;
+            .register-container {
+                border-radius: 22px;
             }
 
-            .left-panel {
-                padding: 30px 20px;
+            .brand-panel {
+                padding: 30px 24px;
             }
 
-            .right-panel {
-                padding: 30px 18px;
+            .logo {
+                margin-bottom: 25px;
             }
 
-            .form-heading {
+            .logo-icon {
+                width: 53px;
+                height: 53px;
+                border-radius: 17px;
+            }
+
+            .logo-text strong {
                 font-size: 24px;
             }
 
-            form input,
-            form select,
-            form textarea {
-                padding: 12px;
+            .brand-panel h1 {
+                font-size: 30px;
             }
 
-            .register-btn {
-                font-size: 15px;
+            .brand-panel > .brand-content > p {
+                font-size: 13px;
+            }
+
+            .benefits {
+                grid-template-columns: 1fr;
+            }
+
+            .form-panel {
+                padding: 30px 20px;
+            }
+
+            .form-header h2 {
+                font-size: 26px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .form-group.full {
+                grid-column: auto;
             }
         }
     </style>
@@ -487,216 +536,268 @@
 
 <body>
 
-<div class="register-wrapper">
+    <div class="bg-circle circle-one"></div>
+    <div class="bg-circle circle-two"></div>
 
-    <!-- =========================
-         LEFT PANEL
-    ========================= -->
+    <main class="page-wrapper">
 
-    <div class="left-panel">
+        <div class="register-container">
 
-        <div class="brand">
-            🩸 BloodLink
-        </div>
+            <!-- LEFT BRANDING PANEL -->
+            <section class="brand-panel">
 
-        <div class="tagline">
-            SAVE BLOOD • SAVE LIFE
-        </div>
+                <div class="brand-content">
 
-        <div class="blood-drop">
-            <div class="drop"></div>
-        </div>
+                    <div class="logo">
+                        <div class="logo-icon">🩸</div>
 
-        <div class="left-title">
-            Be someone's reason to live.
-        </div>
-
-        <div class="left-text">
-            Join BloodLink and connect with people who need
-            your help. One donation can make a real difference.
-        </div>
-
-        <div class="benefits">
-
-            <div class="benefit">
-                <span class="check">✓</span>
-                <span>Find blood donors</span>
-            </div>
-
-            <div class="benefit">
-                <span class="check">✓</span>
-                <span>Request blood quickly</span>
-            </div>
-
-            <div class="benefit">
-                <span class="check">✓</span>
-                <span>Help save lives</span>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         RIGHT PANEL
-    ========================= -->
-
-    <div class="right-panel">
-
-        <div class="form-heading">
-            Create Account
-        </div>
-
-        <div class="form-subheading">
-            Register with BloodLink to start helping others.
-        </div>
-
-
-        <!-- DJANGO MESSAGES -->
-
-        {% if messages %}
-            <div class="messages">
-
-                {% for message in messages %}
-
-                    <div class="message">
-                        {{ message }}
+                        <div class="logo-text">
+                            <strong>BloodLink</strong>
+                            <span>SAVE • DONATE • CONNECT</span>
+                        </div>
                     </div>
 
-                {% endfor %}
+                    <h1>
+                        Become a part of
+                        <span>BloodLink</span>
+                    </h1>
 
-            </div>
-        {% endif %}
+                    <p>
+                        Create your account and join a trusted community
+                        connecting blood donors with people who need help.
+                        One registration can help save a life.
+                    </p>
 
+                    <div class="benefits">
 
-        <!-- REGISTRATION FORM -->
+                        <div class="benefit">
+                            <div class="benefit-icon">🩸</div>
+                            <div>
+                                <strong>Donate Blood</strong>
+                                <small>Help someone in need</small>
+                            </div>
+                        </div>
 
-        <form method="POST">
+                        <div class="benefit">
+                            <div class="benefit-icon">🔎</div>
+                            <div>
+                                <strong>Find Donors</strong>
+                                <small>Connect with nearby donors</small>
+                            </div>
+                        </div>
 
-            {% csrf_token %}
+                        <div class="benefit">
+                            <div class="benefit-icon">🚨</div>
+                            <div>
+                                <strong>Emergency Support</strong>
+                                <small>Get urgent blood assistance</small>
+                            </div>
+                        </div>
 
-            {{ form.as_p }}
+                    </div>
 
-
-            <!-- CURRENT LOCATION -->
-
-            <div class="location-section">
-
-                <div class="location-title">
-                    📍 Current Location
                 </div>
 
-                <input
-                    type="text"
-                    name="location"
-                    id="location"
-                    class="location-input"
-                    placeholder="Latitude, Longitude"
-                    value="{{ request.POST.location|default:'' }}"
-                >
-
-                <button
-                    type="button"
-                    class="location-btn"
-                    onclick="getLocation()"
-                >
-                    📍 Get Current Location
-                </button>
-
-            </div>
+            </section>
 
 
-            <!-- CREATE ACCOUNT -->
+            <!-- RIGHT FORM PANEL -->
+            <section class="form-panel">
 
-            <button
-                type="submit"
-                class="register-btn"
-            >
-                Create My Account
-            </button>
+                <div class="form-header">
 
-        </form>
+                    <div class="badge">
+                        ✨ JOIN BLOODLINK
+                    </div>
+
+                    <h2>Create Your Account</h2>
+
+                    <p>
+                        Enter your details below to get started.
+                    </p>
+
+                </div>
 
 
-        <!-- LOGIN -->
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="message {{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
-        <div class="login-link">
 
-            Already have an account?
+                <!-- Non Field Errors -->
+                {% if form.non_field_errors %}
+                    <div class="non-field-errors">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
-            <a href="/login/">
-                Login
-            </a>
+
+                <form method="POST" novalidate>
+
+                    {% csrf_token %}
+
+                    <div class="form-grid">
+
+                        {% for field in form %}
+
+                            <div class="form-group
+                                {% if field.name == 'username' or field.name == 'email' %}
+                                    {% if form|length == 1 %}full{% endif %}
+                                {% endif %}
+                            ">
+
+                                <label for="{{ field.id_for_label }}">
+                                    {% if field.name == "username" %}
+                                        Username
+                                    {% elif field.name == "email" %}
+                                        Email Address
+                                    {% elif field.name == "password1" %}
+                                        Password
+                                    {% elif field.name == "password2" %}
+                                        Confirm Password
+                                    {% elif field.name == "full_name" %}
+                                        Full Name
+                                    {% elif field.name == "blood_group" %}
+                                        Blood Group
+                                    {% elif field.name == "phone" %}
+                                        Phone Number
+                                    {% elif field.name == "city" %}
+                                        City
+                                    {% else %}
+                                        {{ field.label }}
+                                    {% endif %}
+
+                                    {% if field.field.required %}
+                                        <span class="required">*</span>
+                                    {% endif %}
+                                </label>
+
+
+                                <div class="input-wrap">
+
+                                    <!-- Icons -->
+                                    {% if field.name == "username" %}
+                                        <span class="input-icon">👤</span>
+
+                                    {% elif field.name == "email" %}
+                                        <span class="input-icon">📧</span>
+
+                                    {% elif field.name == "password1" %}
+                                        <span class="input-icon">🔐</span>
+
+                                    {% elif field.name == "password2" %}
+                                        <span class="input-icon">🔒</span>
+
+                                    {% elif field.name == "full_name" %}
+                                        <span class="input-icon">👤</span>
+
+                                    {% elif field.name == "blood_group" %}
+                                        <span class="input-icon">🩸</span>
+
+                                    {% elif field.name == "phone" %}
+                                        <span class="input-icon">📱</span>
+
+                                    {% elif field.name == "city" %}
+                                        <span class="input-icon">📍</span>
+
+                                    {% else %}
+                                        <span class="input-icon">✦</span>
+                                    {% endif %}
+
+
+                                    {{ field }}
+
+
+                                    <!-- Password Toggle -->
+                                    {% if field.name == "password1" or field.name == "password2" %}
+                                        <button
+                                            type="button"
+                                            class="password-toggle"
+                                            onclick="togglePassword('{{ field.id_for_label }}', this)"
+                                            aria-label="Show password">
+                                            👁️
+                                        </button>
+                                    {% endif %}
+
+                                </div>
+
+
+                                {% if field.errors %}
+                                    <div class="field-error">
+                                        {% for error in field.errors %}
+                                            <div>⚠ {{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+
+                                {% if field.help_text %}
+                                    <div class="help-text">
+                                        {{ field.help_text|safe }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <button type="submit" class="submit-btn">
+                        🩸 Create BloodLink Account
+                    </button>
+
+                </form>
+
+
+                <div class="login-text">
+                    Already have an account?
+                    <a href="/login/">Login here</a>
+                </div>
+
+
+                <div class="security-note">
+                    🔒 Your information is used to help connect donors
+                    and blood recipients securely.
+                </div>
+
+            </section>
 
         </div>
 
-    </div>
-
-</div>
+    </main>
 
 
-<!-- =========================
-     LOCATION JAVASCRIPT
-========================= -->
+    <script>
+        function togglePassword(fieldId, button) {
 
-<script>
+            const input = document.getElementById(fieldId);
 
-function getLocation() {
+            if (!input) {
+                return;
+            }
 
-    const locationInput =
-        document.getElementById("location");
-
-    if (!navigator.geolocation) {
-
-        alert(
-            "Geolocation is not supported by your browser."
-        );
-
-        return;
-    }
-
-    locationInput.value =
-        "Getting location...";
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position) {
-
-            const latitude =
-                position.coords.latitude;
-
-            const longitude =
-                position.coords.longitude;
-
-            locationInput.value =
-                latitude.toFixed(4) +
-                ", " +
-                longitude.toFixed(4);
-
-        },
-
-        function(error) {
-
-            locationInput.value = "";
-
-            alert(
-                "Unable to get your location. Please allow location permission."
-            );
-
-        },
-
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
+            if (input.type === "password") {
+                input.type = "text";
+                button.textContent = "🙈";
+                button.setAttribute("aria-label", "Hide password");
+            } else {
+                input.type = "password";
+                button.textContent = "👁️";
+                button.setAttribute("aria-label", "Show password");
+            }
         }
-
-    );
-
-}
-
-</script>
+    </script>
 
 </body>
 </html>
