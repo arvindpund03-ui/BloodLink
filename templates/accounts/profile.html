@@ -2,319 +2,410 @@
 
 {% block title %}My Profile | BloodLink{% endblock %}
 
+{% block page_title %}
+    My Profile
+{% endblock %}
+
 {% block content %}
 
 <style>
+
     .profile-page {
-        padding-bottom: 35px;
+        max-width: 1200px;
+        margin: 0 auto;
     }
+
+    /* HERO */
 
     .profile-hero {
         position: relative;
         overflow: hidden;
-        padding: 32px;
-        margin-bottom: 24px;
-        border-radius: 26px;
-        color: #fff;
-        background:
-            radial-gradient(circle at 90% 10%, rgba(255,255,255,.18), transparent 24%),
-            radial-gradient(circle at 5% 100%, rgba(6,182,212,.18), transparent 28%),
-            linear-gradient(135deg, #4c1d95, #6d28d9 48%, #2563eb);
-        box-shadow: 0 18px 40px rgba(79,70,229,.20);
-    }
 
-    .profile-hero h1 {
-        margin: 0 0 8px;
-        font-size: 34px;
-        font-weight: 900;
-        letter-spacing: -.7px;
-    }
+        padding: 30px;
 
-    .profile-hero p {
-        margin: 0;
-        color: rgba(255,255,255,.82);
-        font-size: 14px;
-    }
-
-    .profile-layout {
-        display: grid;
-        grid-template-columns: 330px 1fr;
-        gap: 22px;
-        align-items: start;
-    }
-
-    .profile-card,
-    .info-card,
-    .edit-card {
-        background: #fff;
-        border: 1px solid #e8eaf1;
         border-radius: 24px;
-        box-shadow: 0 14px 35px rgba(30,41,59,.07);
-    }
 
-    /* PROFILE CARD */
+        background:
+            linear-gradient(
+                135deg,
+                #32136d 0%,
+                #4c20a0 48%,
+                #1769d2 100%
+            );
 
-    .profile-card {
-        padding: 28px 22px;
-        text-align: center;
-        position: sticky;
-        top: 92px;
-    }
+        color: white;
 
-    .photo-wrapper {
-        position: relative;
-        width: 112px;
-        height: 112px;
-        margin: 0 auto 16px;
-    }
-
-    .profile-photo {
-        width: 112px;
-        height: 112px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 5px solid #fff;
         box-shadow:
-            0 0 0 2px #ddd6fe,
-            0 12px 28px rgba(79,70,229,.20);
+            0 18px 45px rgba(55, 25, 120, 0.20);
+
+        margin-bottom: 24px;
     }
 
-    .profile-placeholder {
-        width: 112px;
-        height: 112px;
+    .profile-hero::before {
+        content: "";
+        position: absolute;
+
+        width: 220px;
+        height: 220px;
+
+        right: -70px;
+        top: -90px;
+
         border-radius: 50%;
+
+        background: rgba(255,255,255,0.08);
+    }
+
+    .profile-hero::after {
+        content: "";
+        position: absolute;
+
+        width: 130px;
+        height: 130px;
+
+        right: 170px;
+        bottom: -75px;
+
+        border-radius: 50%;
+
+        background: rgba(255,255,255,0.06);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+
+        gap: 22px;
+    }
+
+    .hero-photo {
+        width: 92px;
+        height: 92px;
+
+        min-width: 92px;
+
+        border-radius: 50%;
+
+        overflow: hidden;
+
+        border: 4px solid rgba(255,255,255,0.85);
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff4f63,
+                #ff7c63
+            );
+
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
-        font-size: 42px;
-        font-weight: 900;
-        background: linear-gradient(135deg,#7c3aed,#2563eb);
+
+        font-size: 30px;
+        font-weight: 800;
+
         box-shadow:
-            0 0 0 5px #fff,
-            0 0 0 7px #ddd6fe,
-            0 12px 28px rgba(79,70,229,.20);
+            0 10px 30px rgba(0,0,0,0.20);
     }
 
-    .photo-status {
-        position: absolute;
-        right: 2px;
-        bottom: 4px;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        border: 4px solid #fff;
-        background: #22c55e;
+    .hero-photo img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
     }
 
-    .profile-card h2 {
-        margin: 0;
-        color: #172033;
-        font-size: 21px;
-        font-weight: 850;
+    .hero-info h1 {
+        font-size: 28px;
+        font-weight: 800;
+
+        margin-bottom: 5px;
     }
 
-    .username {
-        margin-top: 4px;
-        color: #64748b;
+    .hero-info p {
+        color: rgba(255,255,255,0.72);
+
         font-size: 13px;
     }
 
     .availability {
         display: inline-flex;
         align-items: center;
+
         gap: 7px;
-        margin-top: 13px;
-        padding: 8px 13px;
-        border-radius: 50px;
-        background: #ecfdf3;
-        color: #15803d;
-        font-size: 12px;
-        font-weight: 800;
+
+        margin-top: 12px;
+
+        padding: 7px 12px;
+
+        border-radius: 30px;
+
+        background: rgba(255,255,255,0.14);
+
+        border: 1px solid rgba(255,255,255,0.18);
+
+        font-size: 11px;
+        font-weight: 700;
     }
 
-    .availability-dot {
+    .green-dot {
         width: 8px;
         height: 8px;
+
         border-radius: 50%;
-        background: #22c55e;
+
+        background: #39e58c;
+
+        box-shadow:
+            0 0 10px rgba(57,229,140,0.7);
     }
 
-    .blood-highlight {
+
+    /* GRID */
+
+    .profile-grid {
+        display: grid;
+
+        grid-template-columns:
+            minmax(280px, 0.75fr)
+            minmax(0, 1.25fr);
+
+        gap: 22px;
+
+        align-items: start;
+    }
+
+
+    /* CARD */
+
+    .profile-card {
+        background: #ffffff;
+
+        border: 1px solid #e9eaf3;
+
+        border-radius: 22px;
+
+        padding: 24px;
+
+        box-shadow:
+            0 10px 30px rgba(32, 20, 80, 0.06);
+    }
+
+    .card-title {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 14px;
-        margin-top: 23px;
-        padding: 17px;
-        border-radius: 18px;
-        background: linear-gradient(135deg,#fff1f2,#fef2f2);
-        border: 1px solid #ffe4e6;
+
+        gap: 10px;
+
+        color: #24143e;
+
+        font-size: 17px;
+        font-weight: 800;
+
+        margin-bottom: 5px;
+    }
+
+    .card-subtitle {
+        color: #9297aa;
+
+        font-size: 11px;
+
+        margin-bottom: 20px;
+    }
+
+
+    /* BLOOD GROUP */
+
+    .blood-card {
+        text-align: center;
+
+        background:
+            linear-gradient(
+                145deg,
+                #fff7f8,
+                #ffffff
+            );
     }
 
     .blood-icon {
-        width: 48px;
-        height: 48px;
+        width: 72px;
+        height: 72px;
+
+        margin: 0 auto 13px;
+
+        border-radius: 22px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff5065,
+                #ff3652
+            );
+
+        color: white;
+
         display: flex;
         align-items: center;
         justify-content: center;
+
+        font-size: 31px;
+
+        box-shadow:
+            0 12px 25px rgba(255,70,90,0.25);
+    }
+
+    .blood-label {
+        color: #9297aa;
+
+        font-size: 10px;
+        font-weight: 800;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .blood-group {
+        color: #24143e;
+
+        font-size: 36px;
+        font-weight: 800;
+
+        margin-top: 3px;
+    }
+
+
+    /* DONATION COUNT */
+
+    .donation-box {
+        margin-top: 18px;
+
+        padding: 17px;
+
         border-radius: 15px;
-        background: linear-gradient(135deg,#ef4444,#e11d48);
-        color: #fff;
-        font-size: 22px;
-        box-shadow: 0 8px 18px rgba(239,68,68,.20);
-    }
 
-    .blood-highlight span {
-        display: block;
-        color: #64748b;
-        font-size: 11px;
-        text-align: left;
-    }
+        background:
+            linear-gradient(
+                135deg,
+                #f3efff,
+                #eef5ff
+            );
 
-    .blood-highlight strong {
-        display: block;
-        margin-top: 2px;
-        color: #be123c;
-        font-size: 21px;
-        text-align: left;
-    }
-
-    .donation-count {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 9px;
-        margin-top: 14px;
-        color: #475569;
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    /* RIGHT */
-
-    .right-column {
-        display: flex;
-        flex-direction: column;
-        gap: 22px;
-    }
-
-    .card-header {
-        padding: 21px 23px;
-        border-bottom: 1px solid #eef0f5;
         display: flex;
         align-items: center;
+
         gap: 12px;
     }
 
-    .header-icon {
-        width: 43px;
-        height: 43px;
-        border-radius: 13px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 19px;
-        background: linear-gradient(135deg,#ede9fe,#dbeafe);
-    }
-
-    .card-header h3 {
-        margin: 0;
-        color: #172033;
-        font-size: 18px;
-        font-weight: 850;
-    }
-
-    .card-header p {
-        margin: 3px 0 0;
-        color: #64748b;
-        font-size: 11px;
-    }
-
-    /* CONTACT */
-
-    .info-card {
-        overflow: hidden;
-    }
-
-    .contact-grid {
-        display: grid;
-        grid-template-columns: repeat(2,1fr);
-        gap: 1px;
-        background: #eef0f5;
-    }
-
-    .contact-item {
-        display: flex;
-        align-items: center;
-        gap: 13px;
-        padding: 18px;
-        background: #fff;
-    }
-
-    .contact-icon {
+    .donation-icon {
         width: 42px;
         height: 42px;
-        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        background: #ffffff;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 13px;
-        font-size: 18px;
-        background: #f1f5ff;
+
+        font-size: 20px;
     }
 
-    .contact-item:nth-child(2) .contact-icon {
-        background: #ecfeff;
+    .donation-text strong {
+        display: block;
+
+        color: #24143e;
+
+        font-size: 14px;
     }
 
-    .contact-item:nth-child(3) .contact-icon {
-        background: #f0fdf4;
-    }
+    .donation-text span {
+        display: block;
 
-    .contact-item:nth-child(4) .contact-icon {
-        background: #fff7ed;
-    }
+        color: #8e92a6;
 
-    .contact-item:nth-child(5) .contact-icon {
-        background: #fef2f2;
-    }
-
-    .contact-label {
-        color: #94a3b8;
         font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: .5px;
+
+        margin-top: 2px;
     }
 
-    .contact-value {
-        margin-top: 3px;
-        color: #334155;
-        font-size: 13px;
-        font-weight: 700;
+
+    /* CONTACT INFO */
+
+    .info-grid {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 12px;
+    }
+
+    .info-item {
+        padding: 15px;
+
+        border-radius: 14px;
+
+        background: #f8f9fd;
+
+        border: 1px solid #eef0f6;
+    }
+
+    .info-item.full {
+        grid-column: 1 / -1;
+    }
+
+    .info-icon {
+        font-size: 18px;
+
+        margin-bottom: 8px;
+    }
+
+    .info-label {
+        color: #9a9eaf;
+
+        font-size: 9px;
+        font-weight: 800;
+
+        letter-spacing: 0.8px;
+
+        text-transform: uppercase;
+
+        margin-bottom: 4px;
+    }
+
+    .info-value {
+        color: #2d2341;
+
+        font-size: 12px;
+        font-weight: 600;
+
         word-break: break-word;
     }
 
+
     /* FORM */
 
-    .edit-card {
-        overflow: hidden;
-    }
-
-    .edit-body {
-        padding: 24px;
+    .form-card {
+        margin-top: 22px;
     }
 
     .form-grid {
         display: grid;
-        grid-template-columns: repeat(2,1fr);
-        gap: 18px;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 15px;
     }
 
     .form-group {
         display: flex;
         flex-direction: column;
+
+        gap: 7px;
     }
 
     .form-group.full {
@@ -322,574 +413,755 @@
     }
 
     .form-group label {
-        margin-bottom: 7px;
-        color: #334155;
-        font-size: 12px;
-        font-weight: 800;
+        color: #4c4560;
+
+        font-size: 11px;
+        font-weight: 700;
     }
 
     .form-group input,
     .form-group select,
     .form-group textarea {
         width: 100%;
-        padding: 12px 14px;
-        border: 1px solid #dfe3eb;
-        border-radius: 12px;
-        background: #fbfcfe;
-        color: #172033;
+
+        min-height: 44px;
+
+        padding: 10px 13px;
+
+        border-radius: 11px;
+
+        border: 1px solid #e1e3ec;
+
         outline: none;
-        font-size: 13px;
-        transition: .2s ease;
+
+        background: #fbfcff;
+
+        color: #30263e;
+
+        font-size: 12px;
+
+        transition: 0.2s ease;
+    }
+
+    .form-group textarea {
+        min-height: 90px;
+
+        resize: vertical;
     }
 
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
-        border-color: #7c3aed;
-        background: #fff;
-        box-shadow: 0 0 0 4px rgba(124,58,237,.08);
-    }
+        border-color: #6534c7;
 
-    .form-group input[type="file"] {
-        padding: 9px;
-    }
+        background: white;
 
-    .form-group textarea {
-        min-height: 90px;
-        resize: vertical;
-    }
-
-    .form-group small {
-        margin-top: 5px;
-        color: #94a3b8;
-        font-size: 10px;
+        box-shadow:
+            0 0 0 3px rgba(101,52,199,0.08);
     }
 
     .field-error {
-        margin-top: 5px;
-        color: #dc2626;
-        font-size: 11px;
-        font-weight: 650;
+        color: #d52e46;
+
+        font-size: 10px;
     }
 
-    .checkbox-row {
-        grid-column: 1 / -1;
-        padding: 14px 15px;
-        border-radius: 13px;
-        background: #f8fafc;
-        border: 1px solid #e8edf3;
+    .help-text {
+        color: #999dae;
+
+        font-size: 10px;
     }
 
-    .checkbox-row label {
+
+    /* FILE UPLOAD */
+
+    .file-upload {
+        padding: 15px;
+
+        border-radius: 14px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #faf8ff,
+                #f5f9ff
+            );
+
+        border: 1px dashed #c9bcec;
+    }
+
+    .current-photo {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin: 0;
-        cursor: pointer;
-        color: #334155;
-        font-size: 13px;
-        font-weight: 750;
+
+        gap: 12px;
+
+        margin-bottom: 12px;
     }
 
-    .checkbox-row input {
+    .current-photo img {
+        width: 55px;
+        height: 55px;
+
+        object-fit: cover;
+
+        border-radius: 12px;
+
+        border: 2px solid #ffffff;
+
+        box-shadow:
+            0 5px 15px rgba(0,0,0,0.10);
+    }
+
+    .current-photo-text {
+        color: #777b8d;
+
+        font-size: 10px;
+    }
+
+    .current-photo-text strong {
+        display: block;
+
+        color: #34284b;
+
+        font-size: 11px;
+
+        margin-bottom: 3px;
+    }
+
+
+    /* CHECKBOX */
+
+    .availability-check {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 14px 15px;
+
+        border-radius: 13px;
+
+        background: #ecfff5;
+
+        border: 1px solid #c9f4dc;
+    }
+
+    .availability-check input {
         width: 17px;
         height: 17px;
-        accent-color: #6d28d9;
+
+        accent-color: #18a866;
     }
+
+    .availability-check label {
+        color: #177448;
+
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+
+    /* BUTTONS */
 
     .form-actions {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
         gap: 12px;
-        margin-top: 22px;
+
+        margin-top: 20px;
+
         padding-top: 20px;
+
         border-top: 1px solid #eef0f5;
     }
 
+    .button-group {
+        display: flex;
+
+        gap: 10px;
+    }
+
     .btn {
+        min-height: 42px;
+
+        padding: 0 18px;
+
+        border-radius: 11px;
+
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        padding: 12px 18px;
-        border-radius: 12px;
-        border: none;
-        font-size: 12px;
+
+        gap: 7px;
+
+        border: 0;
+
+        font-size: 11px;
         font-weight: 800;
+
         cursor: pointer;
-        transition: .2s ease;
+
+        transition: 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
     }
 
     .btn-primary {
-        color: #fff;
-        background: linear-gradient(135deg,#6d28d9,#2563eb);
-        box-shadow: 0 9px 20px rgba(79,70,229,.20);
-    }
+        background:
+            linear-gradient(
+                135deg,
+                #5c2cb9,
+                #2671dc
+            );
 
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 13px 25px rgba(79,70,229,.25);
+        color: white;
+
+        box-shadow:
+            0 8px 20px rgba(77, 42, 170, 0.20);
     }
 
     .btn-secondary {
-        color: #475569;
-        background: #f1f5f9;
+        background: #f2effa;
+
+        color: #4b208f;
     }
 
-    .btn-secondary:hover {
-        background: #e2e8f0;
+    .btn-danger {
+        background: #fff0f2;
+
+        color: #d12c43;
     }
+
 
     /* CTA */
 
     .profile-cta {
-        padding: 22px;
-        border-radius: 22px;
-        color: #fff;
+        margin-top: 22px;
+
+        padding: 25px;
+
+        border-radius: 21px;
+
         background:
-            linear-gradient(135deg,#be123c,#e11d48 48%,#7c3aed);
-        box-shadow: 0 15px 32px rgba(190,24,93,.16);
+            linear-gradient(
+                135deg,
+                #fff4f5,
+                #f4f0ff,
+                #edf5ff
+            );
+
+        border: 1px solid #ece7f7;
+
+        text-align: center;
     }
 
     .profile-cta h3 {
-        margin: 0 0 6px;
-        font-size: 19px;
-        font-weight: 850;
+        color: #2b1a47;
+
+        font-size: 18px;
+        font-weight: 800;
     }
 
     .profile-cta p {
-        margin: 0;
-        color: rgba(255,255,255,.82);
-        font-size: 12px;
-        line-height: 1.6;
-    }
+        color: #85899c;
 
-    .cta-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 9px;
-        margin-top: 17px;
-    }
-
-    .cta-btn {
-        padding: 9px 13px;
-        border-radius: 10px;
-        background: rgba(255,255,255,.13);
-        border: 1px solid rgba(255,255,255,.18);
-        color: #fff;
         font-size: 11px;
-        font-weight: 750;
-        transition: .2s ease;
+
+        margin-top: 6px;
     }
 
-    .cta-btn:hover {
-        background: rgba(255,255,255,.22);
-        transform: translateY(-2px);
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+
+        margin-top: 16px;
     }
 
-    @media (max-width: 1000px) {
-        .profile-layout {
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+
+        .profile-grid {
             grid-template-columns: 1fr;
         }
 
-        .profile-card {
-            position: static;
-        }
     }
+
 
     @media (max-width: 650px) {
+
         .profile-hero {
-            padding: 25px 20px;
-            border-radius: 21px;
+            padding: 23px;
         }
 
-        .profile-hero h1 {
-            font-size: 28px;
+        .hero-content {
+            align-items: flex-start;
         }
 
-        .contact-grid,
-        .form-grid {
+        .hero-photo {
+            width: 72px;
+            height: 72px;
+            min-width: 72px;
+        }
+
+        .hero-info h1 {
+            font-size: 21px;
+        }
+
+        .form-grid,
+        .info-grid {
             grid-template-columns: 1fr;
+        }
+
+        .info-item.full {
+            grid-column: auto;
         }
 
         .form-group.full {
             grid-column: auto;
         }
 
-        .checkbox-row {
-            grid-column: auto;
-        }
-
-        .edit-body {
-            padding: 18px;
-        }
-
         .form-actions {
-            flex-direction: column-reverse;
+            flex-direction: column;
             align-items: stretch;
+        }
+
+        .button-group {
+            width: 100%;
+            flex-direction: column;
         }
 
         .btn {
             width: 100%;
         }
+
     }
+
+
+    @media (max-width: 430px) {
+
+        .profile-card {
+            padding: 18px;
+            border-radius: 18px;
+        }
+
+        .profile-hero {
+            border-radius: 19px;
+        }
+
+        .hero-content {
+            gap: 14px;
+        }
+
+        .hero-photo {
+            width: 64px;
+            height: 64px;
+            min-width: 64px;
+        }
+
+        .hero-info h1 {
+            font-size: 18px;
+        }
+
+    }
+
 </style>
 
 
 <div class="profile-page">
 
-    <!-- HERO -->
+
+    <!-- =====================================================
+         PROFILE HERO
+    ====================================================== -->
 
     <section class="profile-hero">
 
-        <h1>My Profile</h1>
+        <div class="hero-content">
 
-        <p>
-            Manage your donor information, availability and contact details.
-        </p>
-
-    </section>
-
-
-    <div class="profile-layout">
-
-        <!-- =====================
-             LEFT PROFILE CARD
-        ====================== -->
-
-        <aside class="profile-card">
-
-            <div class="photo-wrapper">
+            <div class="hero-photo">
 
                 {% if profile.photo %}
-
                     <img
                         src="{{ profile.photo.url }}"
-                        alt="{{ profile.full_name }}"
-                        class="profile-photo"
-                    >
+                        alt="{{ profile.full_name|default:request.user.username }}">
+                {% else %}
+                    {{ request.user.username|first|upper }}
+                {% endif %}
+
+            </div>
+
+
+            <div class="hero-info">
+
+                <h1>
+                    {{ profile.full_name|default:request.user.username }}
+                </h1>
+
+                <p>
+                    @{{ request.user.username }}
+                </p>
+
+                {% if profile.is_available %}
+
+                    <div class="availability">
+                        <span class="green-dot"></span>
+                        Available to Donate
+                    </div>
 
                 {% else %}
 
-                    <div class="profile-placeholder">
-                        {{ profile.full_name|first|upper }}
+                    <div class="availability">
+                        🔴 Currently Unavailable
                     </div>
 
                 {% endif %}
 
-                {% if profile.is_available %}
-                    <span class="photo-status"></span>
-                {% endif %}
-
             </div>
 
+        </div>
 
-            <h2>
-                {{ profile.full_name|default:request.user.username }}
-            </h2>
-
-            <div class="username">
-                @{{ request.user.username }}
-            </div>
+    </section>
 
 
-            {% if profile.is_available %}
 
-                <div class="availability">
-                    <span class="availability-dot"></span>
-                    Available to Donate
-                </div>
+    <!-- =====================================================
+         PROFILE GRID
+    ====================================================== -->
 
-            {% else %}
-
-                <div class="availability"
-                     style="background:#fff7ed;color:#c2410c;">
-
-                    <span class="availability-dot"
-                          style="background:#f97316;">
-                    </span>
-
-                    Currently Unavailable
-
-                </div>
-
-            {% endif %}
+    <div class="profile-grid">
 
 
-            <!-- BLOOD GROUP -->
+        <!-- LEFT -->
 
-            <div class="blood-highlight">
+        <div>
+
+
+            <!-- BLOOD CARD -->
+
+            <div class="profile-card blood-card">
 
                 <div class="blood-icon">
                     🩸
                 </div>
 
-                <div>
+                <div class="blood-label">
+                    Blood Group
+                </div>
 
-                    <span>
-                        Blood Group
-                    </span>
+                <div class="blood-group">
+                    {{ profile.blood_group|default:"—" }}
+                </div>
 
-                    <strong>
-                        {{ profile.blood_group|default:"Not provided" }}
-                    </strong>
+
+                <div class="donation-box">
+
+                    <div class="donation-icon">
+                        🏆
+                    </div>
+
+                    <div class="donation-text">
+
+                        <strong>
+                            Total Donations:
+                            {{ profile.donation_count|default:0 }}
+                        </strong>
+
+                        <span>
+                            Every donation can save lives
+                        </span>
+
+                    </div>
 
                 </div>
 
             </div>
 
-
-            <!-- DONATIONS -->
-
-            <div class="donation-count">
-                🏆
-                <span>
-                    Total Donations:
-                    <strong>{{ profile.donation_count }}</strong>
-                </span>
-            </div>
-
-        </aside>
-
-
-        <!-- =====================
-             RIGHT COLUMN
-        ====================== -->
-
-        <div class="right-column">
 
 
             <!-- CONTACT INFORMATION -->
 
-            <section class="info-card">
+            <div class="profile-card"
+                 style="margin-top:22px;">
 
-                <div class="card-header">
+                <div class="card-title">
+                    📋 Contact Information
+                </div>
 
-                    <div class="header-icon">
-                        📋
-                    </div>
-
-                    <div>
-                        <h3>
-                            Contact Information
-                        </h3>
-
-                        <p>
-                            Your registered donor details
-                        </p>
-                    </div>
-
+                <div class="card-subtitle">
+                    Your registered donor details
                 </div>
 
 
-                <div class="contact-grid">
+                <div class="info-grid">
 
-                    <div class="contact-item">
 
-                        <div class="contact-icon">
+                    <div class="info-item">
+
+                        <div class="info-icon">
                             📧
                         </div>
 
-                        <div>
-                            <div class="contact-label">
-                                Email
-                            </div>
+                        <div class="info-label">
+                            Email
+                        </div>
 
-                            <div class="contact-value">
-                                {{ request.user.email|default:"Not provided" }}
-                            </div>
+                        <div class="info-value">
+                            {{ request.user.email|default:"Not provided" }}
                         </div>
 
                     </div>
 
 
-                    <div class="contact-item">
+                    <div class="info-item">
 
-                        <div class="contact-icon">
+                        <div class="info-icon">
                             📱
                         </div>
 
-                        <div>
-                            <div class="contact-label">
-                                Phone
-                            </div>
+                        <div class="info-label">
+                            Phone
+                        </div>
 
-                            <div class="contact-value">
-                                {{ profile.phone|default:"Not provided" }}
-                            </div>
+                        <div class="info-value">
+                            {{ profile.phone|default:"Not provided" }}
                         </div>
 
                     </div>
 
 
-                    <div class="contact-item">
+                    <div class="info-item">
 
-                        <div class="contact-icon">
+                        <div class="info-icon">
                             📍
                         </div>
 
-                        <div>
-                            <div class="contact-label">
-                                City
-                            </div>
+                        <div class="info-label">
+                            City
+                        </div>
 
-                            <div class="contact-value">
-                                {{ profile.city|default:"Not provided" }}
-                            </div>
+                        <div class="info-value">
+                            {{ profile.city|default:"Not provided" }}
                         </div>
 
                     </div>
 
 
-                    <div class="contact-item">
+                    <div class="info-item">
 
-                        <div class="contact-icon">
+                        <div class="info-icon">
                             🗺️
                         </div>
 
-                        <div>
-                            <div class="contact-label">
-                                Location
-                            </div>
+                        <div class="info-label">
+                            Location
+                        </div>
 
-                            <div class="contact-value">
-                                {{ profile.location|default:"Not provided" }}
-                            </div>
+                        <div class="info-value">
+                            {{ profile.location|default:"Not provided" }}
                         </div>
 
                     </div>
 
 
-                    <div class="contact-item">
+                    <div class="info-item full">
 
-                        <div class="contact-icon">
+                        <div class="info-icon">
                             🚨
                         </div>
 
-                        <div>
-                            <div class="contact-label">
-                                Emergency Contact
-                            </div>
+                        <div class="info-label">
+                            Emergency Contact
+                        </div>
 
-                            <div class="contact-value">
-                                {{ profile.emergency_contact|default:"Not provided" }}
-                            </div>
+                        <div class="info-value">
+                            {{ profile.emergency_contact|default:"Not provided" }}
                         </div>
 
                     </div>
 
-                </div>
-
-            </section>
-
-
-            <!-- EDIT PROFILE -->
-
-            <section class="edit-card">
-
-                <div class="card-header">
-
-                    <div class="header-icon">
-                        ✏️
-                    </div>
-
-                    <div>
-                        <h3>
-                            Update Profile
-                        </h3>
-
-                        <p>
-                            Keep your donor information up to date
-                        </p>
-                    </div>
 
                 </div>
 
+            </div>
 
-                <div class="edit-body">
-
-                    <form method="POST" enctype="multipart/form-data">
-
-                        {% csrf_token %}
+        </div>
 
 
-                        <div class="form-grid">
 
-                            {% for field in form %}
+        <!-- RIGHT -->
 
-                                {% if field.name == "is_available" %}
+        <div>
 
-                                    <div class="checkbox-row">
 
-                                        <label>
-                                            {{ field }}
+            <div class="profile-card">
 
-                                            <span>
-                                                🟢 I am available to donate blood
-                                            </span>
-                                        </label>
+                <div class="card-title">
+                    ✏️ Update Profile
+                </div>
 
-                                        {% if field.errors %}
-                                            {% for error in field.errors %}
-                                                <div class="field-error">
-                                                    {{ error }}
-                                                </div>
-                                            {% endfor %}
-                                        {% endif %}
+                <div class="card-subtitle">
+                    Keep your donor information up to date
+                </div>
 
-                                    </div>
 
-                                {% else %}
+                <form
+                    method="POST"
+                    enctype="multipart/form-data">
 
-                                    <div class="form-group
-                                        {% if field.name == 'location' or field.name == 'emergency_contact' %}
-                                            full
-                                        {% endif %}">
+                    {% csrf_token %}
 
-                                        <label for="{{ field.id_for_label }}">
-                                            {{ field.label }}
-                                        </label>
+
+                    <div class="form-grid">
+
+
+                        {% for field in form %}
+
+                            {% if field.name == "is_available" %}
+
+                                <div class="form-group full">
+
+                                    <div class="availability-check">
 
                                         {{ field }}
 
-                                        {% if field.help_text %}
-                                            <small>
-                                                {{ field.help_text }}
-                                            </small>
-                                        {% endif %}
-
-                                        {% if field.errors %}
-
-                                            {% for error in field.errors %}
-
-                                                <div class="field-error">
-                                                    {{ error }}
-                                                </div>
-
-                                            {% endfor %}
-
-                                        {% endif %}
+                                        <label for="{{ field.id_for_label }}">
+                                            🟢 I am available to donate blood
+                                        </label>
 
                                     </div>
 
-                                {% endif %}
+                                    {% for error in field.errors %}
+                                        <div class="field-error">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
 
-                            {% endfor %}
-
-                        </div>
+                                </div>
 
 
-                        <div class="form-actions">
+                            {% elif field.name == "photo" %}
+
+                                <div class="form-group full">
+
+                                    <label>
+                                        Photo
+                                    </label>
+
+                                    <div class="file-upload">
+
+                                        {% if profile.photo %}
+
+                                            <div class="current-photo">
+
+                                                <img
+                                                    src="{{ profile.photo.url }}"
+                                                    alt="Current Profile Photo">
+
+                                                <div class="current-photo-text">
+
+                                                    <strong>
+                                                        Current Photo
+                                                    </strong>
+
+                                                    {{ profile.photo.name }}
+
+                                                </div>
+
+                                            </div>
+
+                                        {% endif %}
+
+                                        {{ field }}
+
+                                    </div>
+
+                                    {% for error in field.errors %}
+                                        <div class="field-error">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+
+
+                            {% elif field.name == "location" or field.name == "emergency_contact" %}
+
+                                <div class="form-group full">
+
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                    </label>
+
+                                    {{ field }}
+
+                                    {% for error in field.errors %}
+                                        <div class="field-error">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+
+
+                            {% else %}
+
+                                <div class="form-group">
+
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                    </label>
+
+                                    {{ field }}
+
+                                    {% for error in field.errors %}
+                                        <div class="field-error">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+                    <!-- BUTTONS -->
+
+                    <div class="form-actions">
+
+                        <a
+                            href="/dashboard/"
+                            class="btn btn-secondary">
+
+                            ← Dashboard
+
+                        </a>
+
+
+                        <div class="button-group">
 
                             <a
-                                href="/dashboard/"
-                                class="btn btn-secondary">
+                                href="/"
+                                class="btn btn-danger">
 
-                                ← Dashboard
+                                Cancel
 
                             </a>
-
 
                             <button
                                 type="submit"
@@ -901,48 +1173,67 @@
 
                         </div>
 
-                    </form>
+                    </div>
 
-                </div>
+                </form>
 
-            </section>
+            </div>
 
-
-            <!-- CTA -->
-
-            <section class="profile-cta">
-
-                <h3>
-                    ❤️ Your Donation Can Save Lives
-                </h3>
-
-                <p>
-                    Keep your profile updated and stay available
-                    when someone nearby needs your blood group.
-                </p>
-
-
-                <div class="cta-actions">
-
-                    <a href="/donors/" class="cta-btn">
-                        🩸 Find Blood Donors
-                    </a>
-
-                    <a href="/request-blood/" class="cta-btn">
-                        🚑 Request Blood
-                    </a>
-
-                    <a href="/emergency-request/" class="cta-btn">
-                        🚨 Emergency Request
-                    </a>
-
-                </div>
-
-            </section>
 
         </div>
 
     </div>
+
+
+
+    <!-- =====================================================
+         CTA
+    ====================================================== -->
+
+    <div class="profile-cta">
+
+        <h3>
+            ❤️ Your Donation Can Save Lives
+        </h3>
+
+        <p>
+            Keep your profile updated and stay available
+            when someone nearby needs your blood group.
+        </p>
+
+
+        <div class="cta-buttons">
+
+            <a
+                href="/donors/"
+                class="btn btn-primary">
+
+                🩸 Find Blood Donors
+
+            </a>
+
+
+            <a
+                href="/request-blood/"
+                class="btn btn-secondary">
+
+                🚑 Request Blood
+
+            </a>
+
+
+            <a
+                href="/emergency-request/"
+                class="btn btn-danger">
+
+                🚨 Emergency Request
+
+            </a>
+
+        </div>
+
+    </div>
+
 
 </div>
 
