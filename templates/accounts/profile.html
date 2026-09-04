@@ -8,309 +8,339 @@
     .profile-page {
         max-width: 1250px;
         margin: 0 auto;
-        padding: 10px 0 40px;
     }
 
-    /* HEADER */
-    .profile-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 22px;
-        gap: 15px;
+    /* ---------- HEADER ---------- */
+    .profile-heading {
+        margin-bottom: 24px;
     }
 
-    .profile-header h1 {
+    .profile-heading h1 {
         margin: 0;
-        color: #24104f;
         font-size: 30px;
         font-weight: 800;
+        color: #24104f;
     }
 
-    .profile-header p {
-        margin: 5px 0 0;
-        color: #777;
+    .profile-heading p {
+        margin: 7px 0 0;
+        color: #718096;
         font-size: 14px;
     }
 
-    .verified {
-        padding: 9px 15px;
-        border-radius: 30px;
-        background: #f0eaff;
-        color: #5b21b6;
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    /* HERO */
+    /* ---------- PROFILE HERO ---------- */
     .profile-hero {
         position: relative;
         overflow: hidden;
-        display: flex;
-        align-items: center;
-        gap: 24px;
-        padding: 30px;
-        margin-bottom: 20px;
         border-radius: 24px;
+        padding: 30px;
+        margin-bottom: 24px;
         color: white;
-        background: linear-gradient(
-            135deg,
-            #4318a8 0%,
-            #6d28d9 45%,
-            #2563eb 100%
-        );
-        box-shadow: 0 18px 45px rgba(76, 29, 149, 0.22);
-    }
-
-    .profile-hero::before {
-        content: "";
-        position: absolute;
-        width: 260px;
-        height: 260px;
-        right: -90px;
-        top: -130px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.08);
+        background:
+            radial-gradient(circle at 90% 10%, rgba(67, 56, 202, .45), transparent 30%),
+            radial-gradient(circle at 10% 100%, rgba(225, 29, 72, .30), transparent 32%),
+            linear-gradient(135deg, #32106f, #4f46e5 55%, #2563eb);
+        box-shadow: 0 18px 45px rgba(55, 35, 120, .22);
     }
 
     .profile-hero::after {
         content: "";
         position: absolute;
-        width: 160px;
-        height: 160px;
-        left: 45%;
-        bottom: -100px;
+        width: 190px;
+        height: 190px;
+        right: -70px;
+        bottom: -80px;
+        border: 28px solid rgba(255,255,255,.08);
         border-radius: 50%;
-        background: rgba(255,255,255,0.06);
     }
 
-    .hero-photo {
+    .hero-content {
         position: relative;
         z-index: 2;
-        width: 115px;
-        height: 115px;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .avatar-wrapper {
         flex-shrink: 0;
+        width: 112px;
+        height: 112px;
+        padding: 4px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #fb7185, #ffffff, #60a5fa);
+        box-shadow: 0 10px 30px rgba(0,0,0,.20);
+    }
+
+    .avatar-wrapper img,
+    .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
         object-fit: cover;
-        border-radius: 50%;
-        border: 5px solid white;
-        background: white;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    }
-
-    .hero-placeholder {
-        position: relative;
-        z-index: 2;
-        width: 115px;
-        height: 115px;
-        flex-shrink: 0;
-        border-radius: 50%;
-        border: 5px solid white;
-        background: rgba(255,255,255,0.16);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 45px;
+        background: #ffffff;
+        color: #4f46e5;
+        font-size: 42px;
+        font-weight: 800;
     }
 
     .hero-info {
-        position: relative;
-        z-index: 2;
-        flex: 1;
+        min-width: 0;
     }
 
     .hero-info h2 {
         margin: 0;
-        font-size: 30px;
+        font-size: 29px;
         font-weight: 800;
     }
 
-    .hero-username {
+    .hero-info .username {
         margin-top: 5px;
+        opacity: .82;
         font-size: 14px;
-        opacity: 0.8;
     }
 
-    .status {
+    .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .hero-badge {
         display: inline-flex;
         align-items: center;
-        gap: 7px;
-        margin-top: 14px;
-        padding: 8px 13px;
-        border-radius: 25px;
-        background: rgba(255,255,255,0.15);
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 30px;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.18);
         font-size: 12px;
         font-weight: 700;
+        backdrop-filter: blur(8px);
     }
 
-    .status-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        background: #4ade80;
+    .hero-badge.available {
+        background: rgba(34,197,94,.20);
+        color: #dcfce7;
     }
 
-    .blood-box {
-        position: relative;
-        z-index: 2;
-        width: 105px;
-        height: 105px;
-        flex-shrink: 0;
-        border-radius: 22px;
-        background: linear-gradient(145deg, #ff6268, #dc2626);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    .hero-badge.unavailable {
+        background: rgba(239,68,68,.20);
+        color: #fee2e2;
     }
 
-    .blood-box strong {
-        font-size: 32px;
-    }
-
-    .blood-box span {
-        margin-top: 5px;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* STATS */
-    .stats {
+    /* ---------- STATS ---------- */
+    .stats-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 16px;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
     }
 
-    .stat {
-        padding: 18px;
-        border-radius: 17px;
+    .stat-card {
         background: white;
-        border: 1px solid #eee;
-        box-shadow: 0 7px 22px rgba(30,20,60,0.06);
+        border: 1px solid #edf0f7;
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 8px 25px rgba(35, 25, 80, .06);
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        background: linear-gradient(135deg, #ede9fe, #dbeafe);
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: linear-gradient(135deg, #fee2e2, #ffedd5);
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: linear-gradient(135deg, #dcfce7, #dbeafe);
     }
 
     .stat-label {
-        color: #888;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .5px;
+        color: #718096;
+        font-size: 12px;
+        font-weight: 600;
     }
 
     .stat-value {
-        margin-top: 7px;
-        color: #2d1a52;
-        font-size: 21px;
+        color: #24104f;
+        font-size: 22px;
         font-weight: 800;
+        margin-top: 2px;
     }
 
-    /* TWO COLUMNS */
-    .main-grid {
+    /* ---------- MAIN GRID ---------- */
+    .profile-grid {
         display: grid;
-        grid-template-columns: 0.9fr 1.1fr;
-        gap: 20px;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
     }
 
-    .card {
+    .profile-card {
         background: white;
-        border-radius: 20px;
-        border: 1px solid #eee;
-        box-shadow: 0 8px 28px rgba(30,20,60,0.06);
-        overflow: hidden;
+        border: 1px solid #edf0f7;
+        border-radius: 22px;
+        padding: 24px;
+        box-shadow: 0 8px 28px rgba(35, 25, 80, .06);
     }
 
-    .card-header {
-        padding: 19px 21px;
-        background: linear-gradient(135deg, #faf7ff, #f5f9ff);
-        border-bottom: 1px solid #eee;
+    .profile-card.full {
+        grid-column: 1 / -1;
     }
 
-    .card-header h3 {
-        margin: 0;
-        color: #29134f;
-        font-size: 18px;
-        font-weight: 800;
-    }
-
-    .card-header p {
-        margin: 5px 0 0;
-        color: #888;
-        font-size: 12px;
-    }
-
-    .card-body {
-        padding: 21px;
-    }
-
-    /* INFORMATION */
-    .info-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .info-item {
+    .card-title {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 13px;
-        border-radius: 13px;
-        background: #fafafa;
-        border: 1px solid #f0f0f0;
+        gap: 10px;
+        margin-bottom: 20px;
     }
 
-    .info-icon {
+    .card-title-icon {
         width: 38px;
         height: 38px;
-        flex-shrink: 0;
+        border-radius: 11px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 11px;
         background: linear-gradient(135deg, #ede9fe, #dbeafe);
+        font-size: 18px;
+    }
+
+    .card-title h3 {
+        margin: 0;
+        color: #24104f;
         font-size: 17px;
+        font-weight: 800;
+    }
+
+    .card-title p {
+        margin: 3px 0 0;
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    /* ---------- INFO ---------- */
+    .info-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 13px 14px;
+        border-radius: 14px;
+        background: #f8f9fd;
+        border: 1px solid #f0f2f8;
+    }
+
+    .info-left {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        min-width: 0;
+    }
+
+    .info-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,.05);
+        flex-shrink: 0;
     }
 
     .info-label {
-        display: block;
-        margin-bottom: 3px;
-        color: #999;
+        color: #94a3b8;
         font-size: 10px;
         font-weight: 700;
         text-transform: uppercase;
+        letter-spacing: .4px;
     }
 
     .info-value {
-        color: #34224f;
+        margin-top: 2px;
+        color: #334155;
         font-size: 13px;
         font-weight: 700;
         word-break: break-word;
     }
 
-    /* FORM */
-    .profile-form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
+    /* ---------- BLOOD GROUP ---------- */
+    .blood-box {
+        text-align: center;
+        padding: 25px 15px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fff1f2, #fff7ed);
+        border: 1px solid #ffe4e6;
     }
 
-    .form-row {
+    .blood-drop {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 10px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #ef4444, #e11d48);
+        color: white;
+        font-size: 25px;
+        font-weight: 900;
+        box-shadow: 0 10px 25px rgba(225,29,72,.25);
+    }
+
+    .blood-box h4 {
+        margin: 0;
+        color: #9f1239;
+        font-size: 13px;
+    }
+
+    .blood-box p {
+        margin: 4px 0 0;
+        color: #be123c;
+        font-size: 11px;
+    }
+
+    /* ---------- FORM ---------- */
+    .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 14px;
+        gap: 18px;
     }
 
     .form-group {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
     }
 
     .form-group label {
-        color: #43345f;
+        margin-bottom: 7px;
+        color: #334155;
         font-size: 12px;
         font-weight: 800;
     }
@@ -320,218 +350,282 @@
     .form-group textarea {
         width: 100%;
         box-sizing: border-box;
-        padding: 11px 12px;
-        border: 1px solid #ddd;
-        border-radius: 11px;
-        outline: none;
-        background: white;
-        color: #29213d;
+        padding: 12px 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #f8fafc;
+        color: #334155;
         font-size: 13px;
-        transition: .2s;
+        outline: none;
+        transition: .2s ease;
     }
 
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
-        border-color: #6d28d9;
-        box-shadow: 0 0 0 3px rgba(109,40,217,.10);
+        border-color: #6366f1;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(99,102,241,.10);
     }
 
-    /* PHOTO UPLOAD */
     .photo-upload {
-        padding: 15px;
-        border: 2px dashed #d8cdf5;
-        border-radius: 14px;
-        background: #faf8ff;
+        border: 2px dashed #c7d2fe;
+        border-radius: 18px;
+        padding: 18px;
+        background: linear-gradient(135deg, #fafaff, #f8fbff);
     }
 
-    .photo-preview {
-        display: none;
-        margin-bottom: 13px;
-        text-align: center;
+    .photo-preview-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
 
-    .photo-preview img {
-        width: 105px;
-        height: 105px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 4px solid #6d28d9;
-        box-shadow: 0 8px 20px rgba(76,29,149,.18);
+    #photoPreview {
+        width: 78px !important;
+        height: 78px !important;
+        min-width: 78px;
+        border-radius: 50% !important;
+        object-fit: cover !important;
+        border: 4px solid white !important;
+        box-shadow: 0 5px 18px rgba(0,0,0,.12);
+        display: block;
     }
 
-    .photo-upload input[type="file"] {
-        width: 100%;
-        padding: 5px;
-        border: 0;
-        background: transparent;
+    .photo-actions {
+        flex: 1;
+    }
+
+    .choose-photo {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 14px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #4f46e5, #2563eb);
+        color: white;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 800;
+        border: none;
     }
 
     .photo-note {
-        margin-top: 6px;
-        color: #888;
+        margin-top: 7px;
+        color: #94a3b8;
         font-size: 10px;
+        line-height: 1.5;
     }
 
-    /* AVAILABILITY */
-    .availability {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        padding: 12px 14px;
-        border-radius: 12px;
-        background: #f5f3ff;
-        border: 1px solid #e5ddff;
+    #id_photo {
+        display: none;
     }
 
-    .availability input {
-        width: 18px !important;
-        height: 18px;
-        accent-color: #6d28d9;
-    }
-
-    .availability label {
-        margin: 0;
-        color: #39265d;
-        font-size: 12px;
+    .file-name {
+        margin-top: 7px;
+        color: #4f46e5;
+        font-size: 11px;
         font-weight: 700;
     }
 
-    /* SAVE BUTTON */
-    .save-btn {
-        width: 100%;
-        padding: 13px;
-        border: 0;
-        border-radius: 12px;
-        color: white;
-        background: linear-gradient(135deg, #6d28d9, #2563eb);
-        font-size: 13px;
-        font-weight: 800;
-        cursor: pointer;
-        box-shadow: 0 9px 20px rgba(79,70,229,.22);
-        transition: .2s;
-    }
-
-    .save-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(79,70,229,.3);
-    }
-
-    /* CTA */
-    .cta {
+    .availability-box {
+        grid-column: 1 / -1;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        gap: 20px;
-        margin-top: 20px;
-        padding: 23px;
-        border-radius: 20px;
-        color: white;
-        background: linear-gradient(135deg, #24104f, #4c1d95, #2563eb);
+        justify-content: space-between;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 14px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
     }
 
-    .cta h3 {
-        margin: 0 0 5px;
-        font-size: 19px;
+    .availability-text strong {
+        display: block;
+        color: #334155;
+        font-size: 13px;
     }
 
-    .cta p {
-        margin: 0;
-        font-size: 12px;
-        opacity: .8;
-    }
-
-    .cta-btn {
-        padding: 12px 17px;
-        border-radius: 11px;
-        background: #ff5a5f;
-        color: white;
-        text-decoration: none;
-        font-size: 12px;
-        font-weight: 800;
-        white-space: nowrap;
-    }
-
-    .errors {
-        color: #dc2626;
+    .availability-text span {
+        display: block;
+        margin-top: 3px;
+        color: #94a3b8;
         font-size: 10px;
     }
 
-    /* MOBILE */
-    @media (max-width: 950px) {
-        .stats {
-            grid-template-columns: repeat(2, 1fr);
+    .switch {
+        position: relative;
+        width: 48px;
+        height: 26px;
+        flex-shrink: 0;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        inset: 0;
+        border-radius: 30px;
+        background: #cbd5e1;
+        cursor: pointer;
+        transition: .25s;
+    }
+
+    .slider:before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        left: 3px;
+        top: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: .25s;
+        box-shadow: 0 2px 5px rgba(0,0,0,.18);
+    }
+
+    .switch input:checked + .slider {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+
+    .switch input:checked + .slider:before {
+        transform: translateX(22px);
+    }
+
+    .save-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+        border: none;
+        border-radius: 14px;
+        padding: 14px 18px;
+        color: white;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        background: linear-gradient(135deg, #e11d48, #ef4444 45%, #f97316);
+        box-shadow: 0 10px 25px rgba(225,29,72,.20);
+        transition: .2s ease;
+    }
+
+    .save-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 30px rgba(225,29,72,.28);
+    }
+
+    .errorlist {
+        margin: 5px 0 0;
+        padding-left: 16px;
+        color: #dc2626;
+        font-size: 11px;
+    }
+
+    /* ---------- CTA ---------- */
+    .profile-cta {
+        margin-top: 22px;
+        padding: 22px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fff1f2, #eef2ff);
+        border: 1px solid #e0e7ff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .profile-cta h3 {
+        margin: 0;
+        color: #24104f;
+        font-size: 16px;
+    }
+
+    .profile-cta p {
+        margin: 5px 0 0;
+        color: #64748b;
+        font-size: 11px;
+    }
+
+    .cta-icon {
+        font-size: 34px;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 900px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
         }
 
-        .main-grid {
+        .profile-card.full {
+            grid-column: auto;
+        }
+
+        .stats-grid {
             grid-template-columns: 1fr;
         }
     }
 
     @media (max-width: 650px) {
-        .profile-page {
-            padding: 5px 0 30px;
-        }
-
-        .profile-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .profile-header h1 {
+        .profile-heading h1 {
             font-size: 25px;
         }
 
         .profile-hero {
             padding: 22px;
-            flex-wrap: wrap;
+            border-radius: 20px;
         }
 
-        .hero-photo,
-        .hero-placeholder {
-            width: 90px;
-            height: 90px;
+        .hero-content {
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .avatar-wrapper {
+            width: 82px;
+            height: 82px;
         }
 
         .hero-info h2 {
-            font-size: 23px;
+            font-size: 21px;
         }
 
-        .blood-box {
-            width: 85px;
-            height: 85px;
-        }
-
-        .blood-box strong {
-            font-size: 26px;
-        }
-
-        .stats {
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .stat {
-            padding: 14px;
-        }
-
-        .stat-value {
-            font-size: 17px;
-        }
-
-        .form-row {
+        .form-grid {
             grid-template-columns: 1fr;
         }
 
-        .cta {
-            flex-direction: column;
+        .form-group.full-width,
+        .availability-box,
+        .save-btn {
+            grid-column: auto;
+        }
+
+        .profile-card {
+            padding: 18px;
+            border-radius: 18px;
+        }
+
+        .profile-cta {
             align-items: flex-start;
         }
 
-        .cta-btn {
-            width: 100%;
-            text-align: center;
-            box-sizing: border-box;
+        .cta-icon {
+            font-size: 28px;
+        }
+    }
+
+    @media (max-width: 430px) {
+        .hero-content {
+            flex-direction: column;
+        }
+
+        .info-row {
+            align-items: flex-start;
+        }
+
+        .photo-preview-area {
+            align-items: flex-start;
         }
     }
 </style>
@@ -539,343 +633,312 @@
 
 <div class="profile-page">
 
-    <!-- HEADER -->
-    <div class="profile-header">
-        <div>
-            <h1>My Profile</h1>
-            <p>Manage your BloodLink donor information.</p>
-        </div>
-
-        <div class="verified">
-            ✓ Verified Donor
-        </div>
+    <!-- PAGE HEADER -->
+    <div class="profile-heading">
+        <h1>My Profile</h1>
+        <p>Manage your BloodLink donor profile and availability.</p>
     </div>
 
 
     <!-- PROFILE HERO -->
-    <div class="profile-hero">
+    <section class="profile-hero">
+        <div class="hero-content">
 
-        {% if profile.photo %}
-            <img
-                src="{{ profile.photo.url }}"
-                alt="Profile Photo"
-                class="hero-photo"
-            >
-        {% else %}
-            <div class="hero-placeholder">
-                👤
-            </div>
-        {% endif %}
-
-
-        <div class="hero-info">
-
-            <h2>
-                {{ profile.full_name|default:request.user.username }}
-            </h2>
-
-            <div class="hero-username">
-                @{{ request.user.username }}
+            <div class="avatar-wrapper">
+                {% if request.user.userprofile.photo %}
+                    <img
+                        id="heroPhoto"
+                        src="{{ request.user.userprofile.photo.url }}"
+                        alt="Profile Photo"
+                    >
+                {% else %}
+                    <div class="avatar-placeholder">
+                        {{ request.user.first_name|default:request.user.username|first|upper }}
+                    </div>
+                {% endif %}
             </div>
 
-            {% if profile.is_available %}
-                <div class="status">
-                    <span class="status-dot"></span>
-                    Available to Donate
+            <div class="hero-info">
+                <h2>
+                    {% if request.user.userprofile.full_name %}
+                        {{ request.user.userprofile.full_name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </h2>
+
+                <div class="username">
+                    @{{ request.user.username }}
                 </div>
-            {% else %}
-                <div class="status">
-                    <span class="status-dot" style="background:#f87171;"></span>
-                    Currently Unavailable
+
+                <div class="hero-badges">
+
+                    <span class="hero-badge">
+                        ✓ Verified Donor
+                    </span>
+
+                    {% if request.user.userprofile.is_available %}
+                        <span class="hero-badge available">
+                            ● Available to Donate
+                        </span>
+                    {% else %}
+                        <span class="hero-badge unavailable">
+                            ● Currently Unavailable
+                        </span>
+                    {% endif %}
+
                 </div>
-            {% endif %}
+            </div>
 
         </div>
-
-
-        <div class="blood-box">
-            <strong>{{ profile.blood_group|default:"—" }}</strong>
-            <span>Blood Group</span>
-        </div>
-
-    </div>
+    </section>
 
 
     <!-- STATS -->
-    <div class="stats">
+    <div class="stats-grid">
 
-        <div class="stat">
-            <div class="stat-label">Blood Group</div>
-            <div class="stat-value">
-                {{ profile.blood_group|default:"Not Set" }}
+        <div class="stat-card">
+            <div class="stat-icon">🩸</div>
+            <div>
+                <div class="stat-label">Blood Group</div>
+                <div class="stat-value">
+                    {{ request.user.userprofile.blood_group|default:"—" }}
+                </div>
             </div>
         </div>
 
-        <div class="stat">
-            <div class="stat-label">Donations</div>
-            <div class="stat-value">
-                {{ profile.donation_count|default:"0" }}
+        <div class="stat-card">
+            <div class="stat-icon">❤️</div>
+            <div>
+                <div class="stat-label">Total Donations</div>
+                <div class="stat-value">
+                    {{ request.user.userprofile.donation_count|default:"0" }}
+                </div>
             </div>
         </div>
 
-        <div class="stat">
-            <div class="stat-label">City</div>
-            <div class="stat-value">
-                {{ profile.city|default:"Not Set" }}
-            </div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-label">Status</div>
-            <div class="stat-value">
-                {% if profile.is_available %}
-                    Active
-                {% else %}
-                    Offline
-                {% endif %}
+        <div class="stat-card">
+            <div class="stat-icon">📍</div>
+            <div>
+                <div class="stat-label">City</div>
+                <div class="stat-value">
+                    {{ request.user.userprofile.city|default:"Not Set" }}
+                </div>
             </div>
         </div>
 
     </div>
 
 
-    <!-- MAIN GRID -->
-    <div class="main-grid">
+    <!-- PROFILE INFORMATION -->
+    <div class="profile-grid">
 
+        <!-- PERSONAL INFORMATION -->
+        <div class="profile-card">
 
-        <!-- DONOR INFORMATION -->
-        <div class="card">
-
-            <div class="card-header">
-                <h3>Donor Information</h3>
-                <p>Your registered BloodLink details.</p>
+            <div class="card-title">
+                <div class="card-title-icon">👤</div>
+                <div>
+                    <h3>Personal Information</h3>
+                    <p>Your basic donor details</p>
+                </div>
             </div>
 
-            <div class="card-body">
+            <div class="info-list">
 
-                <div class="info-list">
-
-                    <div class="info-item">
+                <div class="info-row">
+                    <div class="info-left">
                         <div class="info-icon">📧</div>
                         <div>
-                            <span class="info-label">Email</span>
-                            <span class="info-value">
-                                {{ request.user.email|default:"Not Added" }}
-                            </span>
+                            <div class="info-label">Email</div>
+                            <div class="info-value">
+                                {{ request.user.email|default:"Not provided" }}
+                            </div>
                         </div>
                     </div>
-
-
-                    <div class="info-item">
-                        <div class="info-icon">📱</div>
-                        <div>
-                            <span class="info-label">Phone</span>
-                            <span class="info-value">
-                                {{ profile.phone|default:"Not Added" }}
-                            </span>
-                        </div>
-                    </div>
-
-
-                    <div class="info-item">
-                        <div class="info-icon">📍</div>
-                        <div>
-                            <span class="info-label">City</span>
-                            <span class="info-value">
-                                {{ profile.city|default:"Not Added" }}
-                            </span>
-                        </div>
-                    </div>
-
-
-                    <div class="info-item">
-                        <div class="info-icon">🗺️</div>
-                        <div>
-                            <span class="info-label">Location</span>
-                            <span class="info-value">
-                                {{ profile.location|default:"Not Added" }}
-                            </span>
-                        </div>
-                    </div>
-
-
-                    <div class="info-item">
-                        <div class="info-icon">🚨</div>
-                        <div>
-                            <span class="info-label">Emergency Contact</span>
-                            <span class="info-value">
-                                {{ profile.emergency_contact|default:"Not Added" }}
-                            </span>
-                        </div>
-                    </div>
-
-
-                    <div class="info-item">
-                        <div class="info-icon">🩸</div>
-                        <div>
-                            <span class="info-label">Donation Status</span>
-
-                            {% if profile.is_available %}
-                                <span
-                                    class="info-value"
-                                    style="color:#16a34a;"
-                                >
-                                    Available for Donation
-                                </span>
-                            {% else %}
-                                <span
-                                    class="info-value"
-                                    style="color:#dc2626;"
-                                >
-                                    Currently Unavailable
-                                </span>
-                            {% endif %}
-
-                        </div>
-                    </div>
-
                 </div>
 
+                <div class="info-row">
+                    <div class="info-left">
+                        <div class="info-icon">📱</div>
+                        <div>
+                            <div class="info-label">Phone</div>
+                            <div class="info-value">
+                                {{ request.user.userprofile.phone|default:"Not provided" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-left">
+                        <div class="info-icon">🏙️</div>
+                        <div>
+                            <div class="info-label">City</div>
+                            <div class="info-value">
+                                {{ request.user.userprofile.city|default:"Not provided" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-left">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <div class="info-label">Location</div>
+                            <div class="info-value">
+                                {{ request.user.userprofile.location|default:"Not provided" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- DONOR STATUS -->
+        <div class="profile-card">
+
+            <div class="card-title">
+                <div class="card-title-icon">🩸</div>
+                <div>
+                    <h3>Donor Status</h3>
+                    <p>Your blood donation information</p>
+                </div>
+            </div>
+
+            <div class="blood-box">
+
+                <div class="blood-drop">
+                    {{ request.user.userprofile.blood_group|default:"?" }}
+                </div>
+
+                <h4>Blood Group</h4>
+
+                <p>
+                    {% if request.user.userprofile.is_available %}
+                        Available for emergency donation
+                    {% else %}
+                        Currently not available
+                    {% endif %}
+                </p>
+
+            </div>
+
+            <div style="height:14px;"></div>
+
+            <div class="info-row">
+                <div class="info-left">
+                    <div class="info-icon">❤️</div>
+                    <div>
+                        <div class="info-label">Donation Count</div>
+                        <div class="info-value">
+                            {{ request.user.userprofile.donation_count|default:"0" }} successful donations
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height:10px;"></div>
+
+            <div class="info-row">
+                <div class="info-left">
+                    <div class="info-icon">🚨</div>
+                    <div>
+                        <div class="info-label">Emergency Contact</div>
+                        <div class="info-value">
+                            {{ request.user.userprofile.emergency_contact|default:"Not provided" }}
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
 
 
         <!-- EDIT PROFILE -->
-        <div class="card">
+        <div class="profile-card full">
 
-            <div class="card-header">
-                <h3>Edit Profile</h3>
-                <p>Update your donor information.</p>
+            <div class="card-title">
+                <div class="card-title-icon">✏️</div>
+                <div>
+                    <h3>Update Profile</h3>
+                    <p>Keep your donor information accurate and up to date</p>
+                </div>
             </div>
 
-            <div class="card-body">
+            <form method="POST"
+                  enctype="multipart/form-data"
+                  id="profileForm">
 
-                <form
-                    method="POST"
-                    enctype="multipart/form-data"
-                    class="profile-form"
-                >
+                {% csrf_token %}
 
-                    {% csrf_token %}
+                <div class="form-grid">
 
-
-                    <!-- FULL NAME + BLOOD GROUP -->
-                    <div class="form-row">
-
-                        <div class="form-group">
-
-                            <label for="{{ form.full_name.id_for_label }}">
-                                Full Name
-                            </label>
-
-                            {{ form.full_name }}
-
-                            {% if form.full_name.errors %}
-                                <div class="errors">
-                                    {{ form.full_name.errors }}
-                                </div>
-                            {% endif %}
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="{{ form.blood_group.id_for_label }}">
-                                Blood Group
-                            </label>
-
-                            {{ form.blood_group }}
-
-                            {% if form.blood_group.errors %}
-                                <div class="errors">
-                                    {{ form.blood_group.errors }}
-                                </div>
-                            {% endif %}
-
-                        </div>
-
+                    <!-- FULL NAME -->
+                    <div class="form-group">
+                        <label for="{{ form.full_name.id_for_label }}">
+                            Full Name
+                        </label>
+                        {{ form.full_name }}
+                        {{ form.full_name.errors }}
                     </div>
 
 
-                    <!-- PHONE + CITY -->
-                    <div class="form-row">
-
-                        <div class="form-group">
-
-                            <label for="{{ form.phone.id_for_label }}">
-                                Phone Number
-                            </label>
-
-                            {{ form.phone }}
-
-                            {% if form.phone.errors %}
-                                <div class="errors">
-                                    {{ form.phone.errors }}
-                                </div>
-                            {% endif %}
-
-                        </div>
+                    <!-- BLOOD GROUP -->
+                    <div class="form-group">
+                        <label for="{{ form.blood_group.id_for_label }}">
+                            Blood Group
+                        </label>
+                        {{ form.blood_group }}
+                        {{ form.blood_group.errors }}
+                    </div>
 
 
-                        <div class="form-group">
+                    <!-- PHONE -->
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">
+                            Phone Number
+                        </label>
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                    </div>
 
-                            <label for="{{ form.city.id_for_label }}">
-                                City
-                            </label>
 
-                            {{ form.city }}
-
-                            {% if form.city.errors %}
-                                <div class="errors">
-                                    {{ form.city.errors }}
-                                </div>
-                            {% endif %}
-
-                        </div>
-
+                    <!-- CITY -->
+                    <div class="form-group">
+                        <label for="{{ form.city.id_for_label }}">
+                            City
+                        </label>
+                        {{ form.city }}
+                        {{ form.city.errors }}
                     </div>
 
 
                     <!-- LOCATION -->
                     <div class="form-group">
-
                         <label for="{{ form.location.id_for_label }}">
                             Location
                         </label>
-
                         {{ form.location }}
-
-                        {% if form.location.errors %}
-                            <div class="errors">
-                                {{ form.location.errors }}
-                            </div>
-                        {% endif %}
-
+                        {{ form.location.errors }}
                     </div>
 
 
                     <!-- EMERGENCY CONTACT -->
                     <div class="form-group">
-
                         <label for="{{ form.emergency_contact.id_for_label }}">
                             Emergency Contact
                         </label>
-
                         {{ form.emergency_contact }}
-
-                        {% if form.emergency_contact.errors %}
-                            <div class="errors">
-                                {{ form.emergency_contact.errors }}
-                            </div>
-                        {% endif %}
-
+                        {{ form.emergency_contact.errors }}
                     </div>
 
 
-                    <!-- PROFILE PHOTO -->
-                    <div class="form-group">
+                    <!-- PHOTO -->
+                    <div class="form-group full-width">
 
                         <label>
                             Profile Photo
@@ -883,67 +946,85 @@
 
                         <div class="photo-upload">
 
-                            <!-- NEW IMAGE PREVIEW -->
-                            <div
-                                class="photo-preview"
-                                id="photoPreview"
-                            >
-                                <img
-                                    id="previewImage"
-                                    src=""
-                                    alt="Selected Photo"
-                                >
+                            <div class="photo-preview-area">
+
+                                {% if request.user.userprofile.photo %}
+                                    <img
+                                        id="photoPreview"
+                                        src="{{ request.user.userprofile.photo.url }}"
+                                        alt="Profile Preview"
+                                    >
+                                {% else %}
+                                    <img
+                                        id="photoPreview"
+                                        src=""
+                                        alt="Profile Preview"
+                                        style="display:none !important;"
+                                    >
+                                {% endif %}
+
+                                <div class="photo-actions">
+
+                                    <label
+                                        for="{{ form.photo.id_for_label }}"
+                                        class="choose-photo"
+                                    >
+                                        📷 Choose Photo
+                                    </label>
+
+                                    <div
+                                        id="fileName"
+                                        class="file-name"
+                                    >
+                                        {% if request.user.userprofile.photo %}
+                                            Current photo selected
+                                        {% else %}
+                                            No photo selected
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="photo-note">
+                                        JPG, PNG or WEBP • Maximum 5MB
+                                    </div>
+
+                                </div>
+
                             </div>
 
-
-                            <!-- FILE INPUT -->
-                            <input
-                                type="file"
-                                name="photo"
-                                id="id_photo"
-                                accept="image/*"
-                            >
-
-
-                            <div class="photo-note">
-                                Select JPG, PNG or WEBP image.
-                            </div>
+                            {{ form.photo }}
+                            {{ form.photo.errors }}
 
                         </div>
-
-
-                        {% if form.photo.errors %}
-                            <div class="errors">
-                                {{ form.photo.errors }}
-                            </div>
-                        {% endif %}
 
                     </div>
 
 
                     <!-- AVAILABILITY -->
-                    <div class="availability">
+                    <div class="availability-box">
 
-                        {{ form.is_available }}
+                        <div class="availability-text">
+                            <strong>Available for Blood Donation</strong>
+                            <span>
+                                Allow hospitals and patients to find you for blood requests.
+                            </span>
+                        </div>
 
-                        <label for="{{ form.is_available.id_for_label }}">
-                            I am currently available for blood donation
+                        <label class="switch">
+                            {{ form.is_available }}
+                            <span class="slider"></span>
                         </label>
 
                     </div>
 
 
                     <!-- SAVE -->
-                    <button
-                        type="submit"
-                        class="save-btn"
-                    >
+                    <button type="submit" class="save-btn">
                         💾 Save Profile Changes
                     </button>
 
-                </form>
+                </div>
 
-            </div>
+            </form>
 
         </div>
 
@@ -951,66 +1032,69 @@
 
 
     <!-- CTA -->
-    <div class="cta">
+    <div class="profile-cta">
 
         <div>
-            <h3>❤️ Ready to Save a Life?</h3>
+            <h3>❤️ Your donation can save a life.</h3>
             <p>
-                Your donation can give someone a second chance.
+                Keep your profile updated so BloodLink can connect you
+                with people who urgently need your blood group.
             </p>
         </div>
 
-        <a
-            href="/donors/"
-            class="cta-btn"
-        >
-            Find Blood Donors →
-        </a>
+        <div class="cta-icon">🩸</div>
 
     </div>
 
 </div>
 
 
-<!-- IMAGE PREVIEW SCRIPT -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
     const photoInput = document.getElementById("id_photo");
-    const photoPreview = document.getElementById("photoPreview");
-    const previewImage = document.getElementById("previewImage");
+    const preview = document.getElementById("photoPreview");
+    const fileName = document.getElementById("fileName");
 
-    if (!photoInput) {
-        return;
-    }
+    if (!photoInput) return;
 
     photoInput.addEventListener("change", function () {
 
-        const file = this.files[0];
+        const file = this.files && this.files[0];
 
         if (!file) {
-            photoPreview.style.display = "none";
-            previewImage.src = "";
+            fileName.textContent = "No photo selected";
             return;
         }
 
-        if (!file.type.startsWith("image/")) {
-            alert("Please select a valid image file.");
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert("Please select a JPG, PNG or WEBP image.");
             this.value = "";
-            photoPreview.style.display = "none";
-            previewImage.src = "";
             return;
         }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Photo size must be less than 5MB.");
+            this.value = "";
+            return;
+        }
+
+        fileName.textContent = "Selected: " + file.name;
 
         const reader = new FileReader();
 
         reader.onload = function (event) {
-            previewImage.src = event.target.result;
-            photoPreview.style.display = "block";
+            preview.src = event.target.result;
+            preview.style.display = "block";
         };
 
         reader.readAsDataURL(file);
-
     });
 
 });

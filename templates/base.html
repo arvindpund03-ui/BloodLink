@@ -4,32 +4,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>
-        {% block title %}BloodLink{% endblock %}
-    </title>
-
-    <meta name="description"
-          content="BloodLink - Blood Donation & Emergency Support Network">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet">
+    <title>{% block title %}BloodLink{% endblock %}</title>
 
     <style>
-
-        /* =========================================================
-           GLOBAL
-        ========================================================= */
-
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
@@ -38,10 +18,25 @@
         }
 
         body {
-            font-family: "Inter", Arial, sans-serif;
-            background: #f5f7ff;
-            color: #1f2937;
-            min-height: 100vh;
+            margin: 0;
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(99,102,241,0.10),
+                    transparent 28%
+                ),
+                #f5f7fb;
+
+            color: #172033;
         }
 
         a {
@@ -56,79 +51,64 @@
         }
 
 
-        /* =========================================================
+        /* =====================================================
+           APP LAYOUT
+        ===================================================== */
+
+        .bl-app {
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
            SIDEBAR
-        ========================================================= */
+        ===================================================== */
 
-        .sidebar {
+        .bl-sidebar {
             position: fixed;
-            top: 0;
             left: 0;
+            top: 0;
+            bottom: 0;
 
-            width: 260px;
-            min-width: 260px;
-            height: 100vh;
+            width: 270px;
 
             background:
                 linear-gradient(
                     180deg,
                     #24104f 0%,
-                    #32136d 42%,
-                    #173f8f 100%
+                    #32156d 42%,
+                    #1d4ed8 100%
                 );
 
-            color: #ffffff;
+            color: white;
 
-            display: flex;
-            flex-direction: column;
-
-            padding: 22px 15px;
+            padding: 22px 16px;
 
             z-index: 1000;
 
             overflow-y: auto;
-            overflow-x: hidden;
 
             box-shadow:
-                8px 0 30px rgba(40, 20, 100, 0.15);
-        }
-
-        .sidebar::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.18);
-            border-radius: 20px;
+                12px 0 35px rgba(31, 41, 55, 0.14);
         }
 
 
-        /* =========================================================
-           LOGO
-        ========================================================= */
+        /* LOGO */
 
-        .brand {
+        .bl-brand {
             display: flex;
             align-items: center;
-
             gap: 12px;
 
-            padding: 4px 8px 25px;
+            padding: 7px 10px 24px;
 
-            color: #ffffff;
-
-            min-width: 0;
+            border-bottom:
+                1px solid rgba(255,255,255,0.12);
         }
 
-        .brand-icon {
+        .bl-brand-icon {
             width: 46px;
             height: 46px;
-
-            min-width: 46px;
 
             border-radius: 15px;
 
@@ -141,841 +121,634 @@
             background:
                 linear-gradient(
                     135deg,
-                    #ff5364,
-                    #ff3650
+                    #fb7185,
+                    #ef4444
                 );
 
             box-shadow:
-                0 8px 20px rgba(255, 61, 87, 0.35);
+                0 10px 25px rgba(239,68,68,0.35);
         }
 
-        .brand-text {
-            min-width: 0;
+        .bl-brand-name {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
         }
 
-        .brand-name {
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.4px;
-
-            color: #ffffff;
-
-            white-space: nowrap;
+        .bl-brand-name span {
+            color: #93c5fd;
         }
 
-        .brand-tagline {
+        .bl-brand-tagline {
             margin-top: 3px;
-
-            font-size: 10px;
-            font-weight: 500;
 
             color: rgba(255,255,255,0.62);
 
-            white-space: nowrap;
+            font-size: 10px;
+            font-weight: 700;
+
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
         }
 
 
-        /* =========================================================
-           USER PROFILE IN SIDEBAR
-        ========================================================= */
+        /* PROFILE MINI */
 
-        .sidebar-profile {
+        .bl-mini-profile {
             display: flex;
             align-items: center;
+            gap: 12px;
 
-            gap: 11px;
+            margin: 20px 4px;
 
-            padding: 13px 11px;
-
-            margin-bottom: 18px;
+            padding: 12px;
 
             border-radius: 16px;
 
-            background: rgba(255,255,255,0.09);
+            background:
+                rgba(255,255,255,0.08);
 
-            border: 1px solid rgba(255,255,255,0.10);
-
-            min-width: 0;
+            border:
+                1px solid rgba(255,255,255,0.08);
         }
 
-        .sidebar-avatar {
+        .bl-mini-avatar {
             width: 42px;
             height: 42px;
 
-            min-width: 42px;
+            border-radius: 13px;
 
-            border-radius: 50%;
+            object-fit: cover;
 
             background:
                 linear-gradient(
                     135deg,
-                    #ff5065,
-                    #ff7b61
+                    #818cf8,
+                    #38bdf8
                 );
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            color: #ffffff;
+            color: white;
+            font-weight: 900;
 
-            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .bl-mini-name {
+            color: white;
+            font-size: 13px;
             font-weight: 800;
 
-            overflow: hidden;
-
-            border: 2px solid rgba(255,255,255,0.35);
-        }
-
-        .sidebar-avatar img {
-            width: 100%;
-            height: 100%;
-
-            object-fit: cover;
-        }
-
-        .sidebar-user-info {
-            min-width: 0;
-            flex: 1;
-        }
-
-        .sidebar-user-name {
-            color: #ffffff;
-
-            font-size: 14px;
-            font-weight: 700;
-
-            line-height: 1.35;
-
-            white-space: normal;
-
-            overflow: visible;
-
-            word-break: normal;
-            overflow-wrap: break-word;
-        }
-
-        .sidebar-user-email {
-            color: rgba(255,255,255,0.60);
-
-            font-size: 11px;
-
-            margin-top: 4px;
-
             white-space: nowrap;
-
             overflow: hidden;
-
             text-overflow: ellipsis;
         }
 
+        .bl-mini-handle {
+            margin-top: 3px;
 
-        /* =========================================================
-           NAVIGATION
-        ========================================================= */
+            color: rgba(255,255,255,0.55);
 
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-
-            gap: 5px;
-
-            width: 100%;
+            font-size: 11px;
         }
 
-        .nav-section-title {
-            padding: 13px 15px 7px;
+
+        /* NAV */
+
+        .bl-nav-section {
+            margin: 22px 8px 8px;
 
             color: rgba(255,255,255,0.42);
 
             font-size: 10px;
-            font-weight: 800;
+            font-weight: 900;
 
-            letter-spacing: 1.2px;
-
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-
-            white-space: nowrap;
-
-            width: 100%;
         }
 
-        .nav-item {
+        .bl-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .bl-nav-link {
+            position: relative;
+
             display: flex;
             align-items: center;
-
-            width: 100%;
-
-            min-height: 45px;
-
-            padding: 0 14px;
-
             gap: 12px;
 
-            border-radius: 12px;
+            min-height: 46px;
+
+            padding: 10px 13px;
+
+            border-radius: 13px;
 
             color: rgba(255,255,255,0.76);
 
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
 
             transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                transform 0.2s ease;
-
-            overflow: visible;
-
-            white-space: nowrap;
+                transform .2s ease,
+                background .2s ease,
+                color .2s ease;
         }
 
-        .nav-item:hover {
-            color: #ffffff;
+        .bl-nav-link:hover {
+            color: white;
 
-            background: rgba(255,255,255,0.10);
+            background:
+                rgba(255,255,255,0.10);
 
-            transform: translateX(2px);
+            transform: translateX(3px);
         }
 
-        .nav-item.active {
-            color: #ffffff;
+        .bl-nav-link.active {
+            color: white;
 
             background:
                 linear-gradient(
                     135deg,
-                    rgba(255,82,101,0.95),
-                    rgba(255,75,98,0.72)
+                    rgba(255,255,255,0.18),
+                    rgba(255,255,255,0.08)
                 );
 
             box-shadow:
-                0 8px 18px rgba(255, 65, 88, 0.18);
+                inset 0 0 0 1px rgba(255,255,255,0.08),
+                0 8px 20px rgba(15,23,42,0.10);
         }
 
-        .nav-icon {
-            width: 24px;
-            min-width: 24px;
+        .bl-nav-link.active::before {
+            content: "";
 
-            height: 24px;
+            position: absolute;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            left: 0;
+            top: 9px;
+            bottom: 9px;
 
-            font-size: 17px;
-        }
-
-        .nav-item span {
-            display: block;
-
-            white-space: nowrap;
-
-            overflow: visible;
-        }
-
-
-        /* =========================================================
-           SAVE A LIFE CARD
-        ========================================================= */
-
-        .save-card {
-            margin-top: auto;
-
-            padding: 17px;
-
-            border-radius: 17px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(255,255,255,0.12),
-                    rgba(255,255,255,0.06)
-                );
-
-            border: 1px solid rgba(255,255,255,0.10);
-
-            text-align: center;
-        }
-
-        .save-card-icon {
-            font-size: 25px;
-
-            margin-bottom: 7px;
-        }
-
-        .save-card-title {
-            font-size: 13px;
-            font-weight: 800;
-
-            color: #ffffff;
-        }
-
-        .save-card-text {
-            margin-top: 5px;
-
-            font-size: 10px;
-            line-height: 1.5;
-
-            color: rgba(255,255,255,0.58);
-        }
-
-        .save-card-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            margin-top: 12px;
-
-            min-height: 35px;
+            width: 3px;
 
             border-radius: 10px;
 
-            background: #ffffff;
-
-            color: #3b177d;
-
-            font-size: 11px;
-            font-weight: 800;
-
-            transition: 0.2s ease;
+            background: #fb7185;
         }
 
-        .save-card-button:hover {
-            transform: translateY(-2px);
+        .bl-nav-icon {
+            width: 28px;
+            height: 28px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            font-size: 15px;
+
+            flex-shrink: 0;
+        }
+
+        .bl-nav-link.active .bl-nav-icon {
+            background:
+                rgba(255,255,255,0.15);
+        }
+
+
+        /* SAVE CARD */
+
+        .bl-save-card {
+            margin: 24px 3px 4px;
+
+            padding: 18px;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(244,63,94,0.95),
+                    rgba(124,58,237,0.95)
+                );
 
             box-shadow:
-                0 7px 18px rgba(0,0,0,0.15);
+                0 15px 30px rgba(15,23,42,0.20);
+        }
+
+        .bl-save-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background: rgba(255,255,255,0.16);
+
+            font-size: 19px;
+
+            margin-bottom: 12px;
+        }
+
+        .bl-save-card h4 {
+            margin: 0 0 6px;
+
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .bl-save-card p {
+            margin: 0 0 14px;
+
+            color: rgba(255,255,255,0.76);
+
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .bl-save-btn {
+            display: block;
+
+            padding: 9px 12px;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            background: white;
+
+            color: #4f46e5;
+
+            font-size: 11px;
+            font-weight: 900;
         }
 
 
-        /* =========================================================
+        /* =====================================================
            MAIN AREA
-        ========================================================= */
+        ===================================================== */
 
-        .main-wrapper {
-            margin-left: 260px;
+        .bl-main {
+            margin-left: 270px;
 
             min-height: 100vh;
-
-            width: calc(100% - 260px);
         }
 
 
-        /* =========================================================
-           TOPBAR
-        ========================================================= */
+        /* TOPBAR */
 
-        .topbar {
-            height: 72px;
+        .bl-topbar {
+            position: sticky;
+            top: 0;
 
-            padding: 0 30px;
-
-            background: rgba(255,255,255,0.94);
-
-            backdrop-filter: blur(15px);
-
-            border-bottom: 1px solid #e9eaf2;
+            height: 76px;
 
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            position: sticky;
-            top: 0;
+            padding: 0 34px;
 
-            z-index: 100;
+            background:
+                rgba(255,255,255,0.88);
+
+            backdrop-filter: blur(18px);
+
+            border-bottom:
+                1px solid rgba(226,232,240,0.85);
+
+            z-index: 500;
         }
 
-        .topbar-left {
+        .bl-top-left {
             display: flex;
             align-items: center;
-
-            gap: 14px;
-
-            min-width: 0;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-
-            width: 42px;
-            height: 42px;
-
-            border: 0;
-
-            border-radius: 12px;
-
-            background: #f1edff;
-
-            color: #4b208f;
-
-            font-size: 20px;
-
-            cursor: pointer;
-        }
-
-        .page-title {
-            color: #21143e;
-
-            font-size: 17px;
-            font-weight: 800;
-        }
-
-        .page-subtitle {
-            margin-top: 2px;
-
-            color: #8b8fa5;
-
-            font-size: 11px;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-
             gap: 12px;
         }
 
+        .bl-mobile-menu {
+            display: none;
 
-        /* =========================================================
-           SEARCH
-        ========================================================= */
-
-        .top-search {
-            width: 210px;
-
+            width: 40px;
             height: 40px;
 
-            border-radius: 11px;
+            border: 0;
+            border-radius: 12px;
 
-            border: 1px solid #e5e7f0;
+            background: #eef2ff;
 
-            background: #f8f9fd;
+            cursor: pointer;
 
+            font-size: 19px;
+        }
+
+        .bl-top-search {
             display: flex;
             align-items: center;
+            gap: 9px;
 
-            padding: 0 12px;
+            width: 260px;
 
-            gap: 8px;
-        }
+            padding: 10px 14px;
 
-        .top-search span {
-            color: #8c91a6;
+            border-radius: 12px;
 
-            font-size: 14px;
-        }
+            background: #f8fafc;
 
-        .top-search input {
-            width: 100%;
-
-            border: 0;
-            outline: 0;
-
-            background: transparent;
-
-            color: #333;
+            color: #94a3b8;
 
             font-size: 12px;
         }
 
+        .bl-top-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-        /* =========================================================
-           NOTIFICATION
-        ========================================================= */
-
-        .notification-button {
-            width: 40px;
-            height: 40px;
-
-            border-radius: 11px;
-
-            background: #f3efff;
-
-            color: #4c1d95;
+        .bl-notification {
+            width: 42px;
+            height: 42px;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            font-size: 18px;
+            border-radius: 13px;
+
+            background: white;
+
+            border:
+                1px solid #e5e7eb;
+
+            box-shadow:
+                0 5px 15px rgba(15,23,42,0.05);
 
             position: relative;
 
-            transition: 0.2s ease;
+            font-size: 17px;
         }
 
-        .notification-button:hover {
-            transform: translateY(-2px);
-
-            background: #e9e0ff;
-        }
-
-        .notification-dot {
+        .bl-notification-dot {
             position: absolute;
 
-            top: 7px;
-            right: 7px;
+            top: 8px;
+            right: 8px;
 
             width: 7px;
             height: 7px;
 
             border-radius: 50%;
 
-            background: #ff4e62;
+            background: #ef4444;
 
-            border: 2px solid #ffffff;
+            border: 2px solid white;
         }
 
-
-        /* =========================================================
-           TOP USER
-        ========================================================= */
-
-        .top-user {
+        .bl-user-chip {
             display: flex;
             align-items: center;
+            gap: 10px;
 
-            gap: 9px;
+            padding: 6px 11px 6px 6px;
 
-            padding: 5px 10px 5px 5px;
+            border-radius: 14px;
 
-            border-radius: 30px;
+            background: white;
 
-            background: #f6f5fb;
-
-            border: 1px solid #e9e6f4;
+            border:
+                1px solid #e5e7eb;
         }
 
-        .top-user-avatar {
-            width: 32px;
-            height: 32px;
+        .bl-user-avatar {
+            width: 36px;
+            height: 36px;
 
-            border-radius: 50%;
+            border-radius: 11px;
+
+            object-fit: cover;
 
             background:
                 linear-gradient(
                     135deg,
-                    #ff5065,
-                    #5b35d5
+                    #6366f1,
+                    #06b6d4
                 );
-
-            color: #ffffff;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
+            color: white;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .bl-user-name {
+            color: #172033;
+
             font-size: 12px;
             font-weight: 800;
-
-            overflow: hidden;
         }
 
-        .top-user-avatar img {
-            width: 100%;
-            height: 100%;
+        .bl-user-role {
+            color: #94a3b8;
 
-            object-fit: cover;
-        }
+            font-size: 10px;
 
-        .top-user-name {
-            max-width: 140px;
-
-            color: #302044;
-
-            font-size: 11px;
-            font-weight: 700;
-
-            white-space: nowrap;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-top: 2px;
         }
 
 
-        /* =========================================================
-           CONTENT
-        ========================================================= */
+        /* CONTENT */
 
-        .content {
-            padding: 30px;
-
-            max-width: 1500px;
+        .bl-content {
+            max-width: 1440px;
 
             margin: 0 auto;
+
+            padding: 34px;
         }
 
 
-        /* =========================================================
-           DJANGO MESSAGES
-        ========================================================= */
+        /* FOOTER */
 
-        .messages-container {
-            padding: 18px 30px 0;
-        }
+        .bl-footer {
+            margin-left: 270px;
 
-        .message {
-            padding: 13px 16px;
+            padding: 22px 34px 28px;
 
-            border-radius: 12px;
-
-            margin-bottom: 10px;
-
-            font-size: 13px;
-            font-weight: 600;
-
-            border: 1px solid transparent;
-        }
-
-        .message.success {
-            background: #ecfdf3;
-            color: #147a46;
-            border-color: #b7efcf;
-        }
-
-        .message.error {
-            background: #fff1f2;
-            color: #c51f35;
-            border-color: #ffc7cf;
-        }
-
-        .message.warning {
-            background: #fff9e8;
-            color: #9a6800;
-            border-color: #f8dfa0;
-        }
-
-        .message.info {
-            background: #eef5ff;
-            color: #2457a8;
-            border-color: #c9dcff;
-        }
-
-
-        /* =========================================================
-           FOOTER
-        ========================================================= */
-
-        .footer {
-            padding: 25px 30px 30px;
-
-            color: #9297aa;
+            color: #94a3b8;
 
             font-size: 11px;
 
             text-align: center;
         }
 
-        .footer strong {
-            color: #4b208f;
+
+        /* MESSAGES */
+
+        .bl-message {
+            margin-bottom: 18px;
+
+            padding: 13px 16px;
+
+            border-radius: 12px;
+
+            background: #ecfdf5;
+
+            color: #047857;
+
+            border: 1px solid #a7f3d0;
+
+            font-size: 13px;
+            font-weight: 700;
         }
 
 
-        /* =========================================================
-           SIDEBAR OVERLAY
-        ========================================================= */
+        /* MOBILE OVERLAY */
 
-        .sidebar-overlay {
+        .bl-overlay {
             display: none;
 
             position: fixed;
-
             inset: 0;
 
-            background: rgba(18, 10, 40, 0.48);
+            background:
+                rgba(15,23,42,0.45);
 
-            z-index: 999;
+            z-index: 900;
         }
 
 
-        /* =========================================================
-           RESPONSIVE - TABLET
-        ========================================================= */
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
 
-        @media (max-width: 1050px) {
+        @media (max-width: 900px) {
 
-            .sidebar {
-                width: 235px;
-                min-width: 235px;
-            }
-
-            .main-wrapper {
-                margin-left: 235px;
-
-                width: calc(100% - 235px);
-            }
-
-            .top-search {
-                width: 160px;
-            }
-
-            .content {
-                padding: 24px;
-            }
-
-            .messages-container {
-                padding-left: 24px;
-                padding-right: 24px;
-            }
-
-        }
-
-
-        /* =========================================================
-           RESPONSIVE - MOBILE
-        ========================================================= */
-
-        @media (max-width: 768px) {
-
-            .sidebar {
-                width: 260px;
-                min-width: 260px;
-
+            .bl-sidebar {
                 transform: translateX(-100%);
 
-                transition: transform 0.28s ease;
-
-                box-shadow:
-                    12px 0 35px rgba(0,0,0,0.20);
+                transition: transform .25s ease;
             }
 
-            .sidebar.open {
+            .bl-sidebar.open {
                 transform: translateX(0);
             }
 
-            .sidebar-overlay.show {
-                display: block;
-            }
-
-            .main-wrapper {
+            .bl-main {
                 margin-left: 0;
-
-                width: 100%;
             }
 
-            .topbar {
-                height: 65px;
-
-                padding: 0 16px;
+            .bl-footer {
+                margin-left: 0;
             }
 
-            .mobile-menu-btn {
+            .bl-mobile-menu {
                 display: flex;
-
                 align-items: center;
                 justify-content: center;
             }
 
-            .page-title {
-                font-size: 15px;
-            }
-
-            .page-subtitle {
+            .bl-top-search {
                 display: none;
             }
 
-            .top-search {
-                display: none;
+            .bl-overlay.show {
+                display: block;
             }
 
-            .top-user {
-                padding-right: 5px;
+            .bl-content {
+                padding: 24px 18px;
             }
 
-            .top-user-name {
-                display: none;
+            .bl-topbar {
+                padding: 0 18px;
             }
-
-            .content {
-                padding: 20px 16px;
-            }
-
-            .messages-container {
-                padding: 15px 16px 0;
-            }
-
-            .footer {
-                padding: 20px 16px 25px;
-            }
-
         }
 
 
-        /* =========================================================
-           SMALL MOBILE
-        ========================================================= */
+        @media (max-width: 550px) {
 
-        @media (max-width: 420px) {
-
-            .topbar-right {
-                gap: 7px;
+            .bl-user-chip {
+                padding-right: 6px;
             }
 
-            .notification-button {
-                width: 36px;
-                height: 36px;
+            .bl-user-info {
+                display: none;
             }
 
-            .top-user-avatar {
-                width: 30px;
-                height: 30px;
+            .bl-content {
+                padding: 18px 12px;
             }
 
-            .content {
-                padding: 16px 12px;
+            .bl-topbar {
+                height: 68px;
             }
-
         }
 
     </style>
 
     {% block extra_css %}{% endblock %}
-
 </head>
 
 
 <body>
 
+<div class="bl-app">
 
-    <!-- =========================================================
-         SIDEBAR
-    ========================================================== -->
 
-    <aside class="sidebar" id="sidebar">
+    <!-- SIDEBAR -->
 
-        <!-- BRAND -->
-        <a href="/" class="brand">
+    <aside class="bl-sidebar" id="blSidebar">
 
-            <div class="brand-icon">
+        <div class="bl-brand">
+
+            <div class="bl-brand-icon">
                 🩸
             </div>
 
-            <div class="brand-text">
-
-                <div class="brand-name">
-                    BloodLink
+            <div>
+                <div class="bl-brand-name">
+                    Blood<span>Link</span>
                 </div>
 
-                <div class="brand-tagline">
-                    SAVE • DONATE • CONNECT
+                <div class="bl-brand-tagline">
+                    Save • Donate • Connect
                 </div>
-
             </div>
 
-        </a>
+        </div>
 
 
-        <!-- USER PROFILE -->
         {% if request.user.is_authenticated %}
 
-        <div class="sidebar-profile">
+        <div class="bl-mini-profile">
 
-            <div class="sidebar-avatar">
+            <div class="bl-mini-avatar">
 
                 {% if request.user.userprofile.photo %}
                     <img
                         src="{{ request.user.userprofile.photo.url }}"
-                        alt="Profile Photo"
+                        alt="Profile"
+                        style="
+                            width:100%;
+                            height:100%;
+                            object-fit:cover;
+                            border-radius:13px;
+                        "
                     >
                 {% else %}
                     {{ request.user.username|first|upper }}
@@ -983,14 +756,17 @@
 
             </div>
 
+            <div style="min-width:0;">
 
-            <div class="sidebar-user-info">
-
-                <div class="sidebar-user-name">
-                    {{ request.user.userprofile.full_name|default:request.user.username }}
+                <div class="bl-mini-name">
+                    {% if request.user.userprofile.full_name %}
+                        {{ request.user.userprofile.full_name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
                 </div>
 
-                <div class="sidebar-user-email">
+                <div class="bl-mini-handle">
                     @{{ request.user.username }}
                 </div>
 
@@ -998,203 +774,125 @@
 
         </div>
 
-        {% endif %}
 
+        <!-- MAIN -->
 
-        <!-- NAVIGATION -->
-        <nav class="nav-menu">
+        <div class="bl-nav-section">
+            Main
+        </div>
 
+        <nav class="bl-nav">
 
-            <!-- MAIN -->
-            <div class="nav-section-title">
-                MAIN
-            </div>
-
-
-            <a href="/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    🏠
-                </div>
-
-                <span>
-                    Home
-                </span>
-
+            <a href="/" class="bl-nav-link">
+                <span class="bl-nav-icon">🏠</span>
+                <span>Home</span>
             </a>
 
-
-            <a href="/dashboard/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    📊
-                </div>
-
-                <span>
-                    Dashboard
-                </span>
-
+            <a href="/dashboard/" class="bl-nav-link">
+                <span class="bl-nav-icon">📊</span>
+                <span>Dashboard</span>
             </a>
 
-
-            <a href="/profile/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    👤
-                </div>
-
-                <span>
-                    My Profile
-                </span>
-
+            <a href="/profile/" class="bl-nav-link">
+                <span class="bl-nav-icon">👤</span>
+                <span>My Profile</span>
             </a>
-
-
-            <!-- DONATION -->
-            <div class="nav-section-title">
-                DONATION
-            </div>
-
-
-            <a href="/donors/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    🩸
-                </div>
-
-                <span>
-                    Find Donors
-                </span>
-
-            </a>
-
-
-            <a href="/request-blood/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    💉
-                </div>
-
-                <span>
-                    Request Blood
-                </span>
-
-            </a>
-
-
-            <a href="/blood-requests/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    📋
-                </div>
-
-                <span>
-                    Blood Requests
-                </span>
-
-            </a>
-
-
-            <!-- EMERGENCY -->
-            <div class="nav-section-title">
-                EMERGENCY
-            </div>
-
-
-            <a href="/emergency-request/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    🚨
-                </div>
-
-                <span>
-                    Emergency Request
-                </span>
-
-            </a>
-
-
-            <a href="/notifications/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    🔔
-                </div>
-
-                <span>
-                    Notifications
-                </span>
-
-            </a>
-
-
-            <!-- SERVICES -->
-            <div class="nav-section-title">
-                SERVICES
-            </div>
-
-
-            <a href="/about/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    ℹ️
-                </div>
-
-                <span>
-                    About BloodLink
-                </span>
-
-            </a>
-
-
-            <a href="/contact/"
-               class="nav-item">
-
-                <div class="nav-icon">
-                    📞
-                </div>
-
-                <span>
-                    Contact
-                </span>
-
-            </a>
-
 
         </nav>
 
 
-        <!-- SAVE A LIFE -->
-        {% if request.user.is_authenticated %}
+        <!-- DONATION -->
 
-        <div class="save-card">
+        <div class="bl-nav-section">
+            Donation
+        </div>
 
-            <div class="save-card-icon">
+        <nav class="bl-nav">
+
+            <a href="/donors/" class="bl-nav-link">
+                <span class="bl-nav-icon">🩸</span>
+                <span>Find Donors</span>
+            </a>
+
+            <a href="/request-blood/" class="bl-nav-link">
+                <span class="bl-nav-icon">💉</span>
+                <span>Request Blood</span>
+            </a>
+
+            <a href="/blood-requests/" class="bl-nav-link">
+                <span class="bl-nav-icon">📋</span>
+                <span>Blood Requests</span>
+            </a>
+
+        </nav>
+
+
+        <!-- EMERGENCY -->
+
+        <div class="bl-nav-section">
+            Emergency
+        </div>
+
+        <nav class="bl-nav">
+
+            <a href="/emergency-request/" class="bl-nav-link">
+                <span class="bl-nav-icon">🚨</span>
+                <span>Emergency Request</span>
+            </a>
+
+            <a href="/notifications/" class="bl-nav-link">
+                <span class="bl-nav-icon">🔔</span>
+                <span>Notifications</span>
+            </a>
+
+        </nav>
+
+
+        <!-- SERVICES -->
+
+        <div class="bl-nav-section">
+            Services
+        </div>
+
+        <nav class="bl-nav">
+
+            <a href="/about/" class="bl-nav-link">
+                <span class="bl-nav-icon">ℹ️</span>
+                <span>About BloodLink</span>
+            </a>
+
+            <a href="/contact/" class="bl-nav-link">
+                <span class="bl-nav-icon">📞</span>
+                <span>Contact</span>
+            </a>
+
+            <a href="/logout/" class="bl-nav-link">
+                <span class="bl-nav-icon">↪</span>
+                <span>Logout</span>
+            </a>
+
+        </nav>
+
+
+        <!-- SAVE CARD -->
+
+        <div class="bl-save-card">
+
+            <div class="bl-save-icon">
                 ❤️
             </div>
 
-            <div class="save-card-title">
+            <h4>
                 Save a Life Today
-            </div>
+            </h4>
 
-            <div class="save-card-text">
+            <p>
                 Your donation can give someone
                 another chance at life.
-            </div>
+            </p>
 
-            <a href="/request-blood/"
-               class="save-card-button">
-
-                Find Blood
-
+            <a href="/donors/" class="bl-save-btn">
+                Find Blood Donors →
             </a>
 
         </div>
@@ -1204,126 +902,96 @@
     </aside>
 
 
-
-    <!-- MOBILE OVERLAY -->
-
-    <div class="sidebar-overlay"
-         id="sidebarOverlay"
-         onclick="closeSidebar()">
-    </div>
+    <div class="bl-overlay" id="blOverlay"></div>
 
 
+    <!-- MAIN -->
 
-    <!-- =========================================================
-         MAIN WRAPPER
-    ========================================================== -->
-
-    <div class="main-wrapper">
+    <main class="bl-main">
 
 
         <!-- TOPBAR -->
 
-        <header class="topbar">
+        <header class="bl-topbar">
 
-
-            <div class="topbar-left">
+            <div class="bl-top-left">
 
                 <button
-                    class="mobile-menu-btn"
-                    onclick="toggleSidebar()"
-                    aria-label="Open Menu">
-
+                    type="button"
+                    class="bl-mobile-menu"
+                    onclick="toggleBloodLinkMenu()"
+                    aria-label="Open menu"
+                >
                     ☰
-
                 </button>
 
-
-                <div>
-
-                    <div class="page-title">
-                        {% block page_title %}
-                            BloodLink
-                        {% endblock %}
-                    </div>
-
-                    <div class="page-subtitle">
-                        Blood Donation & Emergency Support
-                    </div>
-
+                <div class="bl-top-search">
+                    🔍
+                    <span>Search BloodLink...</span>
                 </div>
 
             </div>
 
 
-
-            <div class="topbar-right">
-
-
-                <!-- SEARCH -->
-
-                <div class="top-search">
-
-                    <span>
-                        🔍
-                    </span>
-
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        aria-label="Search">
-
-                </div>
-
-
-                <!-- NOTIFICATION -->
+            <div class="bl-top-right">
 
                 {% if request.user.is_authenticated %}
 
-                <a href="/notifications/"
-                   class="notification-button"
-                   aria-label="Notifications">
-
-                    🔔
-
-                    <span class="notification-dot"></span>
-
-                </a>
-
-                {% endif %}
+                    <a
+                        href="/notifications/"
+                        class="bl-notification"
+                        title="Notifications"
+                    >
+                        🔔
+                        <span class="bl-notification-dot"></span>
+                    </a>
 
 
+                    <a href="/profile/" class="bl-user-chip">
 
-                <!-- TOP USER -->
+                        <div class="bl-user-avatar">
 
-                {% if request.user.is_authenticated %}
+                            {% if request.user.userprofile.photo %}
 
-                <a href="/profile/"
-                   class="top-user">
+                                <img
+                                    src="{{ request.user.userprofile.photo.url }}"
+                                    alt="Profile"
+                                    style="
+                                        width:100%;
+                                        height:100%;
+                                        object-fit:cover;
+                                        border-radius:11px;
+                                    "
+                                >
 
-                    <div class="top-user-avatar">
+                            {% else %}
 
-                        {% if request.user.userprofile.photo %}
+                                {{ request.user.username|first|upper }}
 
-                            <img
-                                src="{{ request.user.userprofile.photo.url }}"
-                                alt="Profile Photo">
+                            {% endif %}
 
-                        {% else %}
-
-                            {{ request.user.username|first|upper }}
-
-                        {% endif %}
-
-                    </div>
+                        </div>
 
 
-                    <div class="top-user-name">
+                        <div class="bl-user-info">
 
-                        {{ request.user.userprofile.full_name|default:request.user.username }}
+                            <div class="bl-user-name">
 
-                    </div>
+                                {% if request.user.userprofile.full_name %}
+                                    {{ request.user.userprofile.full_name }}
+                                {% else %}
+                                    {{ request.user.username }}
+                                {% endif %}
 
-                </a>
+                            </div>
+
+                            <div class="bl-user-role">
+                                Donor
+                            </div>
+
+                        </div>
+
+                    </a>
 
                 {% endif %}
 
@@ -1332,136 +1000,74 @@
         </header>
 
 
-
-        <!-- DJANGO MESSAGES -->
-
-        {% if messages %}
-
-        <div class="messages-container">
-
-            {% for message in messages %}
-
-                <div class="message
-                    {% if message.tags %}
-                        {{ message.tags }}
-                    {% else %}
-                        info
-                    {% endif %}">
-
-                    {{ message }}
-
-                </div>
-
-            {% endfor %}
-
-        </div>
-
-        {% endif %}
-
-
-
         <!-- PAGE CONTENT -->
 
-        <main class="content">
+        <section class="bl-content">
 
-            {% block content %}
+            {% if messages %}
 
-            {% endblock %}
+                {% for message in messages %}
 
-        </main>
+                    <div class="bl-message">
+                        ✓ {{ message }}
+                    </div>
 
+                {% endfor %}
+
+            {% endif %}
+
+
+            {% block content %}{% endblock %}
+
+        </section>
 
 
         <!-- FOOTER -->
 
-        <footer class="footer">
+        <footer class="bl-footer">
 
-            Made with ❤️ for a healthier community
-            <br>
-
-            <strong>
-                BloodLink
-            </strong>
-            &nbsp;•&nbsp;
-            Save Lives. Donate Blood.
+            © {% now "Y" %} BloodLink
+            • Donate Blood • Save Lives
 
         </footer>
 
+    </main>
 
-    </div>
-
-
-
-    <!-- =========================================================
-         JAVASCRIPT
-    ========================================================== -->
-
-    <script>
-
-        function toggleSidebar() {
-
-            const sidebar =
-                document.getElementById("sidebar");
-
-            const overlay =
-                document.getElementById("sidebarOverlay");
-
-            sidebar.classList.toggle("open");
-
-            overlay.classList.toggle("show");
-
-        }
+</div>
 
 
-        function closeSidebar() {
+<script>
 
-            const sidebar =
-                document.getElementById("sidebar");
+function toggleBloodLinkMenu() {
 
-            const overlay =
-                document.getElementById("sidebarOverlay");
+    const sidebar =
+        document.getElementById("blSidebar");
 
-            sidebar.classList.remove("open");
+    const overlay =
+        document.getElementById("blOverlay");
 
-            overlay.classList.remove("show");
+    sidebar.classList.toggle("open");
 
-        }
-
-
-        /* Close mobile sidebar after clicking navigation */
-
-        document.querySelectorAll(".nav-item").forEach(function(item) {
-
-            item.addEventListener("click", function() {
-
-                if (window.innerWidth <= 768) {
-
-                    closeSidebar();
-
-                }
-
-            });
-
-        });
+    overlay.classList.toggle("show");
+}
 
 
-        /* Escape key closes sidebar */
+document
+    .getElementById("blOverlay")
+    .addEventListener("click", function () {
 
-        document.addEventListener("keydown", function(event) {
+        document
+            .getElementById("blSidebar")
+            .classList.remove("open");
 
-            if (event.key === "Escape") {
+        this.classList.remove("show");
 
-                closeSidebar();
+    });
 
-            }
-
-        });
-
-    </script>
+</script>
 
 
-    {% block extra_js %}{% endblock %}
+{% block extra_js %}{% endblock %}
 
 </body>
-
 </html>

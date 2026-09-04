@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import FormView
-
+from django.contrib.auth.decorators import login_required
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
@@ -220,41 +220,33 @@ def dashboard(request):
 # PROFILE
 # =========================================================
 
+@login_required
 def profile(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
-
-    profile, created = UserProfile.objects.get_or_create(
-        user=request.user
-    )
+    profile_obj = request.user.userprofile
 
     if request.method == "POST":
         form = UserProfileForm(
             request.POST,
             request.FILES,
-            instance=profile
+            instance=profile_obj
         )
 
         if form.is_valid():
             form.save()
-
             messages.success(
                 request,
                 "Profile updated successfully!"
             )
             return redirect("profile")
+
     else:
-        form = UserProfileForm(instance=profile)
+        form = UserProfileForm(instance=profile_obj)
 
     return render(
         request,
         "accounts/profile.html",
-        {
-            "form": form,
-            "profile": profile,
-        }
+        {"form": form}
     )
-
 
 # =========================================================
 # DONOR DIRECTORY
