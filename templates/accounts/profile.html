@@ -3,354 +3,185 @@
 {% block title %}My Profile | BloodLink{% endblock %}
 
 {% block page_title %}
-    My Profile
+My Profile
 {% endblock %}
 
 {% block content %}
 
 <style>
-
     .profile-page {
-        max-width: 1200px;
-        margin: 0 auto;
+        max-width: 1100px;
+        margin: auto;
     }
-
-    /* HERO */
 
     .profile-hero {
         position: relative;
-        overflow: hidden;
-
-        padding: 30px;
-
+        padding: 35px;
         border-radius: 24px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #32136d 0%,
-                #4c20a0 48%,
-                #1769d2 100%
-            );
-
+        background: linear-gradient(135deg, #32136d, #5b2db5, #1769d2);
         color: white;
-
-        box-shadow:
-            0 18px 45px rgba(55, 25, 120, 0.20);
-
+        box-shadow: 0 18px 45px rgba(55,25,120,.20);
         margin-bottom: 24px;
+        text-align: center;
     }
 
-    .profile-hero::before {
-        content: "";
-        position: absolute;
-
-        width: 220px;
-        height: 220px;
-
-        right: -70px;
-        top: -90px;
-
+    /* ONLY PROFILE IMAGE */
+    .profile-main-photo {
+        width: 150px;
+        height: 150px;
+        margin: auto;
         border-radius: 50%;
-
-        background: rgba(255,255,255,0.08);
-    }
-
-    .profile-hero::after {
-        content: "";
-        position: absolute;
-
-        width: 130px;
-        height: 130px;
-
-        right: 170px;
-        bottom: -75px;
-
-        border-radius: 50%;
-
-        background: rgba(255,255,255,0.06);
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-
-        display: flex;
-        align-items: center;
-
-        gap: 22px;
-    }
-
-    .hero-photo {
-        width: 92px;
-        height: 92px;
-
-        min-width: 92px;
-
-        border-radius: 50%;
-
         overflow: hidden;
-
-        border: 4px solid rgba(255,255,255,0.85);
-
-        background:
-            linear-gradient(
-                135deg,
-                #ff4f63,
-                #ff7c63
-            );
-
+        border: 5px solid rgba(255,255,255,.9);
+        background: linear-gradient(135deg,#ff5065,#ff7b61);
         display: flex;
         align-items: center;
         justify-content: center;
-
-        font-size: 30px;
-        font-weight: 800;
-
-        box-shadow:
-            0 10px 30px rgba(0,0,0,0.20);
+        box-shadow: 0 15px 35px rgba(0,0,0,.25);
     }
 
-    .hero-photo img {
+    .profile-main-photo img {
         width: 100%;
         height: 100%;
-
         object-fit: cover;
+        display: block;
     }
 
-    .hero-info h1 {
-        font-size: 28px;
+    .profile-main-photo .initial {
+        font-size: 48px;
         font-weight: 800;
-
-        margin-bottom: 5px;
+        color: white;
     }
 
-    .hero-info p {
-        color: rgba(255,255,255,0.72);
-
-        font-size: 13px;
-    }
-
-    .availability {
+    .profile-status {
+        margin-top: 15px;
         display: inline-flex;
         align-items: center;
-
         gap: 7px;
-
-        margin-top: 12px;
-
-        padding: 7px 12px;
-
+        padding: 8px 14px;
         border-radius: 30px;
-
-        background: rgba(255,255,255,0.14);
-
-        border: 1px solid rgba(255,255,255,0.18);
-
-        font-size: 11px;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.20);
+        font-size: 12px;
         font-weight: 700;
     }
 
     .green-dot {
         width: 8px;
         height: 8px;
-
         border-radius: 50%;
-
         background: #39e58c;
-
-        box-shadow:
-            0 0 10px rgba(57,229,140,0.7);
+        box-shadow: 0 0 10px rgba(57,229,140,.7);
     }
-
-
-    /* GRID */
 
     .profile-grid {
         display: grid;
-
-        grid-template-columns:
-            minmax(280px, 0.75fr)
-            minmax(0, 1.25fr);
-
+        grid-template-columns: .8fr 1.2fr;
         gap: 22px;
-
         align-items: start;
     }
 
-
-    /* CARD */
-
     .profile-card {
-        background: #ffffff;
-
+        background: white;
         border: 1px solid #e9eaf3;
-
         border-radius: 22px;
-
         padding: 24px;
-
-        box-shadow:
-            0 10px 30px rgba(32, 20, 80, 0.06);
+        box-shadow: 0 10px 30px rgba(32,20,80,.06);
     }
 
     .card-title {
-        display: flex;
-        align-items: center;
-
-        gap: 10px;
-
         color: #24143e;
-
         font-size: 17px;
         font-weight: 800;
-
         margin-bottom: 5px;
     }
 
     .card-subtitle {
         color: #9297aa;
-
         font-size: 11px;
-
         margin-bottom: 20px;
     }
 
-
-    /* BLOOD GROUP */
-
     .blood-card {
         text-align: center;
-
-        background:
-            linear-gradient(
-                145deg,
-                #fff7f8,
-                #ffffff
-            );
+        background: linear-gradient(145deg,#fff7f8,#ffffff);
     }
 
     .blood-icon {
         width: 72px;
         height: 72px;
-
-        margin: 0 auto 13px;
-
+        margin: auto;
         border-radius: 22px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #ff5065,
-                #ff3652
-            );
-
+        background: linear-gradient(135deg,#ff5065,#ff3652);
         color: white;
-
         display: flex;
         align-items: center;
         justify-content: center;
-
         font-size: 31px;
-
-        box-shadow:
-            0 12px 25px rgba(255,70,90,0.25);
+        box-shadow: 0 12px 25px rgba(255,70,90,.25);
     }
 
     .blood-label {
         color: #9297aa;
-
         font-size: 10px;
         font-weight: 800;
-
         letter-spacing: 1px;
-
         text-transform: uppercase;
+        margin-top: 12px;
     }
 
     .blood-group {
         color: #24143e;
-
         font-size: 36px;
         font-weight: 800;
-
-        margin-top: 3px;
     }
-
-
-    /* DONATION COUNT */
 
     .donation-box {
         margin-top: 18px;
-
         padding: 17px;
-
         border-radius: 15px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #f3efff,
-                #eef5ff
-            );
-
+        background: linear-gradient(135deg,#f3efff,#eef5ff);
         display: flex;
         align-items: center;
-
         gap: 12px;
     }
 
     .donation-icon {
         width: 42px;
         height: 42px;
-
         border-radius: 12px;
-
-        background: #ffffff;
-
+        background: white;
         display: flex;
         align-items: center;
         justify-content: center;
-
         font-size: 20px;
+    }
+
+    .donation-text {
+        text-align: left;
     }
 
     .donation-text strong {
         display: block;
-
         color: #24143e;
-
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .donation-text span {
-        display: block;
-
         color: #8e92a6;
-
         font-size: 10px;
-
-        margin-top: 2px;
     }
-
-
-    /* CONTACT INFO */
 
     .info-grid {
         display: grid;
-
         grid-template-columns: 1fr 1fr;
-
         gap: 12px;
     }
 
     .info-item {
         padding: 15px;
-
         border-radius: 14px;
-
         background: #f8f9fd;
-
         border: 1px solid #eef0f6;
     }
 
@@ -360,34 +191,24 @@
 
     .info-icon {
         font-size: 18px;
-
-        margin-bottom: 8px;
+        margin-bottom: 7px;
     }
 
     .info-label {
         color: #9a9eaf;
-
         font-size: 9px;
         font-weight: 800;
-
-        letter-spacing: 0.8px;
-
+        letter-spacing: .8px;
         text-transform: uppercase;
-
-        margin-bottom: 4px;
     }
 
     .info-value {
         color: #2d2341;
-
         font-size: 12px;
         font-weight: 600;
-
+        margin-top: 4px;
         word-break: break-word;
     }
-
-
-    /* FORM */
 
     .form-card {
         margin-top: 22px;
@@ -395,16 +216,13 @@
 
     .form-grid {
         display: grid;
-
         grid-template-columns: 1fr 1fr;
-
         gap: 15px;
     }
 
     .form-group {
         display: flex;
         flex-direction: column;
-
         gap: 7px;
     }
 
@@ -414,7 +232,6 @@
 
     .form-group label {
         color: #4c4560;
-
         font-size: 11px;
         font-weight: 700;
     }
@@ -423,188 +240,108 @@
     .form-group select,
     .form-group textarea {
         width: 100%;
-
         min-height: 44px;
-
         padding: 10px 13px;
-
         border-radius: 11px;
-
         border: 1px solid #e1e3ec;
-
         outline: none;
-
         background: #fbfcff;
-
         color: #30263e;
-
         font-size: 12px;
-
-        transition: 0.2s ease;
-    }
-
-    .form-group textarea {
-        min-height: 90px;
-
-        resize: vertical;
     }
 
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
         border-color: #6534c7;
-
-        background: white;
-
-        box-shadow:
-            0 0 0 3px rgba(101,52,199,0.08);
+        box-shadow: 0 0 0 3px rgba(101,52,199,.08);
     }
-
-    .field-error {
-        color: #d52e46;
-
-        font-size: 10px;
-    }
-
-    .help-text {
-        color: #999dae;
-
-        font-size: 10px;
-    }
-
-
-    /* FILE UPLOAD */
 
     .file-upload {
         padding: 15px;
-
         border-radius: 14px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #faf8ff,
-                #f5f9ff
-            );
-
+        background: linear-gradient(135deg,#faf8ff,#f5f9ff);
         border: 1px dashed #c9bcec;
     }
 
     .current-photo {
         display: flex;
         align-items: center;
-
         gap: 12px;
-
         margin-bottom: 12px;
     }
 
     .current-photo img {
-        width: 55px;
-        height: 55px;
-
+        width: 60px;
+        height: 60px;
         object-fit: cover;
-
-        border-radius: 12px;
-
-        border: 2px solid #ffffff;
-
-        box-shadow:
-            0 5px 15px rgba(0,0,0,0.10);
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,.12);
     }
 
     .current-photo-text {
         color: #777b8d;
-
         font-size: 10px;
     }
 
     .current-photo-text strong {
         display: block;
-
         color: #34284b;
-
         font-size: 11px;
-
         margin-bottom: 3px;
     }
-
-
-    /* CHECKBOX */
 
     .availability-check {
         display: flex;
         align-items: center;
-
         gap: 10px;
-
         padding: 14px 15px;
-
         border-radius: 13px;
-
         background: #ecfff5;
-
         border: 1px solid #c9f4dc;
     }
 
     .availability-check input {
         width: 17px;
         height: 17px;
-
         accent-color: #18a866;
     }
 
     .availability-check label {
         color: #177448;
-
         font-size: 11px;
         font-weight: 700;
     }
-
-
-    /* BUTTONS */
 
     .form-actions {
         display: flex;
         align-items: center;
         justify-content: space-between;
-
         gap: 12px;
-
         margin-top: 20px;
-
         padding-top: 20px;
-
         border-top: 1px solid #eef0f5;
     }
 
     .button-group {
         display: flex;
-
         gap: 10px;
     }
 
     .btn {
         min-height: 42px;
-
         padding: 0 18px;
-
         border-radius: 11px;
-
         display: inline-flex;
         align-items: center;
         justify-content: center;
-
         gap: 7px;
-
         border: 0;
-
         font-size: 11px;
         font-weight: 800;
-
         cursor: pointer;
-
-        transition: 0.2s ease;
+        transition: .2s ease;
     }
 
     .btn:hover {
@@ -612,110 +349,63 @@
     }
 
     .btn-primary {
-        background:
-            linear-gradient(
-                135deg,
-                #5c2cb9,
-                #2671dc
-            );
-
+        background: linear-gradient(135deg,#5c2cb9,#2671dc);
         color: white;
-
-        box-shadow:
-            0 8px 20px rgba(77, 42, 170, 0.20);
     }
 
     .btn-secondary {
         background: #f2effa;
-
         color: #4b208f;
     }
 
     .btn-danger {
         background: #fff0f2;
-
         color: #d12c43;
     }
 
-
-    /* CTA */
-
     .profile-cta {
         margin-top: 22px;
-
         padding: 25px;
-
         border-radius: 21px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #fff4f5,
-                #f4f0ff,
-                #edf5ff
-            );
-
+        background: linear-gradient(135deg,#fff4f5,#f4f0ff,#edf5ff);
         border: 1px solid #ece7f7;
-
         text-align: center;
     }
 
     .profile-cta h3 {
         color: #2b1a47;
-
         font-size: 18px;
         font-weight: 800;
     }
 
     .profile-cta p {
         color: #85899c;
-
         font-size: 11px;
-
         margin-top: 6px;
     }
 
     .cta-buttons {
         display: flex;
         justify-content: center;
-
         flex-wrap: wrap;
-
         gap: 10px;
-
         margin-top: 16px;
     }
 
-
-    /* RESPONSIVE */
-
     @media (max-width: 900px) {
-
         .profile-grid {
             grid-template-columns: 1fr;
         }
-
     }
 
-
     @media (max-width: 650px) {
-
         .profile-hero {
-            padding: 23px;
+            padding: 25px;
         }
 
-        .hero-content {
-            align-items: flex-start;
-        }
-
-        .hero-photo {
-            width: 72px;
-            height: 72px;
-            min-width: 72px;
-        }
-
-        .hero-info h1 {
-            font-size: 21px;
+        .profile-main-photo {
+            width: 125px;
+            height: 125px;
         }
 
         .form-grid,
@@ -723,11 +413,8 @@
             grid-template-columns: 1fr;
         }
 
+        .form-group.full,
         .info-item.full {
-            grid-column: auto;
-        }
-
-        .form-group.full {
             grid-column: auto;
         }
 
@@ -737,117 +424,54 @@
         }
 
         .button-group {
-            width: 100%;
             flex-direction: column;
         }
 
         .btn {
             width: 100%;
         }
-
     }
-
-
-    @media (max-width: 430px) {
-
-        .profile-card {
-            padding: 18px;
-            border-radius: 18px;
-        }
-
-        .profile-hero {
-            border-radius: 19px;
-        }
-
-        .hero-content {
-            gap: 14px;
-        }
-
-        .hero-photo {
-            width: 64px;
-            height: 64px;
-            min-width: 64px;
-        }
-
-        .hero-info h1 {
-            font-size: 18px;
-        }
-
-    }
-
 </style>
 
 
 <div class="profile-page">
 
-
-    <!-- =====================================================
-         PROFILE HERO
-    ====================================================== -->
-
+    <!-- PROFILE PHOTO ONLY -->
     <section class="profile-hero">
 
-        <div class="hero-content">
+        <div class="profile-main-photo">
 
-            <div class="hero-photo">
-
-                {% if profile.photo %}
-                    <img
-                        src="{{ profile.photo.url }}"
-                        alt="{{ profile.full_name|default:request.user.username }}">
-                {% else %}
+            {% if profile.photo %}
+                <img
+                    src="{{ profile.photo.url }}"
+                    alt="Profile Photo">
+            {% else %}
+                <div class="initial">
                     {{ request.user.username|first|upper }}
-                {% endif %}
-
-            </div>
-
-
-            <div class="hero-info">
-
-                <h1>
-                    {{ profile.full_name|default:request.user.username }}
-                </h1>
-
-                <p>
-                    @{{ request.user.username }}
-                </p>
-
-                {% if profile.is_available %}
-
-                    <div class="availability">
-                        <span class="green-dot"></span>
-                        Available to Donate
-                    </div>
-
-                {% else %}
-
-                    <div class="availability">
-                        🔴 Currently Unavailable
-                    </div>
-
-                {% endif %}
-
-            </div>
+                </div>
+            {% endif %}
 
         </div>
+
+        {% if profile.is_available %}
+            <div class="profile-status">
+                <span class="green-dot"></span>
+                Available to Donate
+            </div>
+        {% else %}
+            <div class="profile-status">
+                🔴 Currently Unavailable
+            </div>
+        {% endif %}
 
     </section>
 
 
-
-    <!-- =====================================================
-         PROFILE GRID
-    ====================================================== -->
-
     <div class="profile-grid">
-
 
         <!-- LEFT -->
 
         <div>
-
-
-            <!-- BLOOD CARD -->
 
             <div class="profile-card blood-card">
 
@@ -862,7 +486,6 @@
                 <div class="blood-group">
                     {{ profile.blood_group|default:"—" }}
                 </div>
-
 
                 <div class="donation-box">
 
@@ -888,11 +511,7 @@
             </div>
 
 
-
-            <!-- CONTACT INFORMATION -->
-
-            <div class="profile-card"
-                 style="margin-top:22px;">
+            <div class="profile-card" style="margin-top:22px;">
 
                 <div class="card-title">
                     📋 Contact Information
@@ -902,15 +521,10 @@
                     Your registered donor details
                 </div>
 
-
                 <div class="info-grid">
 
-
                     <div class="info-item">
-
-                        <div class="info-icon">
-                            📧
-                        </div>
+                        <div class="info-icon">📧</div>
 
                         <div class="info-label">
                             Email
@@ -919,15 +533,11 @@
                         <div class="info-value">
                             {{ request.user.email|default:"Not provided" }}
                         </div>
-
                     </div>
 
 
                     <div class="info-item">
-
-                        <div class="info-icon">
-                            📱
-                        </div>
+                        <div class="info-icon">📱</div>
 
                         <div class="info-label">
                             Phone
@@ -936,15 +546,11 @@
                         <div class="info-value">
                             {{ profile.phone|default:"Not provided" }}
                         </div>
-
                     </div>
 
 
                     <div class="info-item">
-
-                        <div class="info-icon">
-                            📍
-                        </div>
+                        <div class="info-icon">📍</div>
 
                         <div class="info-label">
                             City
@@ -953,15 +559,11 @@
                         <div class="info-value">
                             {{ profile.city|default:"Not provided" }}
                         </div>
-
                     </div>
 
 
                     <div class="info-item">
-
-                        <div class="info-icon">
-                            🗺️
-                        </div>
+                        <div class="info-icon">🗺️</div>
 
                         <div class="info-label">
                             Location
@@ -970,15 +572,11 @@
                         <div class="info-value">
                             {{ profile.location|default:"Not provided" }}
                         </div>
-
                     </div>
 
 
                     <div class="info-item full">
-
-                        <div class="info-icon">
-                            🚨
-                        </div>
+                        <div class="info-icon">🚨</div>
 
                         <div class="info-label">
                             Emergency Contact
@@ -987,9 +585,7 @@
                         <div class="info-value">
                             {{ profile.emergency_contact|default:"Not provided" }}
                         </div>
-
                     </div>
-
 
                 </div>
 
@@ -998,11 +594,9 @@
         </div>
 
 
-
         <!-- RIGHT -->
 
         <div>
-
 
             <div class="profile-card">
 
@@ -1014,48 +608,22 @@
                     Keep your donor information up to date
                 </div>
 
-
                 <form
                     method="POST"
                     enctype="multipart/form-data">
 
                     {% csrf_token %}
 
-
                     <div class="form-grid">
-
 
                         {% for field in form %}
 
-                            {% if field.name == "is_available" %}
-
-                                <div class="form-group full">
-
-                                    <div class="availability-check">
-
-                                        {{ field }}
-
-                                        <label for="{{ field.id_for_label }}">
-                                            🟢 I am available to donate blood
-                                        </label>
-
-                                    </div>
-
-                                    {% for error in field.errors %}
-                                        <div class="field-error">
-                                            {{ error }}
-                                        </div>
-                                    {% endfor %}
-
-                                </div>
-
-
-                            {% elif field.name == "photo" %}
+                            {% if field.name == "photo" %}
 
                                 <div class="form-group full">
 
                                     <label>
-                                        Photo
+                                        Profile Photo
                                     </label>
 
                                     <div class="file-upload">
@@ -1071,7 +639,7 @@
                                                 <div class="current-photo-text">
 
                                                     <strong>
-                                                        Current Photo
+                                                        Current Profile Photo
                                                     </strong>
 
                                                     {{ profile.photo.name }}
@@ -1087,10 +655,27 @@
                                     </div>
 
                                     {% for error in field.errors %}
-                                        <div class="field-error">
+                                        <div style="color:#d12c43;font-size:10px;">
                                             {{ error }}
                                         </div>
                                     {% endfor %}
+
+                                </div>
+
+
+                            {% elif field.name == "is_available" %}
+
+                                <div class="form-group full">
+
+                                    <div class="availability-check">
+
+                                        {{ field }}
+
+                                        <label for="{{ field.id_for_label }}">
+                                            🟢 I am available to donate blood
+                                        </label>
+
+                                    </div>
 
                                 </div>
 
@@ -1105,12 +690,6 @@
 
                                     {{ field }}
 
-                                    {% for error in field.errors %}
-                                        <div class="field-error">
-                                            {{ error }}
-                                        </div>
-                                    {% endfor %}
-
                                 </div>
 
 
@@ -1124,23 +703,14 @@
 
                                     {{ field }}
 
-                                    {% for error in field.errors %}
-                                        <div class="field-error">
-                                            {{ error }}
-                                        </div>
-                                    {% endfor %}
-
                                 </div>
 
                             {% endif %}
 
                         {% endfor %}
 
-
                     </div>
 
-
-                    <!-- BUTTONS -->
 
                     <div class="form-actions">
 
@@ -1151,7 +721,6 @@
                             ← Dashboard
 
                         </a>
-
 
                         <div class="button-group">
 
@@ -1179,16 +748,10 @@
 
             </div>
 
-
         </div>
 
     </div>
 
-
-
-    <!-- =====================================================
-         CTA
-    ====================================================== -->
 
     <div class="profile-cta">
 
@@ -1201,7 +764,6 @@
             when someone nearby needs your blood group.
         </p>
 
-
         <div class="cta-buttons">
 
             <a
@@ -1212,7 +774,6 @@
 
             </a>
 
-
             <a
                 href="/request-blood/"
                 class="btn btn-secondary">
@@ -1220,7 +781,6 @@
                 🚑 Request Blood
 
             </a>
-
 
             <a
                 href="/emergency-request/"
@@ -1233,7 +793,6 @@
         </div>
 
     </div>
-
 
 </div>
 
