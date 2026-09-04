@@ -4,20 +4,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>
         {% block title %}BloodLink{% endblock %}
     </title>
 
     <meta name="description"
-          content="BloodLink - Connecting blood donors with people in need.">
+          content="BloodLink - Blood Donation & Emergency Support Network">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
     <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         html {
@@ -25,17 +38,9 @@
         }
 
         body {
-            font-family:
-                Inter,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Arial,
-                sans-serif;
-
-            background: #f5f7fb;
-            color: #172033;
+            font-family: "Inter", Arial, sans-serif;
+            background: #f5f7ff;
+            color: #1f2937;
             min-height: 100vh;
         }
 
@@ -50,509 +55,43 @@
             font-family: inherit;
         }
 
-        /* =========================
+
+        /* =========================================================
            SIDEBAR
-        ========================= */
+        ========================================================= */
 
         .sidebar {
             position: fixed;
-            left: 0;
             top: 0;
+            left: 0;
+
             width: 260px;
+            min-width: 260px;
             height: 100vh;
 
             background:
                 linear-gradient(
                     180deg,
                     #24104f 0%,
-                    #32156d 42%,
-                    #172d70 100%
+                    #32136d 42%,
+                    #173f8f 100%
                 );
 
-            color: white;
+            color: #ffffff;
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 22px 15px;
+
             z-index: 1000;
 
-            display: flex;
-            flex-direction: column;
-
-            box-shadow:
-                8px 0 30px rgba(31, 41, 55, 0.12);
-
             overflow-y: auto;
-        }
-
-        /* =========================
-           BRAND
-        ========================= */
-
-        .brand {
-            padding: 25px 20px 20px;
-            border-bottom: 1px solid rgba(255,255,255,.10);
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-icon {
-            width: 48px;
-            height: 48px;
-
-            border-radius: 15px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #f43f5e,
-                    #ef4444
-                );
+            overflow-x: hidden;
 
             box-shadow:
-                0 8px 22px rgba(244,63,94,.30);
-
-            font-size: 25px;
+                8px 0 30px rgba(40, 20, 100, 0.15);
         }
-
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-text strong {
-            font-size: 21px;
-            line-height: 1;
-
-            font-weight: 900;
-            letter-spacing: -.5px;
-
-            color: #ffffff;
-        }
-
-        .brand-text small {
-            margin-top: 6px;
-
-            font-size: 8px;
-            font-weight: 800;
-
-            letter-spacing: 1.1px;
-
-            color: #93c5fd;
-        }
-
-        /* =========================
-           NAVIGATION
-        ========================= */
-
-        .sidebar-nav {
-            padding: 18px 13px;
-            flex: 1;
-        }
-
-        .nav-label {
-            padding: 8px 12px 10px;
-
-            font-size: 10px;
-            font-weight: 800;
-
-            letter-spacing: 1.2px;
-
-            color: rgba(255,255,255,.45);
-
-            text-transform: uppercase;
-        }
-
-        .nav-link {
-            position: relative;
-
-            display: flex;
-            align-items: center;
-
-            gap: 12px;
-
-            width: 100%;
-
-            padding: 12px 13px;
-            margin-bottom: 5px;
-
-            border-radius: 13px;
-
-            color: rgba(255,255,255,.78);
-
-            font-size: 13px;
-            font-weight: 650;
-
-            transition:
-                background .2s ease,
-                color .2s ease,
-                transform .2s ease;
-        }
-
-        .nav-link:hover {
-            color: #ffffff;
-
-            background: rgba(255,255,255,.10);
-
-            transform: translateX(3px);
-        }
-
-        .nav-link.active {
-            color: #ffffff;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(124,58,237,.95),
-                    rgba(37,99,235,.92)
-                );
-
-            box-shadow:
-                0 8px 20px rgba(37,99,235,.20);
-        }
-
-        .nav-icon {
-            width: 32px;
-            height: 32px;
-
-            flex-shrink: 0;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 10px;
-
-            background: rgba(255,255,255,.08);
-
-            font-size: 16px;
-        }
-
-        .nav-link.active .nav-icon {
-            background: rgba(255,255,255,.14);
-        }
-
-        /* =========================
-           SAVE A LIFE BOX
-        ========================= */
-
-        .save-life {
-            margin: 8px 13px 15px;
-
-            padding: 17px;
-
-            border-radius: 18px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(244,63,94,.95),
-                    rgba(190,24,93,.95)
-                );
-
-            box-shadow:
-                0 12px 25px rgba(190,24,93,.22);
-        }
-
-        .save-life-icon {
-            width: 36px;
-            height: 36px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            margin-bottom: 9px;
-
-            border-radius: 11px;
-
-            background: rgba(255,255,255,.15);
-
-            font-size: 18px;
-        }
-
-        .save-life strong {
-            display: block;
-
-            margin-bottom: 5px;
-
-            font-size: 14px;
-            font-weight: 850;
-        }
-
-        .save-life p {
-            color: rgba(255,255,255,.80);
-
-            font-size: 11px;
-            line-height: 1.5;
-        }
-
-        /* =========================
-           MAIN AREA
-        ========================= */
-
-        .main-wrapper {
-            min-height: 100vh;
-
-            margin-left: 260px;
-
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* =========================
-           TOPBAR
-        ========================= */
-
-        .topbar {
-            position: sticky;
-            top: 0;
-
-            height: 72px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 30px;
-
-            background: rgba(255,255,255,.94);
-
-            border-bottom: 1px solid #e8eaf0;
-
-            backdrop-filter: blur(14px);
-
-            z-index: 900;
-        }
-
-        .topbar-title {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .topbar-title strong {
-            color: #172033;
-
-            font-size: 17px;
-            font-weight: 850;
-        }
-
-        .topbar-title span {
-            margin-top: 2px;
-
-            color: #64748b;
-
-            font-size: 11px;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .notification-btn {
-            width: 40px;
-            height: 40px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 12px;
-
-            background: #f1f5ff;
-
-            color: #4c1d95;
-
-            font-size: 18px;
-
-            transition: .2s ease;
-        }
-
-        .notification-btn:hover {
-            background: #e0e7ff;
-
-            transform: translateY(-2px);
-        }
-
-        .top-user {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-
-            padding: 5px 10px 5px 5px;
-
-            border-radius: 30px;
-
-            background: #f8fafc;
-
-            border: 1px solid #edf0f5;
-        }
-
-        .top-avatar {
-            width: 34px;
-            height: 34px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            color: white;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #7c3aed,
-                    #2563eb
-                );
-
-            font-size: 14px;
-            font-weight: 800;
-        }
-
-        .top-user span {
-            color: #334155;
-
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        /* =========================
-           CONTENT
-        ========================= */
-
-        .content {
-            width: 100%;
-            max-width: 1500px;
-
-            margin: 0 auto;
-
-            padding: 28px 30px 35px;
-
-            flex: 1;
-        }
-
-        /* =========================
-           FOOTER
-        ========================= */
-
-        .footer {
-            margin-left: 260px;
-
-            padding: 18px 30px;
-
-            text-align: center;
-
-            background: #ffffff;
-
-            border-top: 1px solid #e8eaf0;
-
-            color: #64748b;
-
-            font-size: 11px;
-        }
-
-        .footer strong {
-            color: #6d28d9;
-            font-weight: 800;
-        }
-
-        .footer-heart {
-            color: #ef4444;
-            font-size: 13px;
-        }
-
-        /* =========================
-           MOBILE BUTTON
-        ========================= */
-
-        .mobile-menu-btn {
-            display: none;
-
-            width: 42px;
-            height: 42px;
-
-            border: none;
-            border-radius: 12px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #6d28d9,
-                    #2563eb
-                );
-
-            color: white;
-
-            font-size: 20px;
-
-            cursor: pointer;
-        }
-
-        .sidebar-overlay {
-            display: none;
-
-            position: fixed;
-
-            inset: 0;
-
-            background: rgba(15,23,42,.55);
-
-            z-index: 950;
-        }
-
-        /* =========================
-           MESSAGES
-        ========================= */
-
-        .messages {
-            margin-bottom: 20px;
-        }
-
-        .message {
-            padding: 13px 16px;
-
-            margin-bottom: 8px;
-
-            border-radius: 12px;
-
-            font-size: 13px;
-            font-weight: 650;
-
-            background: #eef2ff;
-            color: #3730a3;
-
-            border: 1px solid #e0e7ff;
-        }
-
-        .message.success {
-            background: #ecfdf5;
-            color: #047857;
-            border-color: #a7f3d0;
-        }
-
-        .message.error {
-            background: #fff1f2;
-            color: #be123c;
-            border-color: #fecdd3;
-        }
-
-        .message.warning {
-            background: #fff7ed;
-            color: #c2410c;
-            border-color: #fed7aa;
-        }
-
-        /* =========================
-           SCROLLBAR
-        ========================= */
 
         .sidebar::-webkit-scrollbar {
             width: 5px;
@@ -563,263 +102,1110 @@
         }
 
         .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,.16);
-            border-radius: 10px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 20px;
         }
 
-        /* =========================
-           RESPONSIVE
-        ========================= */
 
-        @media (max-width: 900px) {
+        /* =========================================================
+           LOGO
+        ========================================================= */
+
+        .brand {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 4px 8px 25px;
+
+            color: #ffffff;
+
+            min-width: 0;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+
+            min-width: 46px;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff5364,
+                    #ff3650
+                );
+
+            box-shadow:
+                0 8px 20px rgba(255, 61, 87, 0.35);
+        }
+
+        .brand-text {
+            min-width: 0;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+
+            color: #ffffff;
+
+            white-space: nowrap;
+        }
+
+        .brand-tagline {
+            margin-top: 3px;
+
+            font-size: 10px;
+            font-weight: 500;
+
+            color: rgba(255,255,255,0.62);
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================================================
+           USER PROFILE IN SIDEBAR
+        ========================================================= */
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            padding: 13px 11px;
+
+            margin-bottom: 18px;
+
+            border-radius: 16px;
+
+            background: rgba(255,255,255,0.09);
+
+            border: 1px solid rgba(255,255,255,0.10);
+
+            min-width: 0;
+        }
+
+        .sidebar-avatar {
+            width: 42px;
+            height: 42px;
+
+            min-width: 42px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff5065,
+                    #ff7b61
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: #ffffff;
+
+            font-size: 16px;
+            font-weight: 800;
+
+            overflow: hidden;
+
+            border: 2px solid rgba(255,255,255,0.35);
+        }
+
+        .sidebar-avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+        .sidebar-user-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .sidebar-user-name {
+            color: #ffffff;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            line-height: 1.35;
+
+            white-space: normal;
+
+            overflow: visible;
+
+            word-break: normal;
+            overflow-wrap: break-word;
+        }
+
+        .sidebar-user-email {
+            color: rgba(255,255,255,0.60);
+
+            font-size: 11px;
+
+            margin-top: 4px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        /* =========================================================
+           NAVIGATION
+        ========================================================= */
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+
+            gap: 5px;
+
+            width: 100%;
+        }
+
+        .nav-section-title {
+            padding: 13px 15px 7px;
+
+            color: rgba(255,255,255,0.42);
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1.2px;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+
+            width: 100%;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+
+            width: 100%;
+
+            min-height: 45px;
+
+            padding: 0 14px;
+
+            gap: 12px;
+
+            border-radius: 12px;
+
+            color: rgba(255,255,255,0.76);
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+
+            overflow: visible;
+
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            color: #ffffff;
+
+            background: rgba(255,255,255,0.10);
+
+            transform: translateX(2px);
+        }
+
+        .nav-item.active {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,82,101,0.95),
+                    rgba(255,75,98,0.72)
+                );
+
+            box-shadow:
+                0 8px 18px rgba(255, 65, 88, 0.18);
+        }
+
+        .nav-icon {
+            width: 24px;
+            min-width: 24px;
+
+            height: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 17px;
+        }
+
+        .nav-item span {
+            display: block;
+
+            white-space: nowrap;
+
+            overflow: visible;
+        }
+
+
+        /* =========================================================
+           SAVE A LIFE CARD
+        ========================================================= */
+
+        .save-card {
+            margin-top: auto;
+
+            padding: 17px;
+
+            border-radius: 17px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,255,255,0.12),
+                    rgba(255,255,255,0.06)
+                );
+
+            border: 1px solid rgba(255,255,255,0.10);
+
+            text-align: center;
+        }
+
+        .save-card-icon {
+            font-size: 25px;
+
+            margin-bottom: 7px;
+        }
+
+        .save-card-title {
+            font-size: 13px;
+            font-weight: 800;
+
+            color: #ffffff;
+        }
+
+        .save-card-text {
+            margin-top: 5px;
+
+            font-size: 10px;
+            line-height: 1.5;
+
+            color: rgba(255,255,255,0.58);
+        }
+
+        .save-card-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 12px;
+
+            min-height: 35px;
+
+            border-radius: 10px;
+
+            background: #ffffff;
+
+            color: #3b177d;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            transition: 0.2s ease;
+        }
+
+        .save-card-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 7px 18px rgba(0,0,0,0.15);
+        }
+
+
+        /* =========================================================
+           MAIN AREA
+        ========================================================= */
+
+        .main-wrapper {
+            margin-left: 260px;
+
+            min-height: 100vh;
+
+            width: calc(100% - 260px);
+        }
+
+
+        /* =========================================================
+           TOPBAR
+        ========================================================= */
+
+        .topbar {
+            height: 72px;
+
+            padding: 0 30px;
+
+            background: rgba(255,255,255,0.94);
+
+            backdrop-filter: blur(15px);
+
+            border-bottom: 1px solid #e9eaf2;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+
+            min-width: 0;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+
+            width: 42px;
+            height: 42px;
+
+            border: 0;
+
+            border-radius: 12px;
+
+            background: #f1edff;
+
+            color: #4b208f;
+
+            font-size: 20px;
+
+            cursor: pointer;
+        }
+
+        .page-title {
+            color: #21143e;
+
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .page-subtitle {
+            margin-top: 2px;
+
+            color: #8b8fa5;
+
+            font-size: 11px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        /* =========================================================
+           SEARCH
+        ========================================================= */
+
+        .top-search {
+            width: 210px;
+
+            height: 40px;
+
+            border-radius: 11px;
+
+            border: 1px solid #e5e7f0;
+
+            background: #f8f9fd;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 12px;
+
+            gap: 8px;
+        }
+
+        .top-search span {
+            color: #8c91a6;
+
+            font-size: 14px;
+        }
+
+        .top-search input {
+            width: 100%;
+
+            border: 0;
+            outline: 0;
+
+            background: transparent;
+
+            color: #333;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
+           NOTIFICATION
+        ========================================================= */
+
+        .notification-button {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 11px;
+
+            background: #f3efff;
+
+            color: #4c1d95;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+
+            position: relative;
+
+            transition: 0.2s ease;
+        }
+
+        .notification-button:hover {
+            transform: translateY(-2px);
+
+            background: #e9e0ff;
+        }
+
+        .notification-dot {
+            position: absolute;
+
+            top: 7px;
+            right: 7px;
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #ff4e62;
+
+            border: 2px solid #ffffff;
+        }
+
+
+        /* =========================================================
+           TOP USER
+        ========================================================= */
+
+        .top-user {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            padding: 5px 10px 5px 5px;
+
+            border-radius: 30px;
+
+            background: #f6f5fb;
+
+            border: 1px solid #e9e6f4;
+        }
+
+        .top-user-avatar {
+            width: 32px;
+            height: 32px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff5065,
+                    #5b35d5
+                );
+
+            color: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            overflow: hidden;
+        }
+
+        .top-user-avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+        .top-user-name {
+            max-width: 140px;
+
+            color: #302044;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        /* =========================================================
+           CONTENT
+        ========================================================= */
+
+        .content {
+            padding: 30px;
+
+            max-width: 1500px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           DJANGO MESSAGES
+        ========================================================= */
+
+        .messages-container {
+            padding: 18px 30px 0;
+        }
+
+        .message {
+            padding: 13px 16px;
+
+            border-radius: 12px;
+
+            margin-bottom: 10px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            border: 1px solid transparent;
+        }
+
+        .message.success {
+            background: #ecfdf3;
+            color: #147a46;
+            border-color: #b7efcf;
+        }
+
+        .message.error {
+            background: #fff1f2;
+            color: #c51f35;
+            border-color: #ffc7cf;
+        }
+
+        .message.warning {
+            background: #fff9e8;
+            color: #9a6800;
+            border-color: #f8dfa0;
+        }
+
+        .message.info {
+            background: #eef5ff;
+            color: #2457a8;
+            border-color: #c9dcff;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .footer {
+            padding: 25px 30px 30px;
+
+            color: #9297aa;
+
+            font-size: 11px;
+
+            text-align: center;
+        }
+
+        .footer strong {
+            color: #4b208f;
+        }
+
+
+        /* =========================================================
+           SIDEBAR OVERLAY
+        ========================================================= */
+
+        .sidebar-overlay {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(18, 10, 40, 0.48);
+
+            z-index: 999;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE - TABLET
+        ========================================================= */
+
+        @media (max-width: 1050px) {
 
             .sidebar {
+                width: 235px;
+                min-width: 235px;
+            }
+
+            .main-wrapper {
+                margin-left: 235px;
+
+                width: calc(100% - 235px);
+            }
+
+            .top-search {
+                width: 160px;
+            }
+
+            .content {
+                padding: 24px;
+            }
+
+            .messages-container {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+        }
+
+
+        /* =========================================================
+           RESPONSIVE - MOBILE
+        ========================================================= */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                width: 260px;
+                min-width: 260px;
+
                 transform: translateX(-100%);
 
-                transition: transform .25s ease;
+                transition: transform 0.28s ease;
+
+                box-shadow:
+                    12px 0 35px rgba(0,0,0,0.20);
             }
 
             .sidebar.open {
                 transform: translateX(0);
             }
 
-            .sidebar-overlay.active {
+            .sidebar-overlay.show {
                 display: block;
             }
 
             .main-wrapper {
                 margin-left: 0;
+
+                width: 100%;
             }
 
-            .footer {
-                margin-left: 0;
+            .topbar {
+                height: 65px;
+
+                padding: 0 16px;
             }
 
             .mobile-menu-btn {
                 display: flex;
+
                 align-items: center;
                 justify-content: center;
             }
 
-            .topbar {
-                height: 66px;
-
-                padding: 0 18px;
+            .page-title {
+                font-size: 15px;
             }
 
-            .topbar-title {
+            .page-subtitle {
+                display: none;
+            }
+
+            .top-search {
+                display: none;
+            }
+
+            .top-user {
+                padding-right: 5px;
+            }
+
+            .top-user-name {
                 display: none;
             }
 
             .content {
-                padding: 20px 17px 30px;
-            }
-        }
-
-        @media (max-width: 500px) {
-
-            .topbar {
-                padding: 0 13px;
+                padding: 20px 16px;
             }
 
-            .top-user span {
-                display: none;
-            }
-
-            .content {
-                padding: 17px 12px 25px;
+            .messages-container {
+                padding: 15px 16px 0;
             }
 
             .footer {
-                padding: 15px 12px;
+                padding: 20px 16px 25px;
             }
+
         }
+
+
+        /* =========================================================
+           SMALL MOBILE
+        ========================================================= */
+
+        @media (max-width: 420px) {
+
+            .topbar-right {
+                gap: 7px;
+            }
+
+            .notification-button {
+                width: 36px;
+                height: 36px;
+            }
+
+            .top-user-avatar {
+                width: 30px;
+                height: 30px;
+            }
+
+            .content {
+                padding: 16px 12px;
+            }
+
+        }
+
     </style>
 
     {% block extra_css %}{% endblock %}
+
 </head>
 
 
 <body>
 
-    <!-- =========================
+
+    <!-- =========================================================
          SIDEBAR
-    ========================== -->
+    ========================================================== -->
 
     <aside class="sidebar" id="sidebar">
 
-        <div class="brand">
+        <!-- BRAND -->
+        <a href="/" class="brand">
 
-            <a href="/" class="brand-logo">
+            <div class="brand-icon">
+                🩸
+            </div>
 
-                <div class="brand-icon">
-                    🩸
+            <div class="brand-text">
+
+                <div class="brand-name">
+                    BloodLink
                 </div>
 
-                <div class="brand-text">
-                    <strong>BloodLink</strong>
-
-                    <small>
-                        SAVE • DONATE • CONNECT
-                    </small>
+                <div class="brand-tagline">
+                    SAVE • DONATE • CONNECT
                 </div>
 
-            </a>
+            </div>
+
+        </a>
+
+
+        <!-- USER PROFILE -->
+        {% if request.user.is_authenticated %}
+
+        <div class="sidebar-profile">
+
+            <div class="sidebar-avatar">
+
+                {% if request.user.userprofile.photo %}
+                    <img
+                        src="{{ request.user.userprofile.photo.url }}"
+                        alt="Profile Photo"
+                    >
+                {% else %}
+                    {{ request.user.username|first|upper }}
+                {% endif %}
+
+            </div>
+
+
+            <div class="sidebar-user-info">
+
+                <div class="sidebar-user-name">
+                    {{ request.user.userprofile.full_name|default:request.user.username }}
+                </div>
+
+                <div class="sidebar-user-email">
+                    @{{ request.user.username }}
+                </div>
+
+            </div>
 
         </div>
 
+        {% endif %}
 
-        <nav class="sidebar-nav">
 
-            <div class="nav-label">
-                Main Menu
+        <!-- NAVIGATION -->
+        <nav class="nav-menu">
+
+
+            <!-- MAIN -->
+            <div class="nav-section-title">
+                MAIN
             </div>
 
 
             <a href="/"
-               class="nav-link {% if request.path == '/' %}active{% endif %}">
+               class="nav-item">
 
-                <span class="nav-icon">🏠</span>
+                <div class="nav-icon">
+                    🏠
+                </div>
 
-                <span>Home</span>
+                <span>
+                    Home
+                </span>
 
             </a>
 
 
             <a href="/dashboard/"
-               class="nav-link {% if '/dashboard/' in request.path %}active{% endif %}">
+               class="nav-item">
 
-                <span class="nav-icon">📊</span>
+                <div class="nav-icon">
+                    📊
+                </div>
 
-                <span>Dashboard</span>
-
-            </a>
-
-
-            <a href="/donors/"
-               class="nav-link {% if '/donors/' in request.path %}active{% endif %}">
-
-                <span class="nav-icon">🩸</span>
-
-                <span>Donor Directory</span>
-
-            </a>
-
-
-            <a href="/notifications/"
-               class="nav-link {% if '/notifications/' in request.path %}active{% endif %}">
-
-                <span class="nav-icon">🔔</span>
-
-                <span>Notifications</span>
-
-            </a>
-
-
-            <div class="nav-label" style="margin-top:12px;">
-                Blood Services
-            </div>
-
-
-            <a href="/request-blood/"
-               class="nav-link {% if '/request-blood/' in request.path %}active{% endif %}">
-
-                <span class="nav-icon">📋</span>
-
-                <span>Request Blood</span>
-
-            </a>
-
-
-            <a href="/emergency-request/"
-               class="nav-link {% if '/emergency-request/' in request.path %}active{% endif %}">
-
-                <span class="nav-icon">🚨</span>
-
-                <span>Emergency</span>
-
-            </a>
-
-
-            <a href="/blood-requests/"
-               class="nav-link {% if '/blood-requests/' in request.path %}active{% endif %}">
-
-                <span class="nav-icon">📑</span>
-
-                <span>Blood Requests</span>
-
-            </a>
-
-
-            <div class="nav-label" style="margin-top:12px;">
-                Information
-            </div>
-
-
-            <a href="/about/"
-               class="nav-link {% if '/about/' in request.path %}active{% endif %}">
-
-                <span class="nav-icon">💜</span>
-
-                <span>About</span>
-
-            </a>
-
-
-            <a href="/contact/"
-               class="nav-link {% if '/contact/' in request.path %}active{% endif %}">
-
-                <span class="nav-icon">📞</span>
-
-                <span>Contact</span>
+                <span>
+                    Dashboard
+                </span>
 
             </a>
 
 
             <a href="/profile/"
-               class="nav-link {% if '/profile/' in request.path %}active{% endif %}">
+               class="nav-item">
 
-                <span class="nav-icon">👤</span>
+                <div class="nav-icon">
+                    👤
+                </div>
 
-                <span>My Profile</span>
+                <span>
+                    My Profile
+                </span>
+
+            </a>
+
+
+            <!-- DONATION -->
+            <div class="nav-section-title">
+                DONATION
+            </div>
+
+
+            <a href="/donors/"
+               class="nav-item">
+
+                <div class="nav-icon">
+                    🩸
+                </div>
+
+                <span>
+                    Find Donors
+                </span>
 
             </a>
 
 
-            <a href="/logout/" class="nav-link">
+            <a href="/request-blood/"
+               class="nav-item">
 
-                <span class="nav-icon">🚪</span>
+                <div class="nav-icon">
+                    💉
+                </div>
 
-                <span>Logout</span>
+                <span>
+                    Request Blood
+                </span>
 
             </a>
+
+
+            <a href="/blood-requests/"
+               class="nav-item">
+
+                <div class="nav-icon">
+                    📋
+                </div>
+
+                <span>
+                    Blood Requests
+                </span>
+
+            </a>
+
+
+            <!-- EMERGENCY -->
+            <div class="nav-section-title">
+                EMERGENCY
+            </div>
+
+
+            <a href="/emergency-request/"
+               class="nav-item">
+
+                <div class="nav-icon">
+                    🚨
+                </div>
+
+                <span>
+                    Emergency Request
+                </span>
+
+            </a>
+
+
+            <a href="/notifications/"
+               class="nav-item">
+
+                <div class="nav-icon">
+                    🔔
+                </div>
+
+                <span>
+                    Notifications
+                </span>
+
+            </a>
+
+
+            <!-- SERVICES -->
+            <div class="nav-section-title">
+                SERVICES
+            </div>
+
+
+            <a href="/about/"
+               class="nav-item">
+
+                <div class="nav-icon">
+                    ℹ️
+                </div>
+
+                <span>
+                    About BloodLink
+                </span>
+
+            </a>
+
+
+            <a href="/contact/"
+               class="nav-item">
+
+                <div class="nav-icon">
+                    📞
+                </div>
+
+                <span>
+                    Contact
+                </span>
+
+            </a>
+
 
         </nav>
 
 
-        <!-- SAVE LIFE -->
+        <!-- SAVE A LIFE -->
+        {% if request.user.is_authenticated %}
 
-        <div class="save-life">
+        <div class="save-card">
 
-            <div class="save-life-icon">
+            <div class="save-card-icon">
                 ❤️
             </div>
 
-            <strong>
-                Save a Life
-            </strong>
+            <div class="save-card-title">
+                Save a Life Today
+            </div>
 
-            <p>
-                Your blood donation can give someone
+            <div class="save-card-text">
+                Your donation can give someone
                 another chance at life.
-            </p>
+            </div>
+
+            <a href="/request-blood/"
+               class="save-card-button">
+
+                Find Blood
+
+            </a>
 
         </div>
+
+        {% endif %}
 
     </aside>
 
 
-    <!-- OVERLAY -->
+
+    <!-- MOBILE OVERLAY -->
 
     <div class="sidebar-overlay"
          id="sidebarOverlay"
@@ -827,64 +1213,117 @@
     </div>
 
 
-    <!-- =========================
+
+    <!-- =========================================================
          MAIN WRAPPER
-    ========================== -->
+    ========================================================== -->
 
     <div class="main-wrapper">
+
 
         <!-- TOPBAR -->
 
         <header class="topbar">
 
-            <button
-                class="mobile-menu-btn"
-                onclick="openSidebar()"
-                aria-label="Open menu">
 
-                ☰
+            <div class="topbar-left">
 
-            </button>
+                <button
+                    class="mobile-menu-btn"
+                    onclick="toggleSidebar()"
+                    aria-label="Open Menu">
+
+                    ☰
+
+                </button>
 
 
-            <div class="topbar-title">
+                <div>
 
-                <strong>
-                    BloodLink
-                </strong>
+                    <div class="page-title">
+                        {% block page_title %}
+                            BloodLink
+                        {% endblock %}
+                    </div>
 
-                <span>
-                    Blood Donation & Emergency Support
-                </span>
+                    <div class="page-subtitle">
+                        Blood Donation & Emergency Support
+                    </div>
+
+                </div>
 
             </div>
 
 
+
             <div class="topbar-right">
+
+
+                <!-- SEARCH -->
+
+                <div class="top-search">
+
+                    <span>
+                        🔍
+                    </span>
+
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        aria-label="Search">
+
+                </div>
+
+
+                <!-- NOTIFICATION -->
 
                 {% if request.user.is_authenticated %}
 
-                    <a href="/notifications/"
-                       class="notification-btn"
-                       aria-label="Notifications">
+                <a href="/notifications/"
+                   class="notification-button"
+                   aria-label="Notifications">
 
-                        🔔
+                    🔔
 
-                    </a>
+                    <span class="notification-dot"></span>
+
+                </a>
+
+                {% endif %}
 
 
-                    <a href="/profile/"
-                       class="top-user">
 
-                        <div class="top-avatar">
+                <!-- TOP USER -->
+
+                {% if request.user.is_authenticated %}
+
+                <a href="/profile/"
+                   class="top-user">
+
+                    <div class="top-user-avatar">
+
+                        {% if request.user.userprofile.photo %}
+
+                            <img
+                                src="{{ request.user.userprofile.photo.url }}"
+                                alt="Profile Photo">
+
+                        {% else %}
+
                             {{ request.user.username|first|upper }}
-                        </div>
 
-                        <span>
-                            {{ request.user.username }}
-                        </span>
+                        {% endif %}
 
-                    </a>
+                    </div>
+
+
+                    <div class="top-user-name">
+
+                        {{ request.user.userprofile.full_name|default:request.user.username }}
+
+                    </div>
+
+                </a>
 
                 {% endif %}
 
@@ -893,31 +1332,37 @@
         </header>
 
 
-        <!-- CONTENT -->
 
-        <main class="content">
+        <!-- DJANGO MESSAGES -->
 
-            {% if messages %}
+        {% if messages %}
 
-                <div class="messages">
+        <div class="messages-container">
 
-                    {% for message in messages %}
+            {% for message in messages %}
 
-                        <div class="message
-                            {% if message.tags %}
-                                {{ message.tags }}
-                            {% endif %}">
+                <div class="message
+                    {% if message.tags %}
+                        {{ message.tags }}
+                    {% else %}
+                        info
+                    {% endif %}">
 
-                            {{ message }}
-
-                        </div>
-
-                    {% endfor %}
+                    {{ message }}
 
                 </div>
 
-            {% endif %}
+            {% endfor %}
 
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- PAGE CONTENT -->
+
+        <main class="content">
 
             {% block content %}
 
@@ -925,31 +1370,35 @@
 
         </main>
 
+
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+            Made with ❤️ for a healthier community
+            <br>
+
+            <strong>
+                BloodLink
+            </strong>
+            &nbsp;•&nbsp;
+            Save Lives. Donate Blood.
+
+        </footer>
+
+
     </div>
 
 
-    <!-- FOOTER -->
 
-    <footer class="footer">
-
-        <span class="footer-heart">♥</span>
-
-        <strong>BloodLink</strong>
-
-        — Connecting donors, saving lives.
-
-        <span class="footer-heart">♥</span>
-
-    </footer>
-
-
-    <!-- =========================
-         MOBILE SIDEBAR JS
-    ========================== -->
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
 
     <script>
 
-        function openSidebar() {
+        function toggleSidebar() {
 
             const sidebar =
                 document.getElementById("sidebar");
@@ -957,9 +1406,10 @@
             const overlay =
                 document.getElementById("sidebarOverlay");
 
-            sidebar.classList.add("open");
+            sidebar.classList.toggle("open");
 
-            overlay.classList.add("active");
+            overlay.classList.toggle("show");
+
         }
 
 
@@ -973,43 +1423,39 @@
 
             sidebar.classList.remove("open");
 
-            overlay.classList.remove("active");
+            overlay.classList.remove("show");
+
         }
 
 
-        document.addEventListener(
-            "keydown",
-            function(event) {
+        /* Close mobile sidebar after clicking navigation */
 
-                if (event.key === "Escape") {
+        document.querySelectorAll(".nav-item").forEach(function(item) {
+
+            item.addEventListener("click", function() {
+
+                if (window.innerWidth <= 768) {
 
                     closeSidebar();
 
                 }
 
-            }
-        );
-
-
-        document.querySelectorAll(".nav-link")
-            .forEach(function(link) {
-
-                link.addEventListener(
-                    "click",
-                    function() {
-
-                        if (
-                            window.innerWidth <= 900
-                        ) {
-
-                            closeSidebar();
-
-                        }
-
-                    }
-                );
-
             });
+
+        });
+
+
+        /* Escape key closes sidebar */
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+
+                closeSidebar();
+
+            }
+
+        });
 
     </script>
 
@@ -1017,4 +1463,5 @@
     {% block extra_js %}{% endblock %}
 
 </body>
+
 </html>
