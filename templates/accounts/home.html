@@ -1,0 +1,403 @@
+{% extends "base.html" %}
+
+{% block title %}BloodLink - Save Lives{% endblock %}
+
+{% block content %}
+
+<style>
+    .home-wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 55px 45px;
+        background: linear-gradient(135deg, #6d28d9, #2563eb, #0891b2);
+        color: white;
+        box-shadow: 0 20px 50px rgba(37, 99, 235, .25);
+    }
+
+    .hero::before,
+    .hero::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,.10);
+    }
+
+    .hero::before {
+        width: 260px;
+        height: 260px;
+        right: -80px;
+        top: -90px;
+    }
+
+    .hero::after {
+        width: 180px;
+        height: 180px;
+        left: -60px;
+        bottom: -80px;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 720px;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        padding: 9px 16px;
+        border-radius: 30px;
+        background: rgba(255,255,255,.16);
+        border: 1px solid rgba(255,255,255,.25);
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+        line-height: 1.1;
+        margin: 0 0 18px;
+        font-weight: 900;
+    }
+
+    .hero h1 span {
+        color: #ffd1dc;
+    }
+
+    .hero p {
+        font-size: 18px;
+        line-height: 1.7;
+        margin-bottom: 30px;
+        color: rgba(255,255,255,.92);
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .btn-main {
+        display: inline-block;
+        padding: 14px 24px;
+        border-radius: 14px;
+        background: #ffffff;
+        color: #4c1d95;
+        text-decoration: none;
+        font-weight: 800;
+        transition: .25s;
+    }
+
+    .btn-main:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(0,0,0,.18);
+    }
+
+    .btn-emergency {
+        display: inline-block;
+        padding: 14px 24px;
+        border-radius: 14px;
+        background: #ff4d6d;
+        color: white;
+        text-decoration: none;
+        font-weight: 800;
+        transition: .25s;
+    }
+
+    .btn-emergency:hover {
+        transform: translateY(-3px);
+        background: #e11d48;
+    }
+
+    .section-title {
+        text-align: center;
+        margin: 45px 0 25px;
+    }
+
+    .section-title h2 {
+        margin: 0 0 8px;
+        font-size: 30px;
+        color: #172554;
+    }
+
+    .section-title p {
+        color: #64748b;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 28px;
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 30px rgba(15,23,42,.07);
+        transition: .25s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 35px rgba(37,99,235,.13);
+    }
+
+    .feature-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 17px;
+        font-size: 27px;
+        margin-bottom: 18px;
+        background: linear-gradient(135deg,#ede9fe,#dbeafe);
+    }
+
+    .feature-card h3 {
+        margin: 0 0 10px;
+        color: #172554;
+    }
+
+    .feature-card p {
+        margin: 0;
+        color: #64748b;
+        line-height: 1.6;
+    }
+
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .step {
+        background: linear-gradient(145deg,#ffffff,#f8fafc);
+        border-radius: 20px;
+        padding: 25px 18px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+    }
+
+    .step-number {
+        width: 45px;
+        height: 45px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg,#7c3aed,#2563eb);
+        color: white;
+        font-weight: 900;
+    }
+
+    .step h3 {
+        color: #172554;
+        font-size: 17px;
+    }
+
+    .step p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .cta {
+        margin-top: 45px;
+        margin-bottom: 20px;
+        padding: 35px;
+        border-radius: 24px;
+        background: linear-gradient(135deg,#fff1f2,#fce7f3,#ede9fe);
+        border: 1px solid #fbcfe8;
+        text-align: center;
+    }
+
+    .cta h2 {
+        margin: 0 0 10px;
+        color: #831843;
+    }
+
+    .cta p {
+        color: #64748b;
+        margin-bottom: 22px;
+    }
+
+    .cta a {
+        display: inline-block;
+        padding: 13px 22px;
+        border-radius: 12px;
+        background: linear-gradient(135deg,#e11d48,#7c3aed);
+        color: white;
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    @media (max-width: 900px) {
+        .feature-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .steps {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .hero {
+            padding: 35px 22px;
+            border-radius: 20px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+        }
+
+        .hero p {
+            font-size: 16px;
+        }
+
+        .feature-grid,
+        .steps {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-main,
+        .btn-emergency {
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+<div class="home-wrap">
+
+    <section class="hero">
+        <div class="hero-content">
+
+            <div class="hero-badge">
+                🩸 BloodLink • Save Lives
+            </div>
+
+            <h1>
+                Every Drop Can
+                <span>Save a Life.</span>
+            </h1>
+
+            <p>
+                BloodLink connects blood donors with people who need blood.
+                Find donors, request blood and respond to emergencies quickly
+                through one simple platform.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="/donors/" class="btn-main">
+                    🔎 Find Donors
+                </a>
+
+                <a href="/emergency-request/" class="btn-emergency">
+                    🚨 Emergency Request
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="section-title">
+        <h2>Why Choose BloodLink?</h2>
+        <p>Fast, simple and connected blood donation support.</p>
+    </div>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+            <div class="feature-icon">🩸</div>
+            <h3>Find Blood Donors</h3>
+            <p>
+                Search available donors by blood group and location
+                when you need help.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🚨</div>
+            <h3>Emergency Support</h3>
+            <p>
+                Create urgent blood requests and connect with available
+                donors quickly.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">❤️</div>
+            <h3>Save Lives</h3>
+            <p>
+                Every successful donation can make a meaningful difference
+                to someone in need.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="section-title">
+        <h2>How BloodLink Works</h2>
+        <p>Four simple steps to connect donors and recipients.</p>
+    </div>
+
+    <div class="steps">
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Register</h3>
+            <p>Create your BloodLink account and add your blood details.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Find</h3>
+            <p>Search for suitable donors based on blood group and city.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Connect</h3>
+            <p>Contact the donor and coordinate the blood donation.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Save a Life</h3>
+            <p>Complete the donation and help someone in need.</p>
+        </div>
+
+    </div>
+
+    <section class="cta">
+
+        <h2>Ready to Make a Difference?</h2>
+
+        <p>
+            Become a donor or request blood today.
+        </p>
+
+        <a href="/register/">
+            ❤️ Join BloodLink
+        </a>
+
+    </section>
+
+</div>
+
+{% endblock %}
