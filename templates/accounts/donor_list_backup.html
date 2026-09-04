@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{% url 'donors' %}" class="btn btn-outline-danger">
+            ← Back to Donors
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-lg overflow-hidden">
+
+                <!-- Header -->
+                <div class="bg-danger text-white text-center py-4">
+                    <h2 class="fw-bold mb-1">
+                        🩸 Donor Profile
+                    </h2>
+
+                    <p class="mb-0">
+                        BloodLink Verified Donor
+                    </p>
+                </div>
+
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="row align-items-center">
+
+                        <!-- Profile Photo -->
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+
+                            {% if donor.photo %}
+
+                                <img
+                                    src="{{ donor.photo.url }}"
+                                    alt="{{ donor.full_name }}"
+                                    class="rounded-circle shadow"
+                                    width="170"
+                                    height="170"
+                                    style="object-fit: cover;"
+                                >
+
+                            {% else %}
+
+                                <div
+                                    class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center mx-auto shadow"
+                                    style="
+                                        width:170px;
+                                        height:170px;
+                                        font-size:60px;
+                                        font-weight:bold;
+                                    "
+                                >
+                                    {{ donor.full_name|first|upper }}
+                                </div>
+
+                            {% endif %}
+
+                            <!-- Availability -->
+                            <div class="mt-3">
+
+                                {% if donor.is_available %}
+
+                                    <span class="badge bg-success px-3 py-2">
+                                        ● Available to Donate
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary px-3 py-2">
+                                        ● Currently Unavailable
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Donor Information -->
+                        <div class="col-md-8">
+
+                            <h2 class="fw-bold mb-1">
+                                {{ donor.full_name|default:donor.user.username }}
+                            </h2>
+
+                            <p class="text-muted mb-4">
+                                BloodLink Donor
+                            </p>
+
+
+                            <!-- Blood Group -->
+                            <div class="d-flex align-items-center mb-3">
+
+                                <div
+                                    class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width:45px;height:45px;"
+                                >
+                                    🩸
+                                </div>
+
+                                <div>
+                                    <small class="text-muted">
+                                        Blood Group
+                                    </small>
+
+                                    <div class="fw-bold fs-5 text-danger">
+                                        {{ donor.blood_group }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- City -->
+                            <div class="d-flex align-items-center mb-3">
+
+                                <div
+                                    class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width:45px;height:45px;"
+                                >
+                                    📍
+                                </div>
+
+                                <div>
+                                    <small class="text-muted">
+                                        City
+                                    </small>
+
+                                    <div class="fw-semibold">
+                                        {{ donor.city }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Phone -->
+                            {% if donor.phone %}
+
+                            <div class="d-flex align-items-center mb-3">
+
+                                <div
+                                    class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width:45px;height:45px;"
+                                >
+                                    📞
+                                </div>
+
+                                <div>
+                                    <small class="text-muted">
+                                        Phone
+                                    </small>
+
+                                    <div class="fw-semibold">
+                                        {{ donor.phone }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {% endif %}
+
+
+                            <!-- Donation Count -->
+                            <div class="d-flex align-items-center mb-3">
+
+                                <div
+                                    class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width:45px;height:45px;"
+                                >
+                                    ❤️
+                                </div>
+
+                                <div>
+                                    <small class="text-muted">
+                                        Blood Donations
+                                    </small>
+
+                                    <div class="fw-bold fs-5">
+                                        {{ donor.donation_count }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Location -->
+                            {% if donor.location %}
+
+                            <div class="d-flex align-items-center mb-3">
+
+                                <div
+                                    class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width:45px;height:45px;"
+                                >
+                                    🗺️
+                                </div>
+
+                                <div>
+                                    <small class="text-muted">
+                                        Location
+                                    </small>
+
+                                    <div class="fw-semibold">
+                                        {{ donor.location }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Divider -->
+                    <hr class="my-4">
+
+
+                    <!-- Donation Status -->
+                    <div class="text-center">
+
+                        {% if donor.is_available %}
+
+                            <div class="alert alert-success border-0">
+                                <strong>🟢 Donor is currently available</strong>
+                                <br>
+                                <small>
+                                    You can contact this donor for blood donation.
+                                </small>
+                            </div>
+
+                            {% if donor.phone %}
+
+                            <a
+                                href="tel:{{ donor.phone }}"
+                                class="btn btn-danger px-4"
+                            >
+                                📞 Contact Donor
+                            </a>
+
+                            {% endif %}
+
+                        {% else %}
+
+                            <div class="alert alert-secondary border-0">
+                                <strong>⚪ Donor is currently unavailable</strong>
+                                <br>
+                                <small>
+                                    Please check again later.
+                                </small>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Certificate -->
+                    {% if donor.donation_count > 0 %}
+
+                    <div class="text-center mt-4">
+
+                        <p class="text-muted mb-2">
+                            This donor has completed
+                            <strong>{{ donor.donation_count }}</strong>
+                            blood donation{{ donor.donation_count|pluralize }}.
+                        </p>
+
+                        <a
+                            href="{% url 'certificate' donor.id %}"
+                            class="btn btn-outline-danger"
+                        >
+                            📄 Download Donation Certificate
+                        </a>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Footer -->
+                <div class="card-footer bg-light text-center py-3">
+
+                    <small class="text-muted">
+                        🩸 BloodLink • Every Drop Counts. Every Donor Matters.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,30 +1,1260 @@
 {% extends "base.html" %}
 
+{% block title %}About BloodLink | BloodLink{% endblock %}
+
 {% block content %}
 
-<div class="container mt-4">
+<style>
 
-    <h2 class="text-danger">🩸 About BloodLink</h2>
+    /* ================= PAGE ================= */
 
-    <p>
-        BloodLink is a Blood Donation Management System developed using Django.
-        This website helps patients find blood donors quickly and allows donors
-        to register and help save lives.
-    </p>
+    .about-page {
+        min-height: calc(100vh - 90px);
+        padding: 10px 5px 45px;
+    }
 
-    <h4>Features</h4>
 
-    <ul>
-        <li>Donor Registration</li>
-        <li>Blood Request Management</li>
-        <li>Search Donors by Blood Group and City</li>
-        <li>Matching Donors</li>
-        <li>Dashboard Statistics</li>
-    </ul>
+    /* ================= HERO ================= */
 
-    <a href="/dashboard/" class="btn btn-danger">
-        Back to Dashboard
-    </a>
+    .about-hero {
+        position: relative;
+        overflow: hidden;
+
+        border-radius: 28px;
+        padding: 38px 34px;
+        margin-bottom: 25px;
+
+        color: #fff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff416c 0%,
+                #c43cff 45%,
+                #667eea 100%
+            );
+
+        box-shadow:
+            0 18px 45px rgba(196, 60, 255, 0.20);
+    }
+
+    .about-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 260px;
+        height: 260px;
+
+        right: -90px;
+        top: -115px;
+
+        border-radius: 50%;
+
+        background: rgba(255,255,255,0.13);
+    }
+
+    .about-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 150px;
+        height: 150px;
+
+        right: 28%;
+        bottom: -100px;
+
+        border-radius: 50%;
+
+        background: rgba(255,193,7,0.18);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+    }
+
+    .hero-icon {
+        width: 65px;
+        height: 65px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 20px;
+
+        background: rgba(255,255,255,0.20);
+
+        backdrop-filter: blur(8px);
+
+        font-size: 31px;
+
+        margin-bottom: 17px;
+
+        box-shadow:
+            0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .about-hero h1 {
+        margin: 0 0 9px;
+
+        font-size: 34px;
+        font-weight: 900;
+    }
+
+    .about-hero p {
+        margin: 0;
+
+        max-width: 720px;
+
+        font-size: 14px;
+        line-height: 1.8;
+
+        opacity: 0.95;
+    }
+
+
+    /* ================= INTRO ================= */
+
+    .about-intro {
+        display: grid;
+
+        grid-template-columns: 1.35fr 0.65fr;
+
+        gap: 22px;
+
+        margin-bottom: 24px;
+    }
+
+    .intro-card,
+    .mission-card {
+
+        position: relative;
+        overflow: hidden;
+
+        border-radius: 24px;
+
+        padding: 28px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #fff8fa,
+                #f8f2ff,
+                #f2f6ff
+            );
+
+        border: 1px solid #eadcf3;
+
+        box-shadow:
+            0 12px 32px rgba(79,50,105,0.09);
+    }
+
+    .intro-card::before {
+        content: "";
+
+        position: absolute;
+
+        width: 110px;
+        height: 110px;
+
+        right: -45px;
+        top: -45px;
+
+        border-radius: 50%;
+
+        background: rgba(255,65,108,0.08);
+    }
+
+    .section-icon {
+        width: 52px;
+        height: 52px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 16px;
+
+        color: #fff;
+
+        font-size: 23px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff416c,
+                #c43cff
+            );
+
+        box-shadow:
+            0 8px 18px rgba(196,60,255,0.20);
+
+        margin-bottom: 15px;
+    }
+
+    .intro-card h2,
+    .mission-card h2 {
+
+        margin: 0 0 10px;
+
+        color: #512568;
+
+        font-size: 22px;
+        font-weight: 900;
+    }
+
+    .intro-card p,
+    .mission-card p {
+
+        margin: 0;
+
+        color: #80698a;
+
+        font-size: 13px;
+
+        line-height: 1.85;
+    }
+
+
+    /* ================= MISSION ================= */
+
+    .mission-card {
+
+        background:
+            linear-gradient(
+                145deg,
+                #fff1f5,
+                #f3eaff,
+                #eaf0ff
+            );
+    }
+
+    .mission-highlight {
+
+        margin-top: 18px;
+
+        padding: 15px;
+
+        border-radius: 15px;
+
+        color: #5b326d;
+
+        font-size: 12px;
+        font-weight: 750;
+
+        background: rgba(255,255,255,0.70);
+
+        border: 1px solid #eadcf3;
+    }
+
+
+    /* ================= SECTION HEADER ================= */
+
+    .section-header {
+
+        text-align: center;
+
+        margin: 32px 0 20px;
+    }
+
+    .section-header h2 {
+
+        margin: 0 0 7px;
+
+        color: #512568;
+
+        font-size: 25px;
+        font-weight: 900;
+    }
+
+    .section-header p {
+
+        margin: 0;
+
+        color: #92769d;
+
+        font-size: 12px;
+    }
+
+
+    /* ================= FEATURES ================= */
+
+    .features-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 18px;
+
+        margin-bottom: 25px;
+    }
+
+    .feature-card {
+
+        position: relative;
+        overflow: hidden;
+
+        padding: 23px;
+
+        border-radius: 20px;
+
+        background: #fff;
+
+        border: 1px solid #eadff0;
+
+        box-shadow:
+            0 9px 25px rgba(75,44,101,0.07);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .feature-card:hover {
+
+        transform: translateY(-6px);
+
+        box-shadow:
+            0 16px 32px rgba(75,44,101,0.13);
+    }
+
+    .feature-card::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 85px;
+        height: 85px;
+
+        right: -35px;
+        bottom: -35px;
+
+        border-radius: 50%;
+
+        background: rgba(196,60,255,0.06);
+    }
+
+    .feature-icon {
+
+        width: 55px;
+        height: 55px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 17px;
+
+        font-size: 25px;
+
+        margin-bottom: 15px;
+    }
+
+    .feature-card:nth-child(1)
+    .feature-icon {
+
+        background: #ffe3ea;
+    }
+
+    .feature-card:nth-child(2)
+    .feature-icon {
+
+        background: #eee3ff;
+    }
+
+    .feature-card:nth-child(3)
+    .feature-icon {
+
+        background: #e3edff;
+    }
+
+    .feature-card:nth-child(4)
+    .feature-icon {
+
+        background: #fff0d9;
+    }
+
+    .feature-card:nth-child(5)
+    .feature-icon {
+
+        background: #e2f8ec;
+    }
+
+    .feature-card:nth-child(6)
+    .feature-icon {
+
+        background: #e9e5ff;
+    }
+
+    .feature-card h3 {
+
+        margin: 0 0 7px;
+
+        color: #512568;
+
+        font-size: 15px;
+        font-weight: 850;
+    }
+
+    .feature-card p {
+
+        margin: 0;
+
+        color: #92769d;
+
+        font-size: 11px;
+
+        line-height: 1.7;
+    }
+
+
+    /* ================= HOW IT WORKS ================= */
+
+    .process-card {
+
+        padding: 28px;
+
+        border-radius: 24px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #fff8fa,
+                #f8f2ff,
+                #eef5ff
+            );
+
+        border: 1px solid #eadcf3;
+
+        box-shadow:
+            0 12px 32px rgba(79,50,105,0.09);
+
+        margin-bottom: 25px;
+    }
+
+    .process-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 15px;
+    }
+
+    .process-item {
+
+        position: relative;
+
+        text-align: center;
+
+        padding: 20px 14px;
+    }
+
+    .process-number {
+
+        width: 45px;
+        height: 45px;
+
+        margin: 0 auto 12px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        color: #fff;
+
+        font-size: 15px;
+        font-weight: 900;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff416c,
+                #c43cff,
+                #667eea
+            );
+
+        box-shadow:
+            0 7px 17px rgba(196,60,255,0.20);
+    }
+
+    .process-item h3 {
+
+        margin: 0 0 6px;
+
+        color: #512568;
+
+        font-size: 13px;
+        font-weight: 850;
+    }
+
+    .process-item p {
+
+        margin: 0;
+
+        color: #92769d;
+
+        font-size: 10px;
+
+        line-height: 1.6;
+    }
+
+
+    /* ================= VALUES ================= */
+
+    .values-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 18px;
+
+        margin-bottom: 25px;
+    }
+
+    .value-card {
+
+        padding: 22px;
+
+        border-radius: 19px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #ffffff,
+                #fbf6ff
+            );
+
+        border: 1px solid #eadcf3;
+
+        text-align: center;
+
+        box-shadow:
+            0 8px 22px rgba(75,44,101,0.07);
+    }
+
+    .value-card strong {
+
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #5a286d;
+
+        font-size: 14px;
+        font-weight: 900;
+    }
+
+    .value-card span {
+
+        color: #92769d;
+
+        font-size: 11px;
+
+        line-height: 1.6;
+    }
+
+
+    /* ================= CTA ================= */
+
+    .about-cta {
+
+        position: relative;
+        overflow: hidden;
+
+        text-align: center;
+
+        padding: 34px 25px;
+
+        border-radius: 25px;
+
+        color: #fff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff1744,
+                #c43cff,
+                #667eea
+            );
+
+        box-shadow:
+            0 17px 40px rgba(196,60,255,0.20);
+    }
+
+    .about-cta::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 190px;
+        height: 190px;
+
+        left: -80px;
+        bottom: -110px;
+
+        border-radius: 50%;
+
+        background: rgba(255,255,255,0.10);
+    }
+
+    .about-cta h2 {
+
+        position: relative;
+        z-index: 2;
+
+        margin: 0 0 8px;
+
+        font-size: 24px;
+        font-weight: 900;
+    }
+
+    .about-cta p {
+
+        position: relative;
+        z-index: 2;
+
+        max-width: 650px;
+
+        margin: 0 auto 20px;
+
+        font-size: 12px;
+
+        line-height: 1.7;
+
+        opacity: 0.94;
+    }
+
+    .cta-buttons {
+
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+    }
+
+    .cta-btn {
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        min-height: 44px;
+
+        padding: 0 18px;
+
+        border-radius: 12px;
+
+        text-decoration: none;
+
+        font-size: 12px;
+        font-weight: 850;
+
+        transition: all 0.25s ease;
+    }
+
+    .cta-primary {
+
+        color: #5b236d;
+
+        background: #fff;
+
+        box-shadow:
+            0 7px 18px rgba(0,0,0,0.10);
+    }
+
+    .cta-primary:hover {
+
+        color: #5b236d;
+
+        transform: translateY(-3px);
+    }
+
+    .cta-secondary {
+
+        color: #fff;
+
+        background: rgba(255,255,255,0.16);
+
+        border: 1px solid rgba(255,255,255,0.35);
+    }
+
+    .cta-secondary:hover {
+
+        color: #fff;
+
+        background: rgba(255,255,255,0.24);
+
+        transform: translateY(-3px);
+    }
+
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 1000px) {
+
+        .about-intro {
+
+            grid-template-columns: 1fr;
+        }
+
+        .features-grid {
+
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+        .values-grid {
+
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+        .process-grid {
+
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+    }
+
+
+    @media (max-width: 700px) {
+
+        .about-page {
+
+            padding: 5px 0 30px;
+        }
+
+        .about-hero {
+
+            padding: 26px 22px;
+
+            border-radius: 21px;
+        }
+
+        .about-hero h1 {
+
+            font-size: 27px;
+        }
+
+        .about-hero p {
+
+            font-size: 13px;
+        }
+
+        .intro-card,
+        .mission-card,
+        .process-card {
+
+            padding: 21px;
+        }
+
+        .features-grid,
+        .values-grid,
+        .process-grid {
+
+            grid-template-columns: 1fr;
+        }
+
+        .section-header h2 {
+
+            font-size: 22px;
+        }
+    }
+
+
+    @media (max-width: 480px) {
+
+        .about-hero {
+
+            padding: 22px 18px;
+        }
+
+        .hero-icon {
+
+            width: 55px;
+            height: 55px;
+
+            font-size: 27px;
+        }
+
+        .about-hero h1 {
+
+            font-size: 24px;
+        }
+
+        .intro-card h2,
+        .mission-card h2 {
+
+            font-size: 19px;
+        }
+
+        .feature-card {
+
+            padding: 19px;
+        }
+
+        .about-cta {
+
+            padding: 27px 18px;
+        }
+
+        .about-cta h2 {
+
+            font-size: 21px;
+        }
+
+        .cta-buttons {
+
+            flex-direction: column;
+        }
+
+        .cta-btn {
+
+            width: 100%;
+        }
+    }
+
+</style>
+
+
+<div class="about-page">
+
+
+    <!-- ================= HERO ================= -->
+
+    <section class="about-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-icon">
+                🩸
+            </div>
+
+            <h1>
+                About BloodLink
+            </h1>
+
+            <p>
+                BloodLink is a digital blood donation and emergency
+                support platform designed to connect patients,
+                donors and blood requirements in a simple,
+                fast and meaningful way.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= INTRO ================= -->
+
+    <section class="about-intro">
+
+
+        <div class="intro-card">
+
+            <div class="section-icon">
+                ❤️
+            </div>
+
+            <h2>
+                What is BloodLink?
+            </h2>
+
+            <p>
+                BloodLink is built with one important goal —
+                making blood donation and blood requests easier
+                to manage. The platform brings donors and patients
+                together through a simple digital system.
+            </p>
+
+            <br>
+
+            <p>
+                Donors can maintain their profile, blood group,
+                availability and donation information, while
+                patients can submit blood requests and emergency
+                requirements when support is needed.
+            </p>
+
+        </div>
+
+
+        <div class="mission-card">
+
+            <div class="section-icon">
+                🎯
+            </div>
+
+            <h2>
+                Our Mission
+            </h2>
+
+            <p>
+                To create a reliable digital bridge between people
+                who need blood and people who are willing to donate.
+            </p>
+
+            <div class="mission-highlight">
+                🩸 Every donor can become someone's hope.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FEATURES ================= -->
+
+    <div class="section-header">
+
+        <h2>
+            What BloodLink Offers
+        </h2>
+
+        <p>
+            Simple tools designed to support blood donation and emergency needs.
+        </p>
+
+    </div>
+
+
+    <section class="features-grid">
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🩸
+            </div>
+
+            <h3>
+                Donor Directory
+            </h3>
+
+            <p>
+                Find registered donors based on blood group,
+                city and availability.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                📋
+            </div>
+
+            <h3>
+                Blood Requests
+            </h3>
+
+            <p>
+                Create and manage blood requirements with
+                important patient and hospital information.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🚨
+            </div>
+
+            <h3>
+                Emergency Support
+            </h3>
+
+            <p>
+                Highlight urgent blood requirements and
+                connect them with suitable donors quickly.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🔔
+            </div>
+
+            <h3>
+                Notifications
+            </h3>
+
+            <p>
+                Keep users informed about important blood
+                requirements and emergency activities.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🏆
+            </div>
+
+            <h3>
+                Donation Records
+            </h3>
+
+            <p>
+                Maintain donation information and support
+                recognition of donor contributions.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🔐
+            </div>
+
+            <h3>
+                Simple User Profiles
+            </h3>
+
+            <p>
+                Manage essential donor information including
+                blood group, contact details and availability.
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ================= HOW IT WORKS ================= -->
+
+    <div class="section-header">
+
+        <h2>
+            How BloodLink Works
+        </h2>
+
+        <p>
+            A simple journey from blood requirement to donor connection.
+        </p>
+
+    </div>
+
+
+    <section class="process-card">
+
+        <div class="process-grid">
+
+
+            <div class="process-item">
+
+                <div class="process-number">
+                    01
+                </div>
+
+                <h3>
+                    Register
+                </h3>
+
+                <p>
+                    Create your BloodLink account and complete
+                    your basic profile.
+                </p>
+
+            </div>
+
+
+            <div class="process-item">
+
+                <div class="process-number">
+                    02
+                </div>
+
+                <h3>
+                    Add Details
+                </h3>
+
+                <p>
+                    Add blood group, city, phone number and
+                    donor availability.
+                </p>
+
+            </div>
+
+
+            <div class="process-item">
+
+                <div class="process-number">
+                    03
+                </div>
+
+                <h3>
+                    Request Blood
+                </h3>
+
+                <p>
+                    Submit a blood request or emergency
+                    requirement when needed.
+                </p>
+
+            </div>
+
+
+            <div class="process-item">
+
+                <div class="process-number">
+                    04
+                </div>
+
+                <h3>
+                    Connect
+                </h3>
+
+                <p>
+                    Suitable donors can respond and help
+                    support the blood requirement.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= VALUES ================= -->
+
+    <div class="section-header">
+
+        <h2>
+            Our Core Values
+        </h2>
+
+        <p>
+            The principles behind the BloodLink platform.
+        </p>
+
+    </div>
+
+
+    <section class="values-grid">
+
+
+        <div class="value-card">
+
+            <strong>
+                ❤️ Humanity
+            </strong>
+
+            <span>
+                Putting people and their need for timely
+                blood support first.
+            </span>
+
+        </div>
+
+
+        <div class="value-card">
+
+            <strong>
+                ⚡ Speed
+            </strong>
+
+            <span>
+                Making important blood information easier
+                to access when time matters.
+            </span>
+
+        </div>
+
+
+        <div class="value-card">
+
+            <strong>
+                🤝 Connection
+            </strong>
+
+            <span>
+                Building a digital connection between donors
+                and people who need blood.
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ================= CTA ================= -->
+
+    <section class="about-cta">
+
+        <h2>
+            Be a Part of BloodLink
+        </h2>
+
+        <p>
+            Whether you want to donate blood or need blood
+            support, BloodLink helps make the process simpler
+            and more connected.
+        </p>
+
+        <div class="cta-buttons">
+
+            <a
+                href="/donors/"
+                class="cta-btn cta-primary"
+            >
+                🩸 Find Donors
+            </a>
+
+            <a
+                href="/request-blood/"
+                class="cta-btn cta-secondary"
+            >
+                📋 Request Blood
+            </a>
+
+            <a
+                href="/emergency-request/"
+                class="cta-btn cta-secondary"
+            >
+                🚨 Emergency Request
+            </a>
+
+        </div>
+
+    </section>
+
 
 </div>
 

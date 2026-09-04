@@ -1,0 +1,1038 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.dashboard-page {
+    padding: 35px 0 60px;
+}
+
+/* HERO */
+.dashboard-hero {
+    background: linear-gradient(135deg, #b30000, #e63946);
+    color: white;
+    border-radius: 24px;
+    padding: 35px;
+    margin-bottom: 30px;
+    box-shadow: 0 12px 30px rgba(179, 0, 0, 0.20);
+}
+
+.dashboard-hero h1 {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.dashboard-hero p {
+    margin: 0;
+    font-size: 17px;
+    opacity: 0.92;
+}
+
+/* STAT CARDS */
+.dashboard-stat {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    height: 100%;
+    border: none;
+    box-shadow: 0 7px 22px rgba(16, 42, 67, 0.08);
+    transition: all 0.3s ease;
+}
+
+.dashboard-stat:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 14px 30px rgba(16, 42, 67, 0.14);
+}
+
+.dashboard-stat::after {
+    content: "";
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    right: -30px;
+    top: -30px;
+    background: rgba(220, 53, 69, 0.08);
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+.stat-red {
+    background: #ffe5e5;
+}
+
+.stat-green {
+    background: #e3f7eb;
+}
+
+.stat-yellow {
+    background: #fff4d6;
+}
+
+.stat-blue {
+    background: #e4f0ff;
+}
+
+.stat-number {
+    font-size: 34px;
+    font-weight: 800;
+    color: #102a43;
+    line-height: 1;
+}
+
+.stat-title {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+/* SECTION */
+.dashboard-section {
+    margin-top: 35px;
+}
+
+.dashboard-section-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #102a43;
+    margin-bottom: 18px;
+}
+
+/* PANELS */
+.dashboard-panel {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 7px 22px rgba(16, 42, 67, 0.08);
+    height: 100%;
+}
+
+/* BLOOD GROUP */
+.blood-group-item {
+    margin-bottom: 18px;
+}
+
+.blood-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.blood-group-name {
+    font-weight: 800;
+    color: #102a43;
+}
+
+.blood-group-count {
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.progress {
+    height: 9px;
+    border-radius: 20px;
+    background: #edf0f4;
+}
+
+.progress-bar {
+    border-radius: 20px;
+    background: linear-gradient(
+        90deg,
+        #b30000,
+        #e63946
+    );
+}
+
+/* AVAILABILITY */
+.availability-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 15px;
+    border-radius: 14px;
+    background: #f8fafc;
+    margin-bottom: 10px;
+}
+
+.availability-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.blood-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #b30000;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.available-badge {
+    color: #198754;
+    background: #dff5e8;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* TABLE */
+.request-table {
+    margin: 0;
+}
+
+.request-table th {
+    color: #6c757d;
+    font-size: 13px;
+    border-bottom: 1px solid #eee;
+}
+
+.request-table td {
+    vertical-align: middle;
+    padding: 15px 8px;
+}
+
+.blood-badge {
+    display: inline-block;
+    min-width: 42px;
+    text-align: center;
+    padding: 6px 9px;
+    border-radius: 20px;
+    background: #ffe4e4;
+    color: #b30000;
+    font-weight: 800;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-fulfilled {
+    background: #d1e7dd;
+    color: #0f5132;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* DONOR */
+.donor-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.donor-row:last-child {
+    border-bottom: none;
+}
+
+.donor-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(
+        135deg,
+        #b30000,
+        #e63946
+    );
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.donor-name {
+    font-weight: 700;
+    color: #102a43;
+}
+
+.donor-city {
+    font-size: 13px;
+    color: #777;
+}
+
+.donor-blood {
+    margin-left: auto;
+    font-weight: 800;
+    color: #b30000;
+}
+
+/* QUICK ACTIONS */
+.quick-action {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 20px;
+    transition: 0.25s;
+    height: 100%;
+}
+
+.quick-action:hover {
+    transform: translateY(-4px);
+    background: #fff1f1;
+    color: inherit;
+}
+
+.quick-icon {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.quick-title {
+    font-weight: 800;
+}
+
+.quick-text {
+    color: #777;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* EMERGENCY */
+.emergency-box {
+    background: linear-gradient(
+        135deg,
+        #fff0f0,
+        #ffe0e0
+    );
+    border: 1px solid #ffcaca;
+    border-radius: 20px;
+    padding: 22px;
+}
+
+.emergency-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: #b30000;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .dashboard-page {
+        padding: 20px 0 40px;
+    }
+
+    .dashboard-hero {
+        padding: 25px 20px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 28px;
+    }
+
+    .dashboard-stat {
+        margin-bottom: 15px;
+    }
+
+    .dashboard-panel {
+        padding: 18px;
+    }
+
+    .request-table {
+        font-size: 13px;
+    }
+
+    .request-table th:nth-child(3),
+    .request-table td:nth-child(3) {
+        display: none;
+    }
+}
+</style>
+
+
+<div class="dashboard-page">
+
+<div class="container">
+
+    <!-- HERO -->
+    <div class="dashboard-hero">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-8">
+
+                <div style="font-size:42px;">
+                    🩸
+                </div>
+
+                <h1>
+                    BloodLink Dashboard
+                </h1>
+
+                <p>
+                    Monitor donors, blood availability
+                    and requests from one place.
+                </p>
+
+            </div>
+
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+
+                <a
+                    href="{% url 'request_blood' %}"
+                    class="btn btn-light btn-lg"
+                >
+                    🚑 Request Blood
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+    <div class="row g-4">
+
+        <div class="col-6 col-xl-3">
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon stat-red">
+                    🩸
+                </div>
+
+                <div class="stat-number">
+                    {{ total_donors }}
+                </div>
+
+                <div class="stat-title">
+                    Total Donors
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-6 col-xl-3">
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon stat-green">
+                    🟢
+                </div>
+
+                <div class="stat-number">
+                    {{ available_donors }}
+                </div>
+
+                <div class="stat-title">
+                    Available Donors
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-6 col-xl-3">
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon stat-yellow">
+                    🚑
+                </div>
+
+                <div class="stat-number">
+                    {{ total_requests }}
+                </div>
+
+                <div class="stat-title">
+                    Blood Requests
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-6 col-xl-3">
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon stat-blue">
+                    ❤️
+                </div>
+
+                <div class="stat-number">
+                    {{ lives_saved }}
+                </div>
+
+                <div class="stat-title">
+                    Donations Recorded
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BLOOD GROUP + AVAILABILITY -->
+    <div class="dashboard-section">
+
+        <div class="row g-4">
+
+            <!-- BLOOD GROUP -->
+            <div class="col-lg-7">
+
+                <div class="dashboard-panel">
+
+                    <div class="dashboard-section-title">
+                        📊 Blood Group Statistics
+                    </div>
+
+                    {% for item in blood_group_stats %}
+
+                    <div class="blood-group-item">
+
+                        <div class="blood-group-header">
+
+                            <span class="blood-group-name">
+                                {{ item.group }}
+                            </span>
+
+                            <span class="blood-group-count">
+                                {{ item.available }}
+                                available /
+                                {{ item.count }}
+                                total
+                            </span>
+
+                        </div>
+
+                        <div class="progress">
+
+                            {% if item.count > 0 %}
+
+                            <div
+                                class="progress-bar"
+                                style="width:
+                                {% widthratio item.available item.count 100 %}%"
+                            ></div>
+
+                            {% else %}
+
+                            <div
+                                class="progress-bar"
+                                style="width:0%"
+                            ></div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <p class="text-muted">
+                        No donor statistics available.
+                    </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- AVAILABILITY -->
+            <div class="col-lg-5">
+
+                <div class="dashboard-panel">
+
+                    <div class="dashboard-section-title">
+                        🩸 Live Availability
+                    </div>
+
+                    {% for item in blood_group_stats %}
+
+                    <div class="availability-card">
+
+                        <div class="availability-left">
+
+                            <div class="blood-circle">
+                                {{ item.group }}
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ item.group }}
+                                </strong>
+
+                                <div
+                                    class="text-muted"
+                                    style="font-size:12px;"
+                                >
+                                    {{ item.available }}
+                                    donor{{ item.available|pluralize }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {% if item.available > 0 %}
+
+                        <span class="available-badge">
+                            Available
+                        </span>
+
+                        {% else %}
+
+                        <span
+                            class="badge bg-danger"
+                        >
+                            Not Available
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- REQUESTS -->
+    <div class="dashboard-section">
+
+        <div class="dashboard-panel">
+
+            <div
+                class="d-flex justify-content-between
+                       align-items-center mb-3"
+            >
+
+                <div class="dashboard-section-title mb-0">
+                    🚑 Recent Blood Requests
+                </div>
+
+                <a
+                    href="{% url 'blood_requests' %}"
+                    class="btn btn-outline-danger btn-sm"
+                >
+                    View All →
+                </a>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table
+                    class="table request-table"
+                >
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Patient</th>
+                            <th>Blood</th>
+                            <th>Hospital</th>
+                            <th>City</th>
+                            <th>Units</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for request in recent_requests %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ request.patient_name }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                <span class="blood-badge">
+                                    {{ request.blood_group }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ request.hospital }}
+                            </td>
+
+                            <td>
+                                {{ request.city }}
+                            </td>
+
+                            <td>
+                                {{ request.units_required }}
+                            </td>
+
+                            <td>
+
+                                {% if request.status == "Pending" %}
+
+                                <span class="status-pending">
+                                    Pending
+                                </span>
+
+                                {% else %}
+
+                                <span class="status-fulfilled">
+                                    Fulfilled
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="text-center
+                                       text-muted py-4"
+                            >
+                                No blood requests yet.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DONORS + EMERGENCY -->
+    <div class="dashboard-section">
+
+        <div class="row g-4">
+
+            <!-- DONORS -->
+            <div class="col-lg-7">
+
+                <div class="dashboard-panel">
+
+                    <div
+                        class="d-flex justify-content-between
+                               align-items-center"
+                    >
+
+                        <div class="dashboard-section-title mb-0">
+                            👥 Recent Donors
+                        </div>
+
+                        <a
+                            href="{% url 'donors' %}"
+                            class="btn btn-outline-danger btn-sm"
+                        >
+                            View Donors →
+                        </a>
+
+                    </div>
+
+
+                    {% for donor in recent_donors %}
+
+                    <div class="donor-row">
+
+                        <div class="donor-avatar">
+
+                            {{ donor.full_name|first|upper }}
+
+                        </div>
+
+                        <div>
+
+                            <div class="donor-name">
+                                {{ donor.full_name }}
+                            </div>
+
+                            <div class="donor-city">
+                                📍 {{ donor.city }}
+                            </div>
+
+                        </div>
+
+                        <div class="donor-blood">
+                            {{ donor.blood_group }}
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <p class="text-muted mt-4">
+                        No donors registered yet.
+                    </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- EMERGENCY -->
+            <div class="col-lg-5">
+
+                <div class="dashboard-panel">
+
+                    <div class="dashboard-section-title">
+                        🚨 Emergency Overview
+                    </div>
+
+                    <div class="emergency-box">
+
+                        <div
+                            class="text-muted mb-2"
+                        >
+                            Active Emergency Requests
+                        </div>
+
+                        <div class="emergency-number">
+                            {{ active_emergencies }}
+                        </div>
+
+                        <p class="text-muted mt-2">
+                            Emergency requests currently
+                            requiring attention.
+                        </p>
+
+                        <a
+                            href="{% url 'emergency_request' %}"
+                            class="btn btn-danger"
+                        >
+                            🚨 Emergency Request
+                        </a>
+
+                    </div>
+
+
+                    <div class="row mt-4 g-3">
+
+                        <div class="col-6">
+
+                            <div class="text-center">
+
+                                <div
+                                    style="
+                                    font-size:28px;
+                                    font-weight:800;
+                                    color:#b30000;
+                                    "
+                                >
+                                    {{ pending_requests }}
+                                </div>
+
+                                <small class="text-muted">
+                                    Pending
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-6">
+
+                            <div class="text-center">
+
+                                <div
+                                    style="
+                                    font-size:28px;
+                                    font-weight:800;
+                                    color:#198754;
+                                    "
+                                >
+                                    {{ fulfilled_requests }}
+                                </div>
+
+                                <small class="text-muted">
+                                    Fulfilled
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+    <div class="dashboard-section">
+
+        <div class="dashboard-section-title">
+            ⚡ Quick Actions
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-6 col-lg-3">
+
+                <a
+                    href="{% url 'donors' %}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-icon">
+                        🩸
+                    </div>
+
+                    <div class="quick-title">
+                        Find Donors
+                    </div>
+
+                    <div class="quick-text">
+                        Search available blood donors
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <div class="col-6 col-lg-3">
+
+                <a
+                    href="{% url 'request_blood' %}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-icon">
+                        🚑
+                    </div>
+
+                    <div class="quick-title">
+                        Request Blood
+                    </div>
+
+                    <div class="quick-text">
+                        Create a new blood request
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <div class="col-6 col-lg-3">
+
+                <a
+                    href="{% url 'profile' %}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-icon">
+                        👤
+                    </div>
+
+                    <div class="quick-title">
+                        My Profile
+                    </div>
+
+                    <div class="quick-text">
+                        Manage your donor profile
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <div class="col-6 col-lg-3">
+
+                <a
+                    href="{% url 'notifications' %}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-icon">
+                        🔔
+                    </div>
+
+                    <div class="quick-title">
+                        Notifications
+                    </div>
+
+                    <div class="quick-text">
+                        Check latest notifications
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

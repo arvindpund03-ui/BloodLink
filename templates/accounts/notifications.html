@@ -2,181 +2,714 @@
 
 {% block content %}
 
-<div class="container mt-4">
+<style>
+    .notification-page {
+        min-height: calc(100vh - 90px);
+        padding: 10px 5px 40px;
+    }
 
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold">
-                🔔 Notifications
-            </h2>
-            <p class="text-muted mb-0">
-                Your latest BloodLink notifications
+    /* ================= HERO ================= */
+
+    .notification-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 26px;
+        padding: 32px;
+        margin-bottom: 25px;
+        color: #fff;
+        background: linear-gradient(
+            135deg,
+            #667eea 0%,
+            #8e35c7 45%,
+            #ff416c 100%
+        );
+        box-shadow: 0 18px 45px rgba(103, 71, 180, 0.22);
+    }
+
+    .notification-hero::before {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        right: -70px;
+        top: -100px;
+        background: rgba(255,255,255,0.13);
+    }
+
+    .notification-hero::after {
+        content: "";
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        right: 150px;
+        bottom: -80px;
+        background: rgba(255,193,7,0.18);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 19px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.20);
+        font-size: 30px;
+        margin-bottom: 15px;
+        backdrop-filter: blur(6px);
+    }
+
+    .notification-hero h1 {
+        margin: 0 0 8px;
+        font-size: 32px;
+        font-weight: 850;
+    }
+
+    .notification-hero p {
+        margin: 0;
+        max-width: 700px;
+        font-size: 15px;
+        line-height: 1.7;
+        opacity: 0.94;
+    }
+
+
+    /* ================= TOP STATS ================= */
+
+    .notification-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 21px;
+        padding: 20px;
+        background: linear-gradient(
+            145deg,
+            #fff4f7,
+            #f5efff
+        );
+        border: 1px solid #eadcf3;
+        box-shadow: 0 10px 26px rgba(82, 46, 111, 0.08);
+    }
+
+    .stat-card::after {
+        content: "";
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        right: -25px;
+        top: -25px;
+        background: rgba(196,60,255,0.08);
+    }
+
+    .stat-icon {
+        width: 43px;
+        height: 43px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 19px;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, #ff416c, #c43cff);
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: linear-gradient(135deg, #667eea, #8e35c7);
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: linear-gradient(135deg, #ff4b2b, #ff9f43);
+    }
+
+    .stat-number {
+        color: #4f2365;
+        font-size: 26px;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #8a6b96;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+
+    /* ================= SECTION ================= */
+
+    .notification-section {
+        background: linear-gradient(
+            145deg,
+            #fff8fa,
+            #f8f3ff,
+            #f2f7ff
+        );
+        border-radius: 25px;
+        padding: 25px;
+        border: 1px solid #eadcf3;
+        box-shadow: 0 13px 32px rgba(79, 50, 105, 0.09);
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .section-title-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 20px;
+        background: linear-gradient(135deg, #667eea, #c43cff);
+    }
+
+    .section-title {
+        margin: 0;
+        color: #502465;
+        font-size: 21px;
+        font-weight: 850;
+    }
+
+    .section-subtitle {
+        margin: 4px 0 0;
+        color: #92769d;
+        font-size: 12px;
+    }
+
+
+    /* ================= NOTIFICATION CARD ================= */
+
+    .notification-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .notification-card {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 19px;
+        border-radius: 19px;
+        background: rgba(255,255,255,0.88);
+        border: 1px solid #eadff2;
+        box-shadow: 0 7px 20px rgba(81, 45, 105, 0.06);
+        transition: all 0.25s ease;
+    }
+
+    .notification-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 13px 28px rgba(81, 45, 105, 0.11);
+    }
+
+    /* Unread notification */
+
+    .notification-card.unread {
+        background: linear-gradient(
+            135deg,
+            #fff1f5,
+            #f5efff
+        );
+        border-left: 5px solid #c43cff;
+    }
+
+    .notification-card.unread::after {
+        content: "";
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #ff416c;
+        box-shadow: 0 0 0 5px rgba(255,65,108,0.10);
+    }
+
+    .notification-icon {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        color: #fff;
+        background: linear-gradient(
+            135deg,
+            #ff416c,
+            #c43cff
+        );
+        box-shadow: 0 8px 18px rgba(196,60,255,0.18);
+    }
+
+    .notification-card.emergency .notification-icon {
+        background: linear-gradient(
+            135deg,
+            #ff1744,
+            #ff4b2b
+        );
+    }
+
+    .notification-card.success .notification-icon {
+        background: linear-gradient(
+            135deg,
+            #00b894,
+            #00cec9
+        );
+    }
+
+    .notification-card.info .notification-icon {
+        background: linear-gradient(
+            135deg,
+            #667eea,
+            #8e35c7
+        );
+    }
+
+    .notification-content {
+        flex: 1;
+        min-width: 0;
+        padding-right: 20px;
+    }
+
+    .notification-title {
+        margin: 0 0 6px;
+        color: #4c235f;
+        font-size: 16px;
+        font-weight: 850;
+    }
+
+    .notification-message {
+        margin: 0 0 9px;
+        color: #765b82;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .notification-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        color: #a083a9;
+        font-size: 11px;
+    }
+
+    .notification-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .notification-phone {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #8a55a0;
+        font-weight: 700;
+    }
+
+
+    /* ================= STATUS ================= */
+
+    .read-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #eee8f4;
+        color: #866d90;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .unread-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #ffe8ef;
+        color: #d93657;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+
+    /* ================= EMPTY ================= */
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 25px;
+        border-radius: 21px;
+        background: linear-gradient(
+            135deg,
+            #fff1f5,
+            #f3edff,
+            #edf5ff
+        );
+        border: 2px dashed #dfc9ea;
+    }
+
+    .empty-icon {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 18px;
+        border-radius: 23px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 32px;
+        background: linear-gradient(
+            135deg,
+            #667eea,
+            #c43cff,
+            #ff416c
+        );
+    }
+
+    .empty-state h3 {
+        margin: 0 0 8px;
+        color: #542568;
+        font-size: 21px;
+        font-weight: 850;
+    }
+
+    .empty-state p {
+        margin: 0;
+        color: #8b6b97;
+        font-size: 13px;
+    }
+
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 800px) {
+
+        .notification-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .notification-hero {
+            padding: 25px;
+        }
+
+        .notification-hero h1 {
+            font-size: 27px;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .notification-page {
+            padding: 5px 0 25px;
+        }
+
+        .notification-hero {
+            padding: 22px;
+            border-radius: 20px;
+        }
+
+        .hero-icon {
+            width: 55px;
+            height: 55px;
+            font-size: 26px;
+        }
+
+        .notification-hero h1 {
+            font-size: 23px;
+        }
+
+        .notification-hero p {
+            font-size: 13px;
+        }
+
+        .notification-section {
+            padding: 18px;
+            border-radius: 20px;
+        }
+
+        .section-header {
+            align-items: flex-start;
+        }
+
+        .section-title {
+            font-size: 18px;
+        }
+
+        .notification-card {
+            padding: 16px;
+            gap: 11px;
+        }
+
+        .notification-icon {
+            width: 43px;
+            height: 43px;
+            min-width: 43px;
+            border-radius: 13px;
+            font-size: 19px;
+        }
+
+        .notification-title {
+            font-size: 14px;
+        }
+
+        .notification-message {
+            font-size: 12px;
+        }
+    }
+</style>
+
+
+<div class="notification-page">
+
+    <!-- ================= HERO ================= -->
+
+    <div class="notification-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-icon">
+                🔔
+            </div>
+
+            <h1>Notifications</h1>
+
+            <p>
+                Stay updated with blood requests, emergency alerts,
+                donor activity and important BloodLink updates.
             </p>
+
         </div>
+
     </div>
 
 
-    {% if notifications %}
+    <!-- ================= STATS ================= -->
 
-        {% for notification in notifications %}
+    <div class="notification-stats">
 
-            <div class="card shadow-sm mb-3">
+        <div class="stat-card">
 
-                <div class="card-body">
-
-                    <!-- Notification Title -->
-                    <div class="d-flex justify-content-between align-items-start">
-
-                        <div>
-                            <h5 class="mb-1">
-                                {{ notification.title }}
-                            </h5>
-
-                            {% if notification.message %}
-                                <p class="text-muted mb-2">
-                                    {{ notification.message }}
-                                </p>
-                            {% endif %}
-                        </div>
-
-                        {% if notification.is_read %}
-                            <span class="badge bg-secondary">
-                                Read
-                            </span>
-                        {% else %}
-                            <span class="badge bg-primary">
-                                New
-                            </span>
-                        {% endif %}
-
-                    </div>
-
-
-                    <!-- Notification Date -->
-                    {% if notification.created_at %}
-                        <small class="text-muted">
-                            {{ notification.created_at|date:"d M Y, h:i A" }}
-                        </small>
-                    {% endif %}
-
-
-                    <!-- Emergency Notification -->
-                    {% if notification.emergency %}
-
-                        <div class="mt-3 p-3 border border-danger rounded bg-light">
-
-                            <h6 class="text-danger fw-bold">
-                                🚨 Emergency Response
-                            </h6>
-
-                            {% if notification.response_status == "ACCEPTED" %}
-
-                                <p class="text-success fw-bold mb-1">
-                                    ✅ Response Accepted
-                                </p>
-
-                                <p class="mb-0">
-                                    You have accepted this emergency blood request.
-                                </p>
-
-                            {% elif notification.response_status == "REJECTED" %}
-
-                                <p class="text-danger fw-bold mb-1">
-                                    ❌ Response Rejected
-                                </p>
-
-                                <p class="mb-0">
-                                    This emergency response was rejected.
-                                </p>
-
-                            {% elif notification.response_status == "PENDING" %}
-
-                                <p class="text-warning fw-bold mb-1">
-                                    ⏳ Response Pending
-                                </p>
-
-                                <p class="mb-0">
-                                    Your response is currently pending.
-                                </p>
-
-                            {% else %}
-
-                                <p class="text-muted mb-0">
-                                    Emergency request received.
-                                </p>
-
-                            {% endif %}
-
-                        </div>
-
-                    {% endif %}
-
-
-                    <!-- Blood Request Information -->
-                    {% if notification.blood_group %}
-
-                        <div class="mt-3">
-
-                            <span class="badge bg-danger">
-                                🩸 Blood Group:
-                                {{ notification.blood_group }}
-                            </span>
-
-                        </div>
-
-                    {% endif %}
-
-
-                    <!-- Location -->
-                    {% if notification.location %}
-
-                        <div class="mt-2">
-
-                            <small class="text-muted">
-                                📍 {{ notification.location }}
-                            </small>
-
-                        </div>
-
-                    {% endif %}
-
-
-                </div>
-
+            <div class="stat-icon">
+                🔔
             </div>
 
-        {% endfor %}
+            <div class="stat-number">
+                {{ notifications|length }}
+            </div>
+
+            <div class="stat-label">
+                Total Notifications
+            </div>
+
+        </div>
 
 
-    {% else %}
+        <div class="stat-card">
 
-        <!-- No Notifications -->
-        <div class="card shadow-sm">
+            <div class="stat-icon">
+                👁️
+            </div>
 
-            <div class="card-body text-center py-5">
+            <div class="stat-number">
+                {{ unread_count|default:"0" }}
+            </div>
 
-                <div style="font-size: 50px;">
-                    🔕
+            <div class="stat-label">
+                Unread Notifications
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🚨
+            </div>
+
+            <div class="stat-number">
+                {{ emergency_count|default:"0" }}
+            </div>
+
+            <div class="stat-label">
+                Emergency Alerts
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= NOTIFICATIONS ================= -->
+
+    <div class="notification-section">
+
+        <div class="section-header">
+
+            <div class="section-title-box">
+
+                <div class="section-icon">
+                    🔔
                 </div>
 
-                <h4 class="mt-3">
-                    No Notifications
-                </h4>
+                <div>
+                    <h2 class="section-title">
+                        Recent Notifications
+                    </h2>
 
-                <p class="text-muted">
-                    You don't have any notifications right now.
-                </p>
-
-                <a href="{% url 'dashboard' %}" class="btn btn-primary">
-                    Go to Dashboard
-                </a>
+                    <p class="section-subtitle">
+                        Your latest BloodLink updates
+                    </p>
+                </div>
 
             </div>
 
         </div>
 
-    {% endif %}
+
+        {% if notifications %}
+
+            <div class="notification-list">
+
+                {% for notification in notifications %}
+
+                    <div class="
+                        notification-card
+                        {% if not notification.is_read %}unread{% endif %}
+                        {% if notification.emergency %}emergency{% endif %}
+                    ">
+
+                        <!-- ICON -->
+
+                        <div class="notification-icon">
+
+                            {% if notification.emergency %}
+                                🚨
+                            {% elif "success" in notification.title|lower %}
+                                ✅
+                            {% elif "blood" in notification.title|lower %}
+                                🩸
+                            {% elif "donor" in notification.title|lower %}
+                                ❤️
+                            {% else %}
+                                🔔
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CONTENT -->
+
+                        <div class="notification-content">
+
+                            <h3 class="notification-title">
+                                {{ notification.title }}
+                            </h3>
+
+                            <p class="notification-message">
+                                {{ notification.message }}
+                            </p>
+
+
+                            <div class="notification-meta">
+
+                                <span class="notification-time">
+                                    🕒
+                                    {{ notification.created_at|date:"d M Y, h:i A" }}
+                                </span>
+
+
+                                {% if notification.phone %}
+
+                                    <span class="notification-phone">
+                                        📞
+                                        {{ notification.phone }}
+                                    </span>
+
+                                {% endif %}
+
+
+                                {% if notification.is_read %}
+
+                                    <span class="read-badge">
+                                        ✓ Read
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="unread-badge">
+                                        ● New
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <!-- EMPTY STATE -->
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🔔
+                </div>
+
+                <h3>No Notifications Yet</h3>
+
+                <p>
+                    You are all caught up! New blood requests,
+                    emergency alerts and updates will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
 
 </div>
 

@@ -6,185 +6,29 @@ from .api_views import (
     api_donors,
 )
 urlpatterns = [
+    path("", views.home, name="home"),
+    path("register/", views.register, name="register"),
+    path("login/", views.UserLoginView.as_view(), name="login"),
+    path("logout/", views.user_logout, name="logout"),
 
-# =========================
-# HOME
-# =========================
+    path("dashboard/", views.dashboard, name="dashboard"),
 
-path(
-    "",
-    views.home,
-    name="home"
-),
+    path("profile/", views.profile, name="profile"),
 
+    path("donors/", views.donor_list, name="donor_list"),
+    
+    path("donor/<int:id>/", views.donor_detail, name="donor_detail"),
 
-# =========================
-# AUTHENTICATION
-# =========================
+    path("request-blood/", views.request_blood, name="request_blood"),
 
-path(
-    "register/",
-    views.register,
-    name="register"
-),
+    path("blood-requests/", views.blood_request_list, name="blood_request_list"),
 
-path(
-    "login/",
-    views.UserLoginView.as_view(),
-    name="login"
-),
+    path("matching-donors/<int:id>/", views.matching_donors, name="matching_donors"),
 
-path(
-    "logout/",
-    views.user_logout,
-    name="logout"
-),
+    path("emergency-request/", views.emergency_request, name="emergency_request"),
 
-
-# =========================
-# DASHBOARD
-# =========================
-
-path(
-    "dashboard/",
-    views.dashboard,
-    name="dashboard"
-),
-
-
-# =========================
-# PROFILE
-# =========================
-
-path(
-    "profile/",
-    views.profile,
-    name="profile"
-),
-
-
-# =========================
-# DONORS
-# =========================
-
-path(
-    "donors/",
-    views.donor_list,
-    name="donors"
-),
-
-path(
-    "donor/<int:id>/",
-    views.donor_detail,
-    name="donor_detail"
-),
-
-
-# =========================
-# BLOOD REQUEST
-# =========================
-
-path(
-    "request-blood/",
-    views.request_blood,
-    name="request_blood"
-),
-
-path(
-    "blood-requests/",
-    views.blood_request_list,
-    name="blood_requests"
-),
-
-path(
-    "matching-donors/<int:id>/",
-    views.matching_donors,
-    name="matching_donors"
-),
-
-
-# =========================
-# EMERGENCY REQUEST
-# =========================
-
-path(
-    "emergency-request/",
-    views.emergency_request,
-    name="emergency_request"
-),
-
-
-# =========================
-# DONATION
-# =========================
-
-path(
-    "mark-donation/<int:id>/",
-    views.mark_donation,
-    name="mark_donation"
-),
-
-
-# =========================
-# CERTIFICATE PDF
-# =========================
-
-path(
-    "certificate/<int:id>/",
-    views.download_pdf,
-    name="certificate"
-),
-
-
-# =========================
-# STATIC PAGES
-# =========================
-
-path(
-    "about/",
-    views.about,
-    name="about"
-),
-
-path(
-    "contact/",
-    views.contact,
-    name="contact"
-),
-
-path(
-    "notifications/",
-    views.notifications,
-    name="notifications"
-),
-
-path(
-    "emergency/<int:emergency_id>/accept/",
-    views.accept_emergency,
-    name="accept_emergency"
-),
-
-path(
-    "emergency/<int:emergency_id>/reject/",
-    views.reject_emergency,
-    name="reject_emergency"
-),
-path(
-    "api/", 
-    api_home, 
-    name="api_home"
-),
-
-path(
-    "api/login/",
-     api_login, 
-     name="api_login"
-),
-
-path(
-    "api/donors/",
-     api_donors, 
-     name="api_donors"
-),
-
+    path("about/", views.about, name="about"),
+    path("contact/", views.contact, name="contact"),
+    path("notifications/", views.notifications, name="notifications"),
+    
 ]

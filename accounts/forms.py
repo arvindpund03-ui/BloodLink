@@ -57,6 +57,7 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
+
         fields = [
             "username",
             "email",
@@ -85,6 +86,27 @@ class RegistrationForm(UserCreationForm):
             "class": "form-control",
             "placeholder": "Confirm password"
         })
+
+    def save(self, commit=True):
+
+        # Save Django User
+        user = super().save(commit=commit)
+
+        # Create UserProfile automatically
+        if commit:
+
+            UserProfile.objects.update_or_create(
+                user=user,
+                defaults={
+                    "full_name": self.cleaned_data["full_name"],
+                    "blood_group": self.cleaned_data["blood_group"].upper().strip(),
+                    "phone": self.cleaned_data["phone"],
+                    "city": self.cleaned_data["city"],
+                    "is_available": True,
+                }
+            )
+
+        return user
 
 
 # =========================================================

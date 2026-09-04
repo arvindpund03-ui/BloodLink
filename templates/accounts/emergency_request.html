@@ -1,138 +1,696 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Emergency Blood Request | BloodLink</title>
+{% block content %}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
+<style>
+    .emergency-page {
+        min-height: calc(100vh - 90px);
+        padding: 10px 5px 40px;
+    }
+
+    /* ================= HERO ================= */
+
+    .emergency-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 26px;
+        padding: 32px;
+        margin-bottom: 25px;
+        color: #fff;
+        background: linear-gradient(
+            135deg,
+            #ff416c 0%,
+            #ff4b2b 42%,
+            #c43cff 100%
+        );
+        box-shadow: 0 18px 45px rgba(238, 67, 104, 0.22);
+    }
+
+    .emergency-hero::before {
+        content: "";
+        position: absolute;
+        width: 210px;
+        height: 210px;
+        border-radius: 50%;
+        right: -70px;
+        top: -90px;
+        background: rgba(255,255,255,0.13);
+    }
+
+    .emergency-hero::after {
+        content: "";
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        right: 120px;
+        bottom: -80px;
+        background: rgba(255,193,7,0.18);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 19px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.20);
+        font-size: 31px;
+        margin-bottom: 15px;
+        backdrop-filter: blur(6px);
+    }
+
+    .emergency-hero h1 {
+        margin: 0 0 8px;
+        font-size: 32px;
+        font-weight: 850;
+    }
+
+    .emergency-hero p {
+        margin: 0;
+        max-width: 720px;
+        font-size: 15px;
+        line-height: 1.7;
+        opacity: 0.94;
+    }
+
+
+    /* ================= LAYOUT ================= */
+
+    .request-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 24px;
+        align-items: start;
+    }
+
+
+    /* ================= FORM CARD ================= */
+
+    .form-card {
+        background: linear-gradient(
+            145deg,
+            #fff7f9,
+            #f9f2ff,
+            #f2f6ff
+        );
+        border-radius: 25px;
+        padding: 28px;
+        border: 1px solid #eadcf4;
+        box-shadow: 0 14px 35px rgba(79, 50, 105, 0.10);
+    }
+
+    .card-heading {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-bottom: 25px;
+    }
+
+    .heading-icon {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #ff416c, #c43cff);
+        color: #fff;
+        font-size: 21px;
+        box-shadow: 0 8px 18px rgba(196,60,255,0.20);
+    }
+
+    .card-heading h2 {
+        margin: 0;
+        color: #512568;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .card-heading p {
+        margin: 4px 0 0;
+        color: #92769d;
+        font-size: 13px;
+    }
+
+
+    /* ================= DJANGO FORM ================= */
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 19px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        color: #573565;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        min-height: 50px;
+        box-sizing: border-box;
+        padding: 12px 15px;
+        border-radius: 14px;
+        border: 2px solid #eadcf3;
+        outline: none;
+        background: rgba(255,255,255,0.92);
+        color: #50365c;
+        font-size: 14px;
+        transition: all 0.25s ease;
+    }
+
+    .form-group textarea {
+        min-height: 105px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #c43cff;
+        box-shadow: 0 0 0 4px rgba(196,60,255,0.10);
+        background: #fff;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: #aa91b2;
+    }
+
+    /* Django errors */
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0 0;
+        color: #d93657;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+
+    /* ================= IMPORTANT FIELDS ================= */
+
+    .blood-field {
+        position: relative;
+    }
+
+    .blood-field input,
+    .blood-field select {
+        border-color: #ffb8c7;
+        background: #fff4f6;
+    }
+
+    .urgency-field select {
+        border-color: #ffb36b;
+        background: #fff8ed;
+    }
+
+    .status-field select {
+        border-color: #bba9ff;
+        background: #f7f3ff;
+    }
+
+
+    /* ================= SUBMIT ================= */
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-top: 27px;
+        padding-top: 22px;
+        border-top: 1px solid #eadff0;
+    }
+
+    .submit-btn {
+        border: none;
+        cursor: pointer;
+        min-height: 52px;
+        padding: 0 25px;
+        border-radius: 15px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 850;
+        background: linear-gradient(
+            135deg,
+            #ff1744,
+            #ff4b2b,
+            #c43cff
+        );
+        box-shadow: 0 10px 23px rgba(255,65,108,0.25);
+        transition: all 0.25s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 28px rgba(255,65,108,0.32);
+    }
+
+    .back-btn {
+        min-height: 52px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 20px;
+        border-radius: 15px;
+        text-decoration: none;
+        color: #69367e;
+        font-size: 14px;
+        font-weight: 800;
+        background: #f4eaff;
+        border: 1px solid #dfc9ed;
+        transition: all 0.25s ease;
+    }
+
+    .back-btn:hover {
+        color: #69367e;
+        background: #eadcff;
+        transform: translateY(-2px);
+    }
+
+
+    /* ================= SIDE INFO ================= */
+
+    .info-column {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .info-card {
+        border-radius: 22px;
+        padding: 23px;
+        box-shadow: 0 12px 28px rgba(75, 44, 101, 0.09);
+    }
+
+    .urgent-card {
+        color: #fff;
+        background: linear-gradient(
+            145deg,
+            #ff416c,
+            #ff4b2b
+        );
+    }
+
+    .safe-card {
+        background: linear-gradient(
+            145deg,
+            #f2edff,
+            #fff2f7
+        );
+        border: 1px solid #e8d9f1;
+    }
+
+    .info-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        font-size: 23px;
+    }
+
+    .urgent-card .info-card-icon {
+        background: rgba(255,255,255,0.18);
+    }
+
+    .safe-card .info-card-icon {
+        background: linear-gradient(135deg, #c43cff, #667eea);
+        color: #fff;
+    }
+
+    .info-card h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+        font-weight: 850;
+    }
+
+    .safe-card h3 {
+        color: #54266d;
+    }
+
+    .info-card p {
+        margin: 0;
+        line-height: 1.7;
+        font-size: 13px;
+    }
+
+    .safe-card p {
+        color: #80648d;
+    }
+
+
+    /* ================= STEPS ================= */
+
+    .steps-card {
+        background: linear-gradient(
+            145deg,
+            #fff1f5,
+            #f4edff
+        );
+        border-radius: 22px;
+        padding: 23px;
+        border: 1px solid #eadcf2;
+    }
+
+    .steps-card h3 {
+        margin: 0 0 17px;
+        color: #55286c;
+        font-size: 17px;
+        font-weight: 850;
+    }
+
+    .step {
+        display: flex;
+        gap: 11px;
+        margin-bottom: 15px;
+    }
+
+    .step:last-child {
+        margin-bottom: 0;
+    }
+
+    .step-number {
+        width: 29px;
+        height: 29px;
+        min-width: 29px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        background: linear-gradient(135deg, #ff416c, #c43cff);
+        font-size: 12px;
+        font-weight: 850;
+    }
+
+    .step-text {
+        color: #755781;
+        font-size: 12px;
+        line-height: 1.55;
+        padding-top: 5px;
+    }
+
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 1050px) {
+        .request-layout {
+            grid-template-columns: 1fr;
         }
 
-        .container {
-            max-width: 650px;
-            margin: 50px auto;
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        .info-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
         }
 
-        h1 {
-            text-align: center;
-            color: #b00020;
-            margin-bottom: 10px;
+        .steps-card {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .emergency-page {
+            padding: 5px 0 25px;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
+        .emergency-hero {
+            padding: 23px;
+            border-radius: 21px;
         }
 
-        .form-group {
-            margin-bottom: 18px;
+        .emergency-hero h1 {
+            font-size: 25px;
         }
 
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 7px;
+        .form-card {
+            padding: 20px;
+            border-radius: 21px;
         }
 
-        input,
-        select {
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .form-group.full-width {
+            grid-column: auto;
+        }
+
+        .info-column {
+            grid-template-columns: 1fr;
+        }
+
+        .steps-card {
+            grid-column: auto;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .submit-btn,
+        .back-btn {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 15px;
+        }
+    }
+
+    @media (max-width: 450px) {
+        .emergency-hero h1 {
+            font-size: 22px;
         }
 
-        input:focus,
-        select:focus {
-            border-color: #b00020;
-            outline: none;
+        .emergency-hero p {
+            font-size: 13px;
         }
 
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            background: #b00020;
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
+        .hero-icon {
+            width: 55px;
+            height: 55px;
+            font-size: 26px;
         }
 
-        .btn:hover {
-            background: #8f0019;
+        .card-heading h2 {
+            font-size: 18px;
         }
+    }
+</style>
 
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #555;
-        }
 
-        .errorlist {
-            color: #b00020;
-            margin: 5px 0;
-            padding-left: 20px;
-        }
-    </style>
-</head>
+<div class="emergency-page">
 
-<body>
+    <!-- ================= HERO ================= -->
 
-<div class="container">
+    <div class="emergency-hero">
 
-    <h1>🚨 Emergency Blood Request</h1>
+        <div class="hero-content">
 
-    <p class="subtitle">
-        Submit an urgent blood requirement and connect with available donors.
-    </p>
+            <div class="hero-icon">
+                🚨
+            </div>
 
-    <form method="POST">
+            <h1>Emergency Blood Request</h1>
 
-        {% csrf_token %}
+            <p>
+                Submit an urgent blood requirement and connect with
+                available donors who can help save a life.
+            </p>
 
-        {{ form.non_field_errors }}
+        </div>
 
-        {% for field in form %}
+    </div>
 
-            <div class="form-group">
 
-                {{ field.label_tag }}
+    <!-- ================= MAIN LAYOUT ================= -->
 
-                {{ field }}
+    <div class="request-layout">
 
-                {{ field.errors }}
+
+        <!-- ================= FORM ================= -->
+
+        <div class="form-card">
+
+            <div class="card-heading">
+
+                <div class="heading-icon">
+                    🩸
+                </div>
+
+                <div>
+                    <h2>Emergency Requirement</h2>
+                    <p>Please provide accurate patient and hospital details.</p>
+                </div>
 
             </div>
 
-        {% endfor %}
 
-        <button type="submit" class="btn">
-            🚨 Submit Emergency Request
-        </button>
+            <form method="post">
 
-    </form>
+                {% csrf_token %}
 
-    <a href="{% url 'home' %}" class="back">
-        ← Back to Home
-    </a>
+                <div class="form-grid">
+
+                    {% for field in form %}
+
+                        <div class="
+                            form-group
+                            {% if field.name == 'blood_group' %}blood-field{% endif %}
+                            {% if field.name == 'urgency' %}urgency-field{% endif %}
+                            {% if field.name == 'status' %}status-field{% endif %}
+                            {% if field.name == 'message' or field.name == 'description' %}full-width{% endif %}
+                        ">
+
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <small style="
+                                    margin-top:5px;
+                                    color:#92769d;
+                                    font-size:11px;
+                                ">
+                                    {{ field.help_text }}
+                                </small>
+                            {% endif %}
+
+                            {% if field.errors %}
+                                {{ field.errors }}
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button type="submit" class="submit-btn">
+                        🚨 Submit Emergency Request
+                    </button>
+
+                    <a href="/" class="back-btn">
+                        ← Back to Home
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- ================= SIDE INFORMATION ================= -->
+
+        <div class="info-column">
+
+
+            <!-- Urgent -->
+            <div class="info-card urgent-card">
+
+                <div class="info-card-icon">
+                    🚨
+                </div>
+
+                <h3>Need Blood Urgently?</h3>
+
+                <p>
+                    Your emergency request will help the system identify
+                    suitable donors based on blood group and availability.
+                </p>
+
+            </div>
+
+
+            <!-- Safety -->
+            <div class="info-card safe-card">
+
+                <div class="info-card-icon">
+                    ❤️
+                </div>
+
+                <h3>Every Donation Matters</h3>
+
+                <p>
+                    Accurate information helps donors respond quickly
+                    and makes the blood matching process more effective.
+                </p>
+
+            </div>
+
+
+            <!-- Steps -->
+            <div class="steps-card">
+
+                <h3>How It Works</h3>
+
+                <div class="step">
+
+                    <div class="step-number">1</div>
+
+                    <div class="step-text">
+                        Submit the emergency blood requirement.
+                    </div>
+
+                </div>
+
+                <div class="step">
+
+                    <div class="step-number">2</div>
+
+                    <div class="step-text">
+                        The system identifies suitable available donors.
+                    </div>
+
+                </div>
+
+                <div class="step">
+
+                    <div class="step-number">3</div>
+
+                    <div class="step-text">
+                        Donors can respond to the emergency request.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

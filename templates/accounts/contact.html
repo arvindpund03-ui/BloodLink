@@ -1,35 +1,1293 @@
 {% extends "base.html" %}
 
+{% block title %}Contact Us | BloodLink{% endblock %}
+
 {% block content %}
 
-<div class="container mt-4">
+<style>
 
-    <h2 class="text-danger">📞 Contact Us</h2>
+    /* ================= PAGE ================= */
 
-    <p>If you have any questions, feel free to contact us.</p>
+    .contact-page {
+        min-height: calc(100vh - 90px);
+        padding: 10px 5px 40px;
+    }
 
-    <table class="table table-bordered">
-        <tr>
-            <th>Name</th>
-            <td>Arvind Pund</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>arvindpund03@gmail.com</td>
-        </tr>
-        <tr>
-            <th>Phone</th>
-            <td>+91 8007916170</td>
-        </tr>
-        <tr>
-            <th>Address</th>
-            <td>Nashik, Maharashtra</td>
-        </tr>
-    </table>
 
-    <a href="/dashboard/" class="btn btn-danger">
-        Back to Dashboard
-    </a>
+    /* ================= HERO ================= */
+
+    .contact-hero {
+        position: relative;
+        overflow: hidden;
+
+        border-radius: 26px;
+        padding: 32px;
+        margin-bottom: 24px;
+
+        color: #fff;
+
+        background: linear-gradient(
+            135deg,
+            #ff416c 0%,
+            #c43cff 48%,
+            #667eea 100%
+        );
+
+        box-shadow:
+            0 18px 45px rgba(196, 60, 255, 0.20);
+    }
+
+    .contact-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 230px;
+        height: 230px;
+
+        border-radius: 50%;
+
+        right: -75px;
+        top: -100px;
+
+        background: rgba(255,255,255,0.13);
+    }
+
+    .contact-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 130px;
+        height: 130px;
+
+        border-radius: 50%;
+
+        right: 25%;
+        bottom: -85px;
+
+        background: rgba(255,193,7,0.18);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-icon {
+        width: 62px;
+        height: 62px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 19px;
+
+        background: rgba(255,255,255,0.20);
+
+        backdrop-filter: blur(7px);
+
+        font-size: 29px;
+
+        margin-bottom: 15px;
+    }
+
+    .contact-hero h1 {
+        margin: 0 0 8px;
+
+        font-size: 32px;
+        font-weight: 850;
+    }
+
+    .contact-hero p {
+        margin: 0;
+
+        max-width: 760px;
+
+        font-size: 14px;
+        line-height: 1.7;
+
+        opacity: 0.94;
+    }
+
+
+    /* ================= MAIN GRID ================= */
+
+    .contact-grid {
+        display: grid;
+
+        grid-template-columns: 0.85fr 1.4fr;
+
+        gap: 22px;
+
+        align-items: start;
+    }
+
+
+    /* ================= CARD ================= */
+
+    .contact-card {
+        background: linear-gradient(
+            145deg,
+            #fff8fa,
+            #f8f2ff,
+            #f2f6ff
+        );
+
+        border-radius: 24px;
+
+        border: 1px solid #eadcf3;
+
+        box-shadow:
+            0 14px 35px rgba(79,50,105,0.10);
+
+        overflow: hidden;
+    }
+
+
+    /* ================= CARD HEADER ================= */
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        padding: 23px 25px;
+
+        border-bottom: 1px solid #eadff0;
+
+        background: linear-gradient(
+            135deg,
+            #fff1f5,
+            #f7efff
+        );
+    }
+
+    .card-header-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 15px;
+
+        color: #fff;
+
+        font-size: 21px;
+
+        background: linear-gradient(
+            135deg,
+            #ff416c,
+            #c43cff
+        );
+
+        box-shadow:
+            0 8px 18px rgba(196,60,255,0.20);
+    }
+
+    .card-header h2 {
+        margin: 0;
+
+        color: #512568;
+
+        font-size: 20px;
+        font-weight: 850;
+    }
+
+    .card-header p {
+        margin: 4px 0 0;
+
+        color: #92769d;
+
+        font-size: 12px;
+    }
+
+
+    /* ================= CARD BODY ================= */
+
+    .card-body {
+        padding: 24px;
+    }
+
+
+    /* ================= CONTACT INFO ================= */
+
+    .contact-info-list {
+        display: grid;
+
+        gap: 14px;
+    }
+
+    .contact-info {
+        display: flex;
+
+        align-items: center;
+
+        gap: 14px;
+
+        padding: 16px;
+
+        border-radius: 17px;
+
+        background: rgba(255,255,255,0.85);
+
+        border: 1px solid #eadff0;
+
+        transition: all 0.25s ease;
+    }
+
+    .contact-info:hover {
+        transform: translateY(-4px);
+
+        border-color: #d8bce7;
+
+        box-shadow:
+            0 12px 25px rgba(75,44,101,0.10);
+    }
+
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 15px;
+
+        font-size: 22px;
+
+        background: linear-gradient(
+            135deg,
+            #ffe2ea,
+            #f0ddff
+        );
+    }
+
+    .contact-info-content {
+        min-width: 0;
+    }
+
+    .contact-info-label {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #a48baa;
+
+        font-size: 10px;
+        font-weight: 850;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.5px;
+    }
+
+    .contact-info-value {
+        display: block;
+
+        color: #4c235d;
+
+        font-size: 13px;
+        font-weight: 750;
+
+        word-break: break-word;
+    }
+
+
+    /* ================= EMERGENCY BOX ================= */
+
+    .emergency-box {
+        position: relative;
+        overflow: hidden;
+
+        margin-top: 18px;
+
+        padding: 22px;
+
+        border-radius: 20px;
+
+        color: #fff;
+
+        background: linear-gradient(
+            135deg,
+            #ff1744,
+            #ff416c,
+            #c43cff
+        );
+
+        box-shadow:
+            0 12px 28px rgba(255,65,108,0.20);
+    }
+
+    .emergency-box::after {
+        content: "🩸";
+
+        position: absolute;
+
+        right: 20px;
+        bottom: -8px;
+
+        font-size: 65px;
+
+        opacity: 0.13;
+    }
+
+    .emergency-box h3 {
+        position: relative;
+        z-index: 2;
+
+        margin: 0 0 7px;
+
+        font-size: 18px;
+        font-weight: 850;
+    }
+
+    .emergency-box p {
+        position: relative;
+        z-index: 2;
+
+        margin: 0;
+
+        max-width: 360px;
+
+        color: rgba(255,255,255,0.90);
+
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+
+    /* ================= FORM ================= */
+
+    .form-row {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 17px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        display: block;
+
+        margin-bottom: 8px;
+
+        color: #512568;
+
+        font-size: 12px;
+        font-weight: 850;
+    }
+
+    .form-control,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+
+        box-sizing: border-box;
+
+        padding: 13px 14px;
+
+        border: 1px solid #e4d6eb;
+
+        border-radius: 13px;
+
+        outline: none;
+
+        background: rgba(255,255,255,0.92);
+
+        color: #4c235d;
+
+        font-size: 13px;
+
+        transition: all 0.2s ease;
+    }
+
+    textarea {
+        min-height: 135px;
+
+        resize: vertical;
+    }
+
+    .form-control:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #c43cff;
+
+        box-shadow:
+            0 0 0 4px rgba(196,60,255,0.09);
+    }
+
+    .form-help {
+        display: block;
+
+        margin-top: 6px;
+
+        color: #a18ba8;
+
+        font-size: 10px;
+    }
+
+    .field-error {
+        margin-top: 5px;
+
+        color: #dc2626;
+
+        font-size: 11px;
+    }
+
+
+    /* ================= NON FIELD ERROR ================= */
+
+    .form-error {
+        margin-bottom: 18px;
+
+        padding: 13px 15px;
+
+        border-radius: 13px;
+
+        color: #991b1b;
+
+        background: #fee2e2;
+
+        border: 1px solid #fecaca;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+
+    /* ================= SUCCESS MESSAGE ================= */
+
+    .success-message {
+        margin-bottom: 18px;
+
+        padding: 14px 16px;
+
+        border-radius: 13px;
+
+        color: #166534;
+
+        background: #dcfce7;
+
+        border: 1px solid #bbf7d0;
+
+        font-size: 12px;
+
+        font-weight: 750;
+    }
+
+
+    /* ================= SUBMIT BUTTON ================= */
+
+    .submit-btn {
+        width: 100%;
+
+        min-height: 50px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        border: 0;
+
+        border-radius: 14px;
+
+        color: #fff;
+
+        background: linear-gradient(
+            135deg,
+            #ff1744,
+            #ff416c,
+            #c43cff
+        );
+
+        box-shadow:
+            0 10px 22px rgba(255,65,108,0.22);
+
+        font-size: 14px;
+        font-weight: 850;
+
+        cursor: pointer;
+
+        transition: all 0.25s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 15px 28px rgba(255,65,108,0.30);
+    }
+
+
+    /* ================= FEATURES ================= */
+
+    .features-section {
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 17px;
+
+        margin-top: 22px;
+    }
+
+    .feature-card {
+        padding: 21px;
+
+        border-radius: 19px;
+
+        background: linear-gradient(
+            145deg,
+            #ffffff,
+            #faf5ff
+        );
+
+        border: 1px solid #eadff0;
+
+        box-shadow:
+            0 9px 24px rgba(75,44,101,0.07);
+
+        text-align: center;
+
+        transition: all 0.25s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+
+        box-shadow:
+            0 14px 28px rgba(75,44,101,0.11);
+    }
+
+    .feature-icon {
+        width: 53px;
+        height: 53px;
+
+        margin: 0 auto 12px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 16px;
+
+        font-size: 24px;
+
+        background: linear-gradient(
+            135deg,
+            #ffe2ea,
+            #efddff
+        );
+    }
+
+    .feature-card h3 {
+        margin: 0 0 6px;
+
+        color: #512568;
+
+        font-size: 15px;
+        font-weight: 850;
+    }
+
+    .feature-card p {
+        margin: 0;
+
+        color: #92769d;
+
+        font-size: 11px;
+
+        line-height: 1.65;
+    }
+
+
+    /* ================= QUICK ACTIONS ================= */
+
+    .quick-actions {
+        display: flex;
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+
+        margin-top: 22px;
+
+        padding: 23px;
+
+        border-radius: 21px;
+
+        background: linear-gradient(
+            135deg,
+            #fff1f5,
+            #f7efff,
+            #eff6ff
+        );
+
+        border: 1px solid #eadff0;
+    }
+
+    .quick-actions-title {
+        width: 100%;
+
+        margin-bottom: 3px;
+
+        text-align: center;
+
+        color: #512568;
+
+        font-size: 17px;
+
+        font-weight: 850;
+    }
+
+    .quick-actions-subtitle {
+        width: 100%;
+
+        margin: 0 0 8px;
+
+        text-align: center;
+
+        color: #92769d;
+
+        font-size: 11px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        min-height: 43px;
+
+        padding: 0 17px;
+
+        border-radius: 12px;
+
+        text-decoration: none;
+
+        font-size: 12px;
+
+        font-weight: 850;
+
+        transition: all 0.25s ease;
+    }
+
+    .action-primary {
+        color: #fff;
+
+        background: linear-gradient(
+            135deg,
+            #ff1744,
+            #c43cff
+        );
+
+        box-shadow:
+            0 8px 18px rgba(196,60,255,0.20);
+    }
+
+    .action-primary:hover {
+        color: #fff;
+
+        transform: translateY(-3px);
+    }
+
+    .action-blue {
+        color: #1d4ed8;
+
+        background: #eff6ff;
+
+        border: 1px solid #bfdbfe;
+    }
+
+    .action-blue:hover {
+        color: #1d4ed8;
+
+        background: #dbeafe;
+
+        transform: translateY(-3px);
+    }
+
+    .action-pink {
+        color: #be123c;
+
+        background: #fff1f2;
+
+        border: 1px solid #fecdd3;
+    }
+
+    .action-pink:hover {
+        color: #9f1239;
+
+        background: #ffe4e6;
+
+        transform: translateY(-3px);
+    }
+
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 950px) {
+
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .features-section {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+
+    @media (max-width: 700px) {
+
+        .contact-page {
+            padding: 5px 0 25px;
+        }
+
+        .contact-hero {
+            padding: 24px;
+
+            border-radius: 21px;
+        }
+
+        .contact-hero h1 {
+            font-size: 27px;
+        }
+
+        .contact-hero p {
+            font-size: 13px;
+        }
+
+        .contact-card {
+            border-radius: 21px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+
+            gap: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: auto;
+        }
+
+        .features-section {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions {
+            flex-direction: column;
+        }
+
+        .action-btn {
+            width: 100%;
+        }
+    }
+
+
+    @media (max-width: 480px) {
+
+        .contact-hero {
+            padding: 20px;
+        }
+
+        .contact-hero h1 {
+            font-size: 23px;
+        }
+
+        .hero-icon {
+            width: 55px;
+            height: 55px;
+
+            font-size: 26px;
+        }
+
+        .card-header {
+            padding: 19px;
+        }
+
+        .card-header-icon {
+            width: 43px;
+            height: 43px;
+            min-width: 43px;
+        }
+
+        .card-header h2 {
+            font-size: 17px;
+        }
+
+        .contact-info {
+            padding: 13px;
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+
+            font-size: 19px;
+        }
+
+        .contact-info-value {
+            font-size: 12px;
+        }
+    }
+
+</style>
+
+
+<div class="contact-page">
+
+
+    <!-- ================= HERO ================= -->
+
+    <div class="contact-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-icon">
+                💬
+            </div>
+
+            <h1>
+                Contact BloodLink
+            </h1>
+
+            <p>
+                Have a question, suggestion, or need assistance?
+                Get in touch with the BloodLink team and we will be
+                happy to help you.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <div class="contact-grid">
+
+
+        <!-- ================= CONTACT INFORMATION ================= -->
+
+        <div>
+
+            <div class="contact-card">
+
+                <div class="card-header">
+
+                    <div class="card-header-icon">
+                        📞
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Get In Touch
+                        </h2>
+
+                        <p>
+                            We are here to support you
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <div class="contact-info-list">
+
+
+                        <!-- EMAIL -->
+
+                        <div class="contact-info">
+
+                            <div class="contact-icon">
+                                📧
+                            </div>
+
+                            <div class="contact-info-content">
+
+                                <span class="contact-info-label">
+                                    Email Support
+                                </span>
+
+                                <span class="contact-info-value">
+                                    Arvindpund03@gmail.com
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="contact-info">
+
+                            <div class="contact-icon">
+                                📱
+                            </div>
+
+                            <div class="contact-info-content">
+
+                                <span class="contact-info-label">
+                                    Phone Support
+                                </span>
+
+                                <span class="contact-info-value">
+                                    +91 8007916170
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LOCATION -->
+
+                        <div class="contact-info">
+
+                            <div class="contact-icon">
+                                📍
+                            </div>
+
+                            <div class="contact-info-content">
+
+                                <span class="contact-info-label">
+                                    Location
+                                </span>
+
+                                <span class="contact-info-value">
+                                    Maharashtra, India
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SUPPORT -->
+
+                        <div class="contact-info">
+
+                            <div class="contact-icon">
+                                ⏰
+                            </div>
+
+                            <div class="contact-info-content">
+
+                                <span class="contact-info-label">
+                                    Support Availability
+                                </span>
+
+                                <span class="contact-info-value">
+                                    24 × 7 Emergency Support
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= EMERGENCY ================= -->
+
+            <div class="emergency-box">
+
+                <h3>
+                    🚨 Need Blood Urgently?
+                </h3>
+
+                <p>
+                    If someone needs blood immediately, use the
+                    Emergency Request option to create an urgent
+                    blood requirement.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= CONTACT FORM ================= -->
+
+        <div class="contact-card">
+
+
+            <div class="card-header">
+
+                <div class="card-header-icon">
+                    ✉️
+                </div>
+
+                <div>
+
+                    <h2>
+                        Send Us a Message
+                    </h2>
+
+                    <p>
+                        Fill in the details and contact our team
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body">
+
+
+                <!-- ================= DJANGO MESSAGES ================= -->
+
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="success-message">
+
+                            ✅ {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+
+                <!-- ================= FORM ERRORS ================= -->
+
+                {% if form.non_field_errors %}
+
+                    <div class="form-error">
+
+                        {{ form.non_field_errors }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- ================= FORM ================= -->
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <div class="form-row">
+
+
+                        {% for field in form %}
+
+                            <div class="form-group
+                                {% if field.name == 'message' or field.name == 'description' %}
+                                    full-width
+                                {% endif %}
+                            ">
+
+                                <label
+                                    for="{{ field.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    {{ field.label }}
+                                </label>
+
+
+                                {{ field }}
+
+
+                                {% if field.help_text %}
+
+                                    <small class="form-help">
+                                        {{ field.help_text }}
+                                    </small>
+
+                                {% endif %}
+
+
+                                {% if field.errors %}
+
+                                    <div class="field-error">
+                                        {{ field.errors }}
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        class="submit-btn"
+                    >
+                        📨 Send Message
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FEATURES ================= -->
+
+    <div class="features-section">
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ❤️
+            </div>
+
+            <h3>
+                Save Lives
+            </h3>
+
+            <p>
+                Every blood donation can help someone
+                in their time of need.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🤝
+            </div>
+
+            <h3>
+                Community
+            </h3>
+
+            <p>
+                BloodLink connects donors and patients
+                through a helpful community.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🚑
+            </div>
+
+            <h3>
+                Emergency Ready
+            </h3>
+
+            <p>
+                Find suitable donors faster when
+                every second matters.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= QUICK ACTIONS ================= -->
+
+    <div class="quick-actions">
+
+        <div class="quick-actions-title">
+            🩸 What would you like to do?
+        </div>
+
+        <p class="quick-actions-subtitle">
+            Quickly access important BloodLink services
+        </p>
+
+
+        <a
+            href="/donors/"
+            class="action-btn action-primary"
+        >
+            🩸 Find Donors
+        </a>
+
+
+        <a
+            href="/request-blood/"
+            class="action-btn action-pink"
+        >
+            🚑 Request Blood
+        </a>
+
+
+        <a
+            href="/emergency-request/"
+            class="action-btn action-blue"
+        >
+            🚨 Emergency Request
+        </a>
+
+
+        <a
+            href="/dashboard/"
+            class="action-btn action-pink"
+        >
+            📊 Dashboard
+        </a>
+
+    </div>
+
 
 </div>
 
