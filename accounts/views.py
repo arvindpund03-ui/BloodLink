@@ -1,16 +1,30 @@
 from io import BytesIO
-
+import qrcode
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import FormView
 from django.contrib.auth.decorators import login_required
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4,landscape
+from reportlab.lib import colors
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
+from io import BytesIO
+from uuid import uuid4
+from django.utils import timezone
+from .models import UserProfile, DonationCertificate
+from django.http import JsonResponse
+from .models import EmergencyRequest
+from django.contrib import messages
+from django.shortcuts import redirect, render
+from datetime import timedelta
+from .forms import EmergencyRequestForm
+from .firebase import send_admin_emergency_notification
 
 from .forms import (
     RegistrationForm,
@@ -397,46 +411,103 @@ def matching_donors(request, id):
         }
     )
 
-
-# =========================================================
-# EMERGENCY REQUEST
-# =========================================================
-
+@login_required
 def emergency_request(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
-
     if request.method == "POST":
         form = EmergencyRequestForm(request.POST)
 
         if form.is_valid():
-            emergency = form.save()
 
-            messages.success(
-                request,
-                "Emergency blood request created successfully!"
-            )
+            # -----------------------------------------
+            # CLEAN / NORMALIZE DATA
+            # -----------------------------------------
+            patient_name = form.cleaned_data["patient_name"].strip()
+            blood_group = form.cleaned_data["blood_group"].strip()
+            hospital_name = form.cleaned_data["hospital_name"].strip()
+            city = form.cleaned_data["city"].strip()
+            contact_number = form.cleaned_data["contact_number"].strip()
+            units_required = form.cleaned_data["units_required"]
+            emergency_type = form.cleaned_data["emergency_type"]
 
-            # Create notifications for matching available donors
-            matching_donors_qs = UserProfile.objects.filter(
-                blood_group=emergency.blood_group,
-                is_available=True,
-            )
+            # -----------------------------------------
+            # 1. CHECK EXACT ACTIVE DUPLICATE
+            # -----------------------------------------
+            exact_duplicate = EmergencyRequest.objects.filter(
+                status="ACTIVE",
+                patient_name__iexact=patient_name,
+                blood_group=blood_group,
+                hospital_name__iexact=hospital_name,
+                city__iexact=city,
+                contact_number=contact_number,
+                units_required=units_required,
+                emergency_type=emergency_type,
+            ).order_by("-created_at").first()
 
-            for donor in matching_donors_qs:
-                Notification.objects.create(
-                    user=donor.user,
-                    title="Emergency Blood Request",
-                    message=(
-                        f"Emergency blood required: "
-                        f"{emergency.blood_group} - "
-                        f"{emergency.units_required} unit(s). "
-                        f"Hospital: {emergency.hospital_name}"
-                    ),
-                    emergency=emergency,
+            if exact_duplicate:
+                messages.warning(
+                    request,
+                    "This emergency request is already active. "
+                    "The emergency support team has already been notified."
                 )
 
-            return redirect("dashboard")
+                return redirect("emergency_request")
+
+            # -----------------------------------------
+            # 2. 15-MINUTE COOLDOWN CHECK
+            # -----------------------------------------
+            cooldown_time = timezone.now() - timedelta(minutes=15)
+
+            recent_duplicate = EmergencyRequest.objects.filter(
+                created_at__gte=cooldown_time,
+                status__in=["ACTIVE", "MATCHED"],
+                patient_name__iexact=patient_name,
+                hospital_name__iexact=hospital_name,
+                city__iexact=city,
+                contact_number=contact_number,
+            ).order_by("-created_at").first()
+
+            if recent_duplicate:
+                messages.warning(
+                    request,
+                    "A similar emergency request was submitted recently. "
+                    "Please wait before submitting the same request again."
+                )
+
+                return redirect("emergency_request")
+
+            # -----------------------------------------
+            # 3. CREATE NEW EMERGENCY
+            # -----------------------------------------
+            emergency = form.save(commit=False)
+
+            emergency.patient_name = patient_name
+            emergency.blood_group = blood_group
+            emergency.hospital_name = hospital_name
+            emergency.city = city
+            emergency.contact_number = contact_number
+            emergency.units_required = units_required
+            emergency.emergency_type = emergency_type
+
+            # Always start as ACTIVE
+            emergency.status = "ACTIVE"
+
+            # Save emergency first
+            emergency.save()
+
+            # Send FCM notification to Admin phone
+            send_admin_emergency_notification(emergency)
+
+            # -----------------------------------------
+            # SUCCESS MESSAGE
+            # -----------------------------------------
+            messages.success(
+                request,
+                "Emergency request submitted successfully. "
+                "The emergency support team has been notified."
+            )
+
+            return redirect("emergency_request")
+
     else:
         form = EmergencyRequestForm()
 
@@ -444,11 +515,972 @@ def emergency_request(request):
         request,
         "accounts/emergency_request.html",
         {
-            "form": form,
+            "form": form
         }
     )
 
 
+@login_required
+def download_pdf(request, id):
+
+    # =========================================================
+    # GET DONOR
+    # =========================================================
+    donor = get_object_or_404(
+        UserProfile.objects.select_related("user"),
+        id=id
+    )
+
+    # =========================================================
+    # ISSUE DATE
+    # Certificate generate/download date
+    # =========================================================
+    issue_date = timezone.localdate()
+
+    # =========================================================
+    # GET OR CREATE CERTIFICATE
+    # =========================================================
+    certificate = DonationCertificate.objects.filter(
+        donor=donor
+    ).first()
+
+    if certificate is None:
+        certificate = DonationCertificate.objects.create(
+            donor=donor,
+            donation_date=issue_date,
+            certificate_number=(
+                f"BL-{donor.id}-{uuid4().hex[:8].upper()}"
+            )
+        )
+
+    certificate_number = certificate.certificate_number
+
+    # =========================================================
+    # DONOR ID
+    # =========================================================
+    donor_id = (
+        f"BLK{issue_date.strftime('%Y%m%d')}"
+        f"{donor.id:02d}"
+    )
+
+    # =========================================================
+    # QR VERIFICATION URL
+    # =========================================================
+    verification_url = request.build_absolute_uri(
+        f"/verify-certificate/{certificate_number}/"
+    )
+
+    # =========================================================
+    # QR CODE
+    # =========================================================
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=8,
+        border=3,
+    )
+
+    qr.add_data(verification_url)
+    qr.make(fit=True)
+
+    qr_image = qr.make_image(
+        fill_color="#111827",
+        back_color="white"
+    )
+
+    qr_buffer = BytesIO()
+    qr_image.save(qr_buffer, format="PNG")
+    qr_buffer.seek(0)
+
+    # =========================================================
+    # PDF SETUP
+    # =========================================================
+    buffer = BytesIO()
+
+    page_width, page_height = landscape(A4)
+
+    pdf = canvas.Canvas(
+        buffer,
+        pagesize=landscape(A4)
+    )
+
+    # =========================================================
+    # BLOODLINK BRAND COLORS
+    # =========================================================
+    PURPLE = colors.HexColor("#6D28D9")
+    DARK_PURPLE = colors.HexColor("#4C1D95")
+
+    BLUE = colors.HexColor("#2563EB")
+    LIGHT_BLUE = colors.HexColor("#DBEAFE")
+
+    CORAL = colors.HexColor("#F43F5E")
+    DARK_CORAL = colors.HexColor("#E11D48")
+    LIGHT_CORAL = colors.HexColor("#FFE4E6")
+
+    GOLD = colors.HexColor("#F59E0B")
+    LIGHT_GOLD = colors.HexColor("#FEF3C7")
+
+    NAVY = colors.HexColor("#111827")
+    DARK = colors.HexColor("#1F2937")
+    MUTED = colors.HexColor("#64748B")
+
+    WHITE = colors.white
+    LIGHT = colors.HexColor("#F8FAFC")
+    BORDER = colors.HexColor("#CBD5E1")
+    GREEN = colors.HexColor("#15803D")
+
+    # =========================================================
+    # WHITE BACKGROUND
+    # =========================================================
+    pdf.setFillColor(WHITE)
+
+    pdf.rect(
+        0,
+        0,
+        page_width,
+        page_height,
+        fill=1,
+        stroke=0
+    )
+
+    # =========================================================
+    # PREMIUM OUTER BORDER
+    # =========================================================
+
+    pdf.setStrokeColor(PURPLE)
+    pdf.setLineWidth(6)
+
+    pdf.roundRect(
+        15,
+        15,
+        page_width - 30,
+        page_height - 30,
+        18,
+        fill=0,
+        stroke=1
+    )
+
+    pdf.setStrokeColor(GOLD)
+    pdf.setLineWidth(2)
+
+    pdf.roundRect(
+        27,
+        27,
+        page_width - 54,
+        page_height - 54,
+        13,
+        fill=0,
+        stroke=1
+    )
+
+    # =========================================================
+    # DECORATIVE TOP GRADIENT-STYLE BANDS
+    # =========================================================
+
+    pdf.setFillColor(PURPLE)
+
+    pdf.rect(
+        30,
+        page_height - 38,
+        page_width - 60,
+        5,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(BLUE)
+
+    pdf.rect(
+        30,
+        page_height - 43,
+        page_width - 60,
+        5,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(CORAL)
+
+    pdf.rect(
+        30,
+        page_height - 48,
+        page_width - 60,
+        5,
+        fill=1,
+        stroke=0
+    )
+
+    # =========================================================
+    # WATERMARK
+    # =========================================================
+
+    pdf.saveState()
+
+    pdf.setFillColor(colors.HexColor("#F3F4F6"))
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        70
+    )
+
+    pdf.translate(
+        page_width / 2,
+        page_height / 2
+    )
+
+    pdf.rotate(22)
+
+    pdf.drawCentredString(
+        0,
+        0,
+        "BLOODLINK"
+    )
+
+    pdf.restoreState()
+
+    # =========================================================
+    # LOGO CIRCLE
+    # =========================================================
+
+    logo_x = 72
+    logo_y = page_height - 83
+
+    # Outer purple circle
+    pdf.setFillColor(PURPLE)
+
+    pdf.circle(
+        logo_x,
+        logo_y,
+        28,
+        fill=1,
+        stroke=0
+    )
+
+    # Inner blue circle
+    pdf.setFillColor(BLUE)
+
+    pdf.circle(
+        logo_x,
+        logo_y,
+        22,
+        fill=1,
+        stroke=0
+    )
+
+    # Coral blood drop
+    pdf.setFillColor(CORAL)
+
+    path = pdf.beginPath()
+
+    path.moveTo(
+        logo_x,
+        logo_y + 15
+    )
+
+    path.curveTo(
+        logo_x - 13,
+        logo_y - 2,
+        logo_x - 10,
+        logo_y - 12,
+        logo_x,
+        logo_y - 15
+    )
+
+    path.curveTo(
+        logo_x + 10,
+        logo_y - 12,
+        logo_x + 13,
+        logo_y - 2,
+        logo_x,
+        logo_y + 15
+    )
+
+    pdf.drawPath(
+        path,
+        fill=1,
+        stroke=0
+    )
+
+    # =========================================================
+    # BLOODLINK BRAND
+    # =========================================================
+
+    pdf.setFillColor(NAVY)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        24
+    )
+
+    pdf.drawString(
+        110,
+        page_height - 67,
+        "BloodLink"
+    )
+
+    pdf.setFillColor(PURPLE)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        8
+    )
+
+    pdf.drawString(
+        111,
+        page_height - 81,
+        "BLOOD DONATION & EMERGENCY SUPPORT NETWORK"
+    )
+
+    # =========================================================
+    # OFFICIAL CERTIFICATE BADGE
+    # =========================================================
+
+    badge_x = page_width - 185
+    badge_y = page_height - 75
+
+    pdf.setFillColor(LIGHT_GOLD)
+
+    pdf.roundRect(
+        badge_x,
+        badge_y - 17,
+        125,
+        32,
+        16,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setStrokeColor(GOLD)
+    pdf.setLineWidth(1)
+
+    pdf.roundRect(
+        badge_x,
+        badge_y - 17,
+        125,
+        32,
+        16,
+        fill=0,
+        stroke=1
+    )
+
+    pdf.setFillColor(DARK)
+    pdf.setFont(
+        "Helvetica-Bold",
+        8
+    )
+
+    pdf.drawCentredString(
+        badge_x + 62.5,
+        badge_y - 5,
+        "OFFICIAL CERTIFICATE"
+    )
+
+    # =========================================================
+    # MAIN HEADING
+    # =========================================================
+
+    title_y = page_height - 153
+
+    pdf.setFillColor(BLUE)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        9
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        title_y + 13,
+        "DONOR RECOGNITION & EMERGENCY SUPPORT"
+    )
+
+    pdf.setFillColor(NAVY)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        27
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        title_y - 15,
+        "CERTIFICATE OF APPRECIATION"
+    )
+
+    pdf.setFillColor(MUTED)
+
+    pdf.setFont(
+        "Helvetica-Oblique",
+        9.5
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        title_y - 35,
+        "Recognizing compassion, humanity and commitment to saving lives"
+    )
+
+    # =========================================================
+    # PRESENTED TO
+    # =========================================================
+
+    pdf.setFillColor(CORAL)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        8
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        title_y - 61,
+        "THIS CERTIFICATE IS PROUDLY PRESENTED TO"
+    )
+
+    # =========================================================
+    # DONOR NAME
+    # =========================================================
+
+    donor_name = donor.full_name
+
+    if not donor_name:
+        donor_name = donor.user.get_full_name()
+
+    if not donor_name:
+        donor_name = donor.user.username
+
+    donor_name = donor_name.upper()
+
+    pdf.setFillColor(DARK_PURPLE)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        24
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        title_y - 91,
+        donor_name
+    )
+
+    # Name underline
+    name_width = pdf.stringWidth(
+        donor_name,
+        "Helvetica-Bold",
+        24
+    )
+
+    pdf.setStrokeColor(CORAL)
+
+    pdf.setLineWidth(2)
+
+    pdf.line(
+        (page_width - name_width) / 2,
+        title_y - 99,
+        (page_width + name_width) / 2,
+        title_y - 99
+    )
+
+    # =========================================================
+    # APPRECIATION MESSAGE
+    # =========================================================
+
+    pdf.setFillColor(DARK)
+
+    pdf.setFont(
+        "Helvetica",
+        9
+    )
+
+    message_lines = [
+        "in sincere appreciation for your valuable contribution",
+        "towards blood donation and emergency support,",
+        "helping patients, accident victims and families receive timely assistance."
+    ]
+
+    message_y = title_y - 121
+
+    for line in message_lines:
+
+        pdf.drawCentredString(
+            page_width / 2,
+            message_y,
+            line
+        )
+
+        message_y -= 12
+
+    # =========================================================
+    # KINDNESS STATEMENT
+    # =========================================================
+
+    pdf.setFillColor(CORAL)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        10
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        message_y - 4,
+        "YOUR KINDNESS CAN SAVE A LIFE"
+    )
+
+    # =========================================================
+    # INFORMATION CARDS
+    # =========================================================
+
+    cards_y = 105
+
+    card_height = 50
+    card_width = 116
+    gap = 12
+
+    total_width = (
+        card_width * 4
+        + gap * 3
+    )
+
+    start_x = (
+        page_width - total_width
+    ) / 2
+
+    details = [
+        (
+            "BLOOD GROUP",
+            donor.blood_group or "N/A"
+        ),
+        (
+            "CITY",
+            donor.city or "N/A"
+        ),
+        (
+            "ISSUE DATE",
+            issue_date.strftime("%d-%m-%Y")
+        ),
+        (
+            "DONOR ID",
+            donor_id
+        ),
+    ]
+
+    for index, (label, value) in enumerate(details):
+
+        x = start_x + index * (
+            card_width + gap
+        )
+
+        # Card
+        pdf.setFillColor(LIGHT)
+
+        pdf.setStrokeColor(BORDER)
+
+        pdf.setLineWidth(0.8)
+
+        pdf.roundRect(
+            x,
+            cards_y,
+            card_width,
+            card_height,
+            9,
+            fill=1,
+            stroke=1
+        )
+
+        # Small top accent
+        if index == 0:
+            accent = CORAL
+        elif index == 1:
+            accent = BLUE
+        elif index == 2:
+            accent = GOLD
+        else:
+            accent = PURPLE
+
+        pdf.setFillColor(accent)
+
+        pdf.roundRect(
+            x,
+            cards_y + card_height - 5,
+            card_width,
+            5,
+            3,
+            fill=1,
+            stroke=0
+        )
+
+        # Label
+        pdf.setFillColor(MUTED)
+
+        pdf.setFont(
+            "Helvetica-Bold",
+            6.5
+        )
+
+        pdf.drawCentredString(
+            x + card_width / 2,
+            cards_y + 33,
+            label
+        )
+
+        # Value
+        pdf.setFillColor(NAVY)
+
+        pdf.setFont(
+            "Helvetica-Bold",
+            10
+        )
+
+        display_value = str(value)
+
+        if len(display_value) > 18:
+
+            pdf.setFont(
+                "Helvetica-Bold",
+                7.5
+            )
+
+        pdf.drawCentredString(
+            x + card_width / 2,
+            cards_y + 16,
+            display_value
+        )
+
+    # =========================================================
+    # DONOR HERO BADGE
+    # =========================================================
+
+    hero_x = 78
+    hero_y = 91
+
+    pdf.setFillColor(CORAL)
+
+    pdf.circle(
+        hero_x,
+        hero_y,
+        29,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setStrokeColor(GOLD)
+
+    pdf.setLineWidth(2)
+
+    pdf.circle(
+        hero_x,
+        hero_y,
+        25,
+        fill=0,
+        stroke=1
+    )
+
+    pdf.setFillColor(WHITE)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        7
+    )
+
+    pdf.drawCentredString(
+        hero_x,
+        hero_y + 4,
+        "DONOR"
+    )
+
+    pdf.drawCentredString(
+        hero_x,
+        hero_y - 7,
+        "HERO"
+    )
+
+    # =========================================================
+    # EMERGENCY SUPPORT BADGE
+    # =========================================================
+
+    support_x = page_width - 78
+    support_y = 91
+
+    pdf.setFillColor(PURPLE)
+
+    pdf.circle(
+        support_x,
+        support_y,
+        29,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setStrokeColor(BLUE)
+
+    pdf.setLineWidth(2)
+
+    pdf.circle(
+        support_x,
+        support_y,
+        25,
+        fill=0,
+        stroke=1
+    )
+
+    pdf.setFillColor(WHITE)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        6.5
+    )
+
+    pdf.drawCentredString(
+        support_x,
+        support_y + 4,
+        "EMERGENCY"
+    )
+
+    pdf.drawCentredString(
+        support_x,
+        support_y - 7,
+        "SUPPORT"
+    )
+
+    # =========================================================
+    # QR VERIFICATION PANEL
+    # =========================================================
+
+    qr_x = page_width - 148
+    qr_y = page_height - 292
+    qr_size = 72
+
+    pdf.setFillColor(WHITE)
+
+    pdf.setStrokeColor(BLUE)
+
+    pdf.setLineWidth(1.5)
+
+    pdf.roundRect(
+        qr_x - 9,
+        qr_y - 9,
+        qr_size + 18,
+        qr_size + 34,
+        9,
+        fill=1,
+        stroke=1
+    )
+
+    pdf.drawImage(
+        ImageReader(qr_buffer),
+        qr_x,
+        qr_y,
+        width=qr_size,
+        height=qr_size,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
+
+    pdf.setFillColor(GREEN)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        7
+    )
+
+    pdf.drawCentredString(
+        qr_x + qr_size / 2,
+        qr_y - 20,
+        "✓ VERIFIED"
+    )
+
+    pdf.setFillColor(MUTED)
+
+    pdf.setFont(
+        "Helvetica",
+        6
+    )
+
+    pdf.drawCentredString(
+        qr_x + qr_size / 2,
+        qr_y - 29,
+        "SCAN TO VERIFY"
+    )
+
+    # =========================================================
+    # QUOTE
+    # =========================================================
+
+    pdf.setFillColor(MUTED)
+
+    pdf.setFont(
+        "Helvetica-Oblique",
+        8
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        68,
+        '"Every drop donated can become someone\'s hope in a critical moment."'
+    )
+
+    # =========================================================
+    # DIGITAL SIGNATURE - LEFT
+    # =========================================================
+
+    left_signature_x = 225
+    signature_y = 42
+
+    pdf.setStrokeColor(PURPLE)
+
+    pdf.setLineWidth(0.8)
+
+    pdf.line(
+        left_signature_x - 70,
+        signature_y,
+        left_signature_x + 70,
+        signature_y
+    )
+
+    pdf.setFillColor(DARK_PURPLE)
+
+    pdf.setFont(
+        "Helvetica-Oblique",
+        10
+    )
+
+    pdf.drawCentredString(
+        left_signature_x,
+        signature_y + 8,
+        "BloodLink Team"
+    )
+
+    pdf.setFillColor(MUTED)
+
+    pdf.setFont(
+        "Helvetica",
+        6.5
+    )
+
+    pdf.drawCentredString(
+        left_signature_x,
+        signature_y - 9,
+        "Authorized Signature"
+    )
+
+    # =========================================================
+    # DIGITAL SIGNATURE - RIGHT
+    # =========================================================
+
+    right_signature_x = page_width - 225
+
+    pdf.setStrokeColor(BLUE)
+
+    pdf.line(
+        right_signature_x - 70,
+        signature_y,
+        right_signature_x + 70,
+        signature_y
+    )
+
+    pdf.setFillColor(BLUE)
+
+    pdf.setFont(
+        "Helvetica-Oblique",
+        10
+    )
+
+    pdf.drawCentredString(
+        right_signature_x,
+        signature_y + 8,
+        "Emergency Support Team"
+    )
+
+    pdf.setFillColor(MUTED)
+
+    pdf.setFont(
+        "Helvetica",
+        6.5
+    )
+
+    pdf.drawCentredString(
+        right_signature_x,
+        signature_y - 9,
+        "BloodLink Emergency Network"
+    )
+
+    # =========================================================
+    # DIGITAL VERIFICATION LABEL
+    # =========================================================
+
+    pdf.setFillColor(GREEN)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        6
+    )
+
+    pdf.drawString(
+        48,
+        30,
+        "✓ DIGITALLY VERIFIABLE"
+    )
+
+    # =========================================================
+    # CERTIFICATE NUMBER
+    # =========================================================
+
+    pdf.setFillColor(NAVY)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        6.8
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        27,
+        f"Certificate No. {certificate_number}"
+    )
+
+    # =========================================================
+    # FOOTER BRANDING
+    # =========================================================
+
+    pdf.setFillColor(CORAL)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        7
+    )
+
+    pdf.drawCentredString(
+        page_width / 2,
+        15,
+        "SAVE BLOOD • SAVE LIVES • SUPPORT IN EMERGENCIES"
+    )
+
+    # =========================================================
+    # FINISH PDF
+    # =========================================================
+
+    pdf.showPage()
+    pdf.save()
+
+    buffer.seek(0)
+
+    # =========================================================
+    # RESPONSE
+    # =========================================================
+
+    response = HttpResponse(
+        buffer.getvalue(),
+        content_type="application/pdf"
+    )
+
+    response["Content-Disposition"] = (
+        f'attachment; filename="BloodLink_Certificate_'
+        f'{certificate_number}.pdf"'
+    )
+
+    return response
 # =========================================================
 # MARK DONATION
 # =========================================================
@@ -478,147 +1510,25 @@ def mark_donation(request, id):
         "certificate",
         id=certificate.id
     )
-
-
-# =========================================================
-# DOWNLOAD DONATION CERTIFICATE
-# =========================================================
-
-def download_pdf(request, id):
+def verify_certificate(request, certificate_number):
     certificate = get_object_or_404(
         DonationCertificate.objects.select_related(
             "donor",
             "donor__user"
         ),
-        id=id
+        certificate_number=certificate_number
     )
 
-    buffer = BytesIO()
+    donor = certificate.donor
 
-    pdf = canvas.Canvas(
-        buffer,
-        pagesize=A4
+    return render(
+        request,
+        "accounts/verify_certificate.html",
+        {
+            "certificate": certificate,
+            "donor": donor,
+        }
     )
-
-    width, height = A4
-
-    # Border
-    pdf.rect(
-        35,
-        35,
-        width - 70,
-        height - 70
-    )
-
-    # Title
-    pdf.setFont(
-        "Helvetica-Bold",
-        24
-    )
-
-    pdf.drawCentredString(
-        width / 2,
-        height - 100,
-        "BLOODLINK"
-    )
-
-    pdf.setFont(
-        "Helvetica-Bold",
-        18
-    )
-
-    pdf.drawCentredString(
-        width / 2,
-        height - 140,
-        "Blood Donation Certificate"
-    )
-
-    pdf.setFont(
-        "Helvetica",
-        12
-    )
-
-    donor_name = (
-        certificate.donor.full_name
-        or certificate.donor.user.username
-    )
-
-    pdf.drawCentredString(
-        width / 2,
-        height - 210,
-        "This certificate is proudly presented to"
-    )
-
-    pdf.setFont(
-        "Helvetica-Bold",
-        20
-    )
-
-    pdf.drawCentredString(
-        width / 2,
-        height - 250,
-        donor_name
-    )
-
-    pdf.setFont(
-        "Helvetica",
-        12
-    )
-
-    pdf.drawCentredString(
-        width / 2,
-        height - 300,
-        "for making a valuable contribution through blood donation."
-    )
-
-    pdf.drawString(
-        80,
-        height - 370,
-        f"Blood Group: {certificate.donor.blood_group}"
-    )
-
-    pdf.drawString(
-        80,
-        height - 400,
-        f"Donation Date: {certificate.donation_date}"
-    )
-
-    pdf.drawString(
-        80,
-        height - 430,
-        f"Certificate No: {certificate.certificate_number}"
-    )
-
-    pdf.setFont(
-        "Helvetica-Oblique",
-        11
-    )
-
-    pdf.drawCentredString(
-        width / 2,
-        90,
-        "Thank you for helping save lives."
-    )
-
-    pdf.save()
-
-    buffer.seek(0)
-
-    response = HttpResponse(
-        buffer,
-        content_type="application/pdf"
-    )
-
-    response[
-        "Content-Disposition"
-    ] = (
-        f'attachment; filename="bloodlink_certificate_'
-        f'{certificate.id}.pdf"'
-    )
-
-    return response
-
-
 # =========================================================
 # ABOUT
 # =========================================================
@@ -764,3 +1674,73 @@ def reject_emergency(request, emergency_id):
     )
 
     return redirect("notifications")
+
+
+
+@login_required
+def admin_active_emergency_api(request):
+
+    if not request.user.is_superuser:
+
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "Unauthorized"
+            },
+            status=403
+        )
+
+
+    emergencies = (
+        EmergencyRequest.objects
+        .filter(status="ACTIVE")
+        .order_by("-created_at")[:20]
+    )
+
+
+    data = []
+
+
+    for emergency in emergencies:
+
+        data.append({
+
+            "id": emergency.id,
+
+            "patient_name":
+                emergency.patient_name,
+
+            "blood_group":
+                emergency.blood_group,
+
+            "units_required":
+                emergency.units_required,
+
+            "hospital_name":
+                emergency.hospital_name,
+
+            "city":
+                emergency.city,
+
+            "contact_number":
+                emergency.contact_number,
+
+            "emergency_type":
+                emergency.emergency_type,
+
+            "urgency":
+                emergency.urgency,
+
+            "created_at":
+                emergency.created_at.isoformat(),
+
+        })
+
+
+    return JsonResponse({
+
+        "success": True,
+
+        "emergencies": data
+
+    })

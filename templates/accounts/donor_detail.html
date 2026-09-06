@@ -1,274 +1,895 @@
 {% extends "base.html" %}
 
+{% block title %}Donor Profile | BloodLink{% endblock %}
+
 {% block content %}
 
-<div class="container py-5">
+<style>
+    .donor-page {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
 
-    <div class="row justify-content-center">
+    /* HERO */
+    .donor-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 26px;
+        padding: 34px;
+        margin-bottom: 22px;
+        color: white;
+        background:
+            radial-gradient(circle at 90% 10%, rgba(96,165,250,.45), transparent 28%),
+            radial-gradient(circle at 5% 95%, rgba(251,113,133,.28), transparent 32%),
+            linear-gradient(135deg, #32106f, #4f46e5 55%, #2563eb);
+        box-shadow: 0 20px 45px rgba(55,35,120,.20);
+    }
 
-        <div class="col-lg-8">
+    .donor-hero::after {
+        content: "";
+        position: absolute;
+        width: 210px;
+        height: 210px;
+        right: -80px;
+        bottom: -100px;
+        border: 28px solid rgba(255,255,255,.08);
+        border-radius: 50%;
+    }
 
-            <div class="card border-0 shadow-lg overflow-hidden">
+    .hero-inner {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
 
-                <!-- Header -->
-                <div class="bg-danger text-white text-center p-4">
+    .donor-photo {
+        width: 125px;
+        height: 125px;
+        padding: 4px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #fb7185, white, #60a5fa);
+        box-shadow: 0 12px 30px rgba(0,0,0,.22);
+    }
 
-                    <h2 class="fw-bold mb-1">
-                        🩸 Donor Profile
-                    </h2>
+    .donor-photo img,
+    .donor-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        color: #4f46e5;
+        font-size: 46px;
+        font-weight: 900;
+    }
 
-                    <p class="mb-0">
-                        BloodLink Donor
-                    </p>
+    .hero-info {
+        min-width: 0;
+    }
 
+    .hero-label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        opacity: .75;
+        margin-bottom: 6px;
+    }
+
+    .hero-info h1 {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 900;
+        word-break: break-word;
+    }
+
+    .hero-subtitle {
+        margin-top: 6px;
+        font-size: 14px;
+        opacity: .82;
+    }
+
+    .status-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-top: 15px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 13px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 800;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.18);
+        backdrop-filter: blur(8px);
+    }
+
+    .status-available {
+        background: rgba(34,197,94,.20);
+        color: #dcfce7;
+    }
+
+    .status-unavailable {
+        background: rgba(239,68,68,.20);
+        color: #fee2e2;
+    }
+
+    /* BLOOD BADGE */
+    .blood-highlight {
+        position: absolute;
+        right: 30px;
+        top: 30px;
+        z-index: 3;
+        width: 86px;
+        height: 86px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #ef4444, #be123c);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 12px 25px rgba(0,0,0,.20);
+        border: 2px solid rgba(255,255,255,.20);
+    }
+
+    .blood-highlight strong {
+        font-size: 24px;
+        font-weight: 900;
+    }
+
+    .blood-highlight span {
+        font-size: 9px;
+        font-weight: 800;
+        opacity: .85;
+        text-transform: uppercase;
+    }
+
+    /* MAIN CARD */
+    .donor-card {
+        background: white;
+        border: 1px solid #edf0f7;
+        border-radius: 24px;
+        padding: 26px;
+        box-shadow: 0 10px 30px rgba(35,25,80,.07);
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-bottom: 18px;
+    }
+
+    .section-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg,#ede9fe,#dbeafe);
+        font-size: 19px;
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        color: #24104f;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .section-heading p {
+        margin: 3px 0 0;
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    /* INFO GRID */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .info-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        padding: 15px;
+        border-radius: 16px;
+        background: #f8f9fd;
+        border: 1px solid #eef0f6;
+        transition: .2s ease;
+    }
+
+    .info-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(35,25,80,.07);
+    }
+
+    .info-box-icon {
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,.05);
+        font-size: 19px;
+    }
+
+    .info-label {
+        color: #94a3b8;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .info-value {
+        margin-top: 3px;
+        color: #334155;
+        font-size: 14px;
+        font-weight: 800;
+        word-break: break-word;
+    }
+
+    /* DONATION STAT */
+    .donation-stat {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .donation-box {
+        padding: 20px;
+        border-radius: 18px;
+        text-align: center;
+        background: linear-gradient(135deg,#fff1f2,#fff7ed);
+        border: 1px solid #ffe4e6;
+    }
+
+    .donation-number {
+        color: #be123c;
+        font-size: 30px;
+        font-weight: 900;
+    }
+
+    .donation-title {
+        margin-top: 3px;
+        color: #9f1239;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .availability-box {
+        padding: 20px;
+        border-radius: 18px;
+        text-align: center;
+        background: linear-gradient(135deg,#eff6ff,#eef2ff);
+        border: 1px solid #dbeafe;
+    }
+
+    .availability-icon {
+        font-size: 28px;
+    }
+
+    .availability-title {
+        margin-top: 4px;
+        color: #3730a3;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    /* CONTACT */
+    .contact-section {
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid #eef0f6;
+    }
+
+    .contact-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .contact-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 14px 18px;
+        border-radius: 14px;
+        color: white;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 800;
+        transition: .2s ease;
+    }
+
+    .contact-btn:hover {
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .call-btn {
+        background: linear-gradient(135deg,#e11d48,#ef4444);
+        box-shadow: 0 9px 20px rgba(225,29,72,.18);
+    }
+
+    .whatsapp-btn {
+        background: linear-gradient(135deg,#16a34a,#22c55e);
+        box-shadow: 0 9px 20px rgba(22,163,74,.18);
+    }
+
+    .unavailable-message {
+        padding: 14px;
+        border-radius: 14px;
+        text-align: center;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* CERTIFICATE */
+    .certificate-box {
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        background: linear-gradient(135deg,#faf5ff,#eff6ff);
+        border: 1px solid #ddd6fe;
+    }
+
+    .certificate-info {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .certificate-icon {
+        width: 43px;
+        height: 43px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg,#7c3aed,#4f46e5);
+        color: white;
+        font-size: 20px;
+    }
+
+    .certificate-info strong {
+        display: block;
+        color: #312e81;
+        font-size: 13px;
+    }
+
+    .certificate-info span {
+        display: block;
+        margin-top: 3px;
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    .certificate-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 14px;
+        border-radius: 11px;
+        color: white;
+        background: linear-gradient(135deg,#7c3aed,#4f46e5);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .certificate-btn:hover {
+        color: white;
+    }
+
+    /* FOOTER */
+    .donor-footer {
+        margin-top: 20px;
+        padding: 18px;
+        text-align: center;
+        border-radius: 17px;
+        background: linear-gradient(135deg,#fff1f2,#eef2ff);
+        border: 1px solid #e0e7ff;
+    }
+
+    .donor-footer strong {
+        color: #24104f;
+        font-size: 13px;
+    }
+
+    .donor-footer span {
+        display: block;
+        margin-top: 4px;
+        color: #64748b;
+        font-size: 10px;
+    }
+
+    /* MOBILE */
+    @media(max-width:700px){
+
+        .donor-hero {
+            padding: 25px 20px;
+        }
+
+        .hero-inner {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 17px;
+        }
+
+        .donor-photo {
+            width: 100px;
+            height: 100px;
+        }
+
+        .hero-info h1 {
+            font-size: 25px;
+        }
+
+        .blood-highlight {
+            right: 18px;
+            top: 18px;
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+        }
+
+        .blood-highlight strong {
+            font-size: 20px;
+        }
+
+        .donor-card {
+            padding: 19px;
+            border-radius: 20px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .donation-stat {
+            grid-template-columns: 1fr;
+        }
+
+        .contact-buttons {
+            grid-template-columns: 1fr;
+        }
+
+        .certificate-box {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .certificate-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media(max-width:430px){
+
+        .blood-highlight {
+            position: static;
+            margin-top: 5px;
+        }
+
+        .hero-inner {
+            align-items: center;
+            text-align: center;
+        }
+
+        .status-row {
+            justify-content: center;
+        }
+
+        .hero-info {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="donor-page">
+
+
+    <!-- HERO -->
+    <section class="donor-hero">
+
+        <div class="hero-inner">
+
+            <div class="donor-photo">
+
+                {% if donor.photo %}
+
+                    <img
+                        src="{{ donor.photo.url }}"
+                        alt="Donor Photo"
+                    >
+
+                {% else %}
+
+                    <div class="donor-placeholder">
+                        {{ donor.full_name|first|upper }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="hero-info">
+
+                <div class="hero-label">
+                    🩸 BloodLink Donor
                 </div>
 
+                <h1>
+                    {{ donor.full_name }}
+                </h1>
 
-                <div class="card-body p-4 p-md-5">
+                <div class="hero-subtitle">
+                    Trusted BloodLink donor profile
+                </div>
 
-                    <!-- Donor Photo -->
-                    <div class="text-center mb-4">
+                <div class="status-row">
 
-                        {% if donor.photo %}
+                    {% if donor.is_available %}
 
-                            <img src="{{ donor.photo.url }}"
-                                 alt="Donor Photo"
-                                 width="170"
-                                 height="170"
-                                 class="rounded-circle shadow"
-                                 style="object-fit:cover;">
+                        <span class="status-badge status-available">
+                            🟢 Available for Donation
+                        </span>
 
-                        {% else %}
+                    {% else %}
 
-                            <div class="rounded-circle bg-danger text-white mx-auto d-flex align-items-center justify-content-center shadow"
-                                 style="width:170px;height:170px;font-size:60px;font-weight:bold;">
-
-                                {{ donor.full_name|first|upper }}
-
-                            </div>
-
-                        {% endif %}
-
-                        <h2 class="fw-bold mt-3 mb-1">
-
-                            {{ donor.full_name }}
-
-                        </h2>
-
-
-                        {% if donor.is_available %}
-
-                            <span class="badge bg-success px-3 py-2">
-                                🟢 Available for Donation
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge bg-secondary px-3 py-2">
-                                ⚪ Currently Unavailable
-                            </span>
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <hr class="my-4">
-
-
-                    <!-- Donor Information -->
-
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded p-3">
-
-                                <small class="text-muted">
-                                    Blood Group
-                                </small>
-
-                                <h4 class="text-danger fw-bold mb-0">
-                                    🩸 {{ donor.blood_group }}
-                                </h4>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded p-3">
-
-                                <small class="text-muted">
-                                    Phone Number
-                                </small>
-
-                                <h5 class="fw-bold mb-0">
-                                    📞 {{ donor.phone }}
-                                </h5>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded p-3">
-
-                                <small class="text-muted">
-                                    City
-                                </small>
-
-                                <h5 class="fw-bold mb-0">
-                                    📍 {{ donor.city }}
-                                </h5>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded p-3">
-
-                                <small class="text-muted">
-                                    Emergency Contact
-                                </small>
-
-                                <h5 class="fw-bold mb-0">
-
-                                    {% if donor.emergency_contact %}
-                                        🚨 {{ donor.emergency_contact }}
-                                    {% else %}
-                                        Not Provided
-                                    {% endif %}
-
-                                </h5>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded p-3">
-
-                                <small class="text-muted">
-                                    Total Donations
-                                </small>
-
-                                <h5 class="fw-bold mb-0">
-                                    ❤️ {{ donor.donation_count }}
-                                </h5>
-
-                            </div>
-
-                        </div>
-
-
-                        {% if donor.location %}
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded p-3">
-
-                                <small class="text-muted">
-                                    Location
-                                </small>
-
-                                <h5 class="fw-bold mb-0">
-                                    📍 {{ donor.location }}
-                                </h5>
-
-                            </div>
-
-                        </div>
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <hr class="my-4">
-
-
-                    <!-- Contact Buttons -->
-
-                    <div class="text-center">
-
-                        {% if donor.is_available and donor.phone %}
-
-                            <a href="tel:{{ donor.phone }}"
-                               class="btn btn-danger btn-lg px-4 me-2 mb-2">
-
-                                📞 Call Donor
-
-                            </a>
-
-
-                            <a href="https://wa.me/91{{ donor.phone }}"
-                               target="_blank"
-                               class="btn btn-success btn-lg px-4 mb-2">
-
-                                💬 WhatsApp
-
-                            </a>
-
-                        {% elif donor.is_available %}
-
-                            <div class="alert alert-success">
-                                🟢 Donor is available for donation.
-                            </div>
-
-                        {% else %}
-
-                            <div class="alert alert-secondary">
-                                ⚪ This donor is currently unavailable.
-                            </div>
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <!-- Certificate -->
-
-                    {% if donor.donation_count > 0 %}
-
-                    <div class="text-center mt-4">
-
-                        <a href="{% url 'certificate' donor.id %}"
-                           class="btn btn-outline-danger px-4">
-
-                            🧾 Download Donation Certificate
-
-                        </a>
-
-                    </div>
+                        <span class="status-badge status-unavailable">
+                            ⚪ Currently Unavailable
+                        </span>
 
                     {% endif %}
-
-                </div>
-
-
-                <div class="card-footer text-center bg-light">
-
-                    <small class="text-muted">
-
-                        🩸 BloodLink • Every Drop Counts. Every Donor Matters.
-
-                    </small>
 
                 </div>
 
             </div>
 
         </div>
+
+
+        <div class="blood-highlight">
+
+            <strong>
+                {{ donor.blood_group }}
+            </strong>
+
+            <span>
+                Blood Group
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- INFORMATION -->
+    <div class="donor-card">
+
+        <div class="section-heading">
+
+            <div class="section-icon">
+                👤
+            </div>
+
+            <div>
+                <h2>Donor Information</h2>
+
+                <p>
+                    Contact and donor details
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+
+            <!-- BLOOD -->
+            <div class="info-box">
+
+                <div class="info-box-icon">
+                    🩸
+                </div>
+
+                <div>
+                    <div class="info-label">
+                        Blood Group
+                    </div>
+
+                    <div class="info-value">
+                        {{ donor.blood_group }}
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- PHONE -->
+            <div class="info-box">
+
+                <div class="info-box-icon">
+                    📞
+                </div>
+
+                <div>
+                    <div class="info-label">
+                        Phone Number
+                    </div>
+
+                    <div class="info-value">
+                        {{ donor.phone }}
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- CITY -->
+            <div class="info-box">
+
+                <div class="info-box-icon">
+                    📍
+                </div>
+
+                <div>
+                    <div class="info-label">
+                        City
+                    </div>
+
+                    <div class="info-value">
+                        {{ donor.city }}
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- EMERGENCY -->
+            <div class="info-box">
+
+                <div class="info-box-icon">
+                    🚨
+                </div>
+
+                <div>
+                    <div class="info-label">
+                        Emergency Contact
+                    </div>
+
+                    <div class="info-value">
+
+                        {% if donor.emergency_contact %}
+                            {{ donor.emergency_contact }}
+                        {% else %}
+                            Not Provided
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- LOCATION -->
+            {% if donor.location %}
+
+            <div class="info-box">
+
+                <div class="info-box-icon">
+                    🗺️
+                </div>
+
+                <div>
+                    <div class="info-label">
+                        Location
+                    </div>
+
+                    <div class="info-value">
+                        {{ donor.location }}
+                    </div>
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- DONATION STATS -->
+        <div class="donation-stat">
+
+            <div class="donation-box">
+
+                <div class="donation-number">
+                    {{ donor.donation_count|default:"0" }}
+                </div>
+
+                <div class="donation-title">
+                    ❤️ Total Donations
+                </div>
+
+            </div>
+
+
+            <div class="availability-box">
+
+                {% if donor.is_available %}
+
+                    <div class="availability-icon">
+                        🟢
+                    </div>
+
+                    <div class="availability-title">
+                        Available for Blood Requests
+                    </div>
+
+                {% else %}
+
+                    <div class="availability-icon">
+                        ⚪
+                    </div>
+
+                    <div class="availability-title">
+                        Currently Unavailable
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTACT -->
+        <div class="contact-section">
+
+            <div class="section-heading">
+
+                <div class="section-icon">
+                    🤝
+                </div>
+
+                <div>
+                    <h2>Contact Donor</h2>
+
+                    <p>
+                        Connect with this donor directly
+                    </p>
+                </div>
+
+            </div>
+
+
+            {% if donor.is_available and donor.phone %}
+
+                <div class="contact-buttons">
+
+                    <a
+                        href="tel:{{ donor.phone }}"
+                        class="contact-btn call-btn"
+                    >
+                        📞 Call Donor
+                    </a>
+
+
+                    <a
+                        href="https://wa.me/91{{ donor.phone }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="contact-btn whatsapp-btn"
+                    >
+                        💬 WhatsApp
+                    </a>
+
+                </div>
+
+            {% elif donor.is_available %}
+
+                <div class="unavailable-message">
+                    🟢 Donor is available, but no phone number is provided.
+                </div>
+
+            {% else %}
+
+                <div class="unavailable-message">
+                    ⚪ This donor is currently unavailable for donation.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- CERTIFICATE -->
+        {% if donor.donation_count > 0 %}
+
+        <div class="certificate-box">
+
+            <div class="certificate-info">
+
+                <div class="certificate-icon">
+                    🧾
+                </div>
+
+                <div>
+
+                    <strong>
+                        Donation Certificate
+                    </strong>
+
+                    <span>
+                        Download this donor's donation certificate
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{% url 'certificate' donor.id %}"
+                class="certificate-btn"
+            >
+                🧾 Download Certificate
+            </a>
+
+        </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <div class="donor-footer">
+
+        <strong>
+            🩸 BloodLink • Every Drop Counts
+        </strong>
+
+        <span>
+            Every Donor Matters • Together We Save Lives
+        </span>
 
     </div>
 

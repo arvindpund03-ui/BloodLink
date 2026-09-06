@@ -5,635 +5,643 @@
 {% block content %}
 
 <style>
-    .profile-page {
-        max-width: 1250px;
-        margin: 0 auto;
-    }
-
-    /* ---------- HEADER ---------- */
-    .profile-heading {
-        margin-bottom: 24px;
-    }
-
-    .profile-heading h1 {
-        margin: 0;
-        font-size: 30px;
-        font-weight: 800;
-        color: #24104f;
-    }
-
-    .profile-heading p {
-        margin: 7px 0 0;
-        color: #718096;
-        font-size: 14px;
-    }
-
-    /* ---------- PROFILE HERO ---------- */
-    .profile-hero {
-        position: relative;
-        overflow: hidden;
-        border-radius: 24px;
-        padding: 30px;
-        margin-bottom: 24px;
-        color: white;
-        background:
-            radial-gradient(circle at 90% 10%, rgba(67, 56, 202, .45), transparent 30%),
-            radial-gradient(circle at 10% 100%, rgba(225, 29, 72, .30), transparent 32%),
-            linear-gradient(135deg, #32106f, #4f46e5 55%, #2563eb);
-        box-shadow: 0 18px 45px rgba(55, 35, 120, .22);
-    }
-
-    .profile-hero::after {
-        content: "";
-        position: absolute;
-        width: 190px;
-        height: 190px;
-        right: -70px;
-        bottom: -80px;
-        border: 28px solid rgba(255,255,255,.08);
-        border-radius: 50%;
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-        gap: 25px;
-    }
-
-    .avatar-wrapper {
-        flex-shrink: 0;
-        width: 112px;
-        height: 112px;
-        padding: 4px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #fb7185, #ffffff, #60a5fa);
-        box-shadow: 0 10px 30px rgba(0,0,0,.20);
-    }
-
-    .avatar-wrapper img,
-    .avatar-placeholder {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #ffffff;
-        color: #4f46e5;
-        font-size: 42px;
-        font-weight: 800;
-    }
-
-    .hero-info {
-        min-width: 0;
-    }
-
-    .hero-info h2 {
-        margin: 0;
-        font-size: 29px;
-        font-weight: 800;
-    }
-
-    .hero-info .username {
-        margin-top: 5px;
-        opacity: .82;
-        font-size: 14px;
-    }
-
-    .hero-badges {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 14px;
-    }
-
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 7px 12px;
-        border-radius: 30px;
-        background: rgba(255,255,255,.14);
-        border: 1px solid rgba(255,255,255,.18);
-        font-size: 12px;
-        font-weight: 700;
-        backdrop-filter: blur(8px);
-    }
-
-    .hero-badge.available {
-        background: rgba(34,197,94,.20);
-        color: #dcfce7;
-    }
-
-    .hero-badge.unavailable {
-        background: rgba(239,68,68,.20);
-        color: #fee2e2;
-    }
-
-    /* ---------- STATS ---------- */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .stat-card {
-        background: white;
-        border: 1px solid #edf0f7;
-        border-radius: 20px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        box-shadow: 0 8px 25px rgba(35, 25, 80, .06);
-    }
-
-    .stat-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 23px;
-        background: linear-gradient(135deg, #ede9fe, #dbeafe);
-    }
-
-    .stat-card:nth-child(2) .stat-icon {
-        background: linear-gradient(135deg, #fee2e2, #ffedd5);
-    }
-
-    .stat-card:nth-child(3) .stat-icon {
-        background: linear-gradient(135deg, #dcfce7, #dbeafe);
-    }
-
-    .stat-label {
-        color: #718096;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .stat-value {
-        color: #24104f;
-        font-size: 22px;
-        font-weight: 800;
-        margin-top: 2px;
-    }
-
-    /* ---------- MAIN GRID ---------- */
-    .profile-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-    }
-
-    .profile-card {
-        background: white;
-        border: 1px solid #edf0f7;
-        border-radius: 22px;
-        padding: 24px;
-        box-shadow: 0 8px 28px rgba(35, 25, 80, .06);
-    }
-
-    .profile-card.full {
-        grid-column: 1 / -1;
-    }
-
-    .card-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    .card-title-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 11px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #ede9fe, #dbeafe);
-        font-size: 18px;
-    }
-
-    .card-title h3 {
-        margin: 0;
-        color: #24104f;
-        font-size: 17px;
-        font-weight: 800;
-    }
-
-    .card-title p {
-        margin: 3px 0 0;
-        color: #94a3b8;
-        font-size: 11px;
-    }
-
-    /* ---------- INFO ---------- */
-    .info-list {
-        display: grid;
-        gap: 12px;
-    }
-
-    .info-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 13px 14px;
-        border-radius: 14px;
-        background: #f8f9fd;
-        border: 1px solid #f0f2f8;
-    }
-
-    .info-left {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-        min-width: 0;
-    }
-
-    .info-icon {
-        width: 35px;
-        height: 35px;
-        border-radius: 10px;
-        background: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 3px 10px rgba(0,0,0,.05);
-        flex-shrink: 0;
-    }
-
-    .info-label {
-        color: #94a3b8;
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .4px;
-    }
-
-    .info-value {
-        margin-top: 2px;
-        color: #334155;
-        font-size: 13px;
-        font-weight: 700;
-        word-break: break-word;
-    }
-
-    /* ---------- BLOOD GROUP ---------- */
-    .blood-box {
-        text-align: center;
-        padding: 25px 15px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, #fff1f2, #fff7ed);
-        border: 1px solid #ffe4e6;
-    }
-
-    .blood-drop {
-        width: 72px;
-        height: 72px;
-        margin: 0 auto 10px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #ef4444, #e11d48);
-        color: white;
-        font-size: 25px;
-        font-weight: 900;
-        box-shadow: 0 10px 25px rgba(225,29,72,.25);
-    }
-
-    .blood-box h4 {
-        margin: 0;
-        color: #9f1239;
-        font-size: 13px;
-    }
-
-    .blood-box p {
-        margin: 4px 0 0;
-        color: #be123c;
-        font-size: 11px;
-    }
-
-    /* ---------- FORM ---------- */
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 18px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .form-group.full-width {
-        grid-column: 1 / -1;
-    }
-
-    .form-group label {
-        margin-bottom: 7px;
-        color: #334155;
-        font-size: 12px;
-        font-weight: 800;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 12px 14px;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        background: #f8fafc;
-        color: #334155;
-        font-size: 13px;
-        outline: none;
-        transition: .2s ease;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        border-color: #6366f1;
-        background: white;
-        box-shadow: 0 0 0 4px rgba(99,102,241,.10);
-    }
-
-    .photo-upload {
-        border: 2px dashed #c7d2fe;
-        border-radius: 18px;
-        padding: 18px;
-        background: linear-gradient(135deg, #fafaff, #f8fbff);
-    }
-
-    .photo-preview-area {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    #photoPreview {
-        width: 78px !important;
-        height: 78px !important;
-        min-width: 78px;
-        border-radius: 50% !important;
-        object-fit: cover !important;
-        border: 4px solid white !important;
-        box-shadow: 0 5px 18px rgba(0,0,0,.12);
-        display: block;
-    }
-
-    .photo-actions {
-        flex: 1;
-    }
-
-    .choose-photo {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 10px 14px;
-        border-radius: 11px;
-        background: linear-gradient(135deg, #4f46e5, #2563eb);
-        color: white;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: 800;
-        border: none;
-    }
-
-    .photo-note {
-        margin-top: 7px;
-        color: #94a3b8;
-        font-size: 10px;
-        line-height: 1.5;
-    }
-
-    #id_photo {
-        display: none;
-    }
-
-    .file-name {
-        margin-top: 7px;
-        color: #4f46e5;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .availability-box {
-        grid-column: 1 / -1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 15px;
-        border-radius: 14px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-    }
-
-    .availability-text strong {
-        display: block;
-        color: #334155;
-        font-size: 13px;
-    }
-
-    .availability-text span {
-        display: block;
-        margin-top: 3px;
-        color: #94a3b8;
-        font-size: 10px;
-    }
-
-    .switch {
-        position: relative;
-        width: 48px;
-        height: 26px;
-        flex-shrink: 0;
-    }
-
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .slider {
-        position: absolute;
-        inset: 0;
-        border-radius: 30px;
-        background: #cbd5e1;
-        cursor: pointer;
-        transition: .25s;
-    }
-
-    .slider:before {
-        content: "";
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        left: 3px;
-        top: 3px;
-        background: white;
-        border-radius: 50%;
-        transition: .25s;
-        box-shadow: 0 2px 5px rgba(0,0,0,.18);
-    }
-
-    .switch input:checked + .slider {
-        background: linear-gradient(135deg, #22c55e, #16a34a);
-    }
-
-    .switch input:checked + .slider:before {
-        transform: translateX(22px);
-    }
-
-    .save-btn {
-        grid-column: 1 / -1;
-        width: 100%;
-        border: none;
-        border-radius: 14px;
-        padding: 14px 18px;
-        color: white;
-        font-size: 13px;
-        font-weight: 800;
-        cursor: pointer;
-        background: linear-gradient(135deg, #e11d48, #ef4444 45%, #f97316);
-        box-shadow: 0 10px 25px rgba(225,29,72,.20);
-        transition: .2s ease;
-    }
-
-    .save-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 14px 30px rgba(225,29,72,.28);
-    }
-
-    .errorlist {
-        margin: 5px 0 0;
-        padding-left: 16px;
-        color: #dc2626;
-        font-size: 11px;
-    }
-
-    /* ---------- CTA ---------- */
-    .profile-cta {
-        margin-top: 22px;
-        padding: 22px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, #fff1f2, #eef2ff);
-        border: 1px solid #e0e7ff;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .profile-cta h3 {
-        margin: 0;
-        color: #24104f;
-        font-size: 16px;
-    }
-
-    .profile-cta p {
-        margin: 5px 0 0;
-        color: #64748b;
-        font-size: 11px;
-    }
-
-    .cta-icon {
-        font-size: 34px;
-    }
-
-    /* ---------- RESPONSIVE ---------- */
-    @media (max-width: 900px) {
-        .profile-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .profile-card.full {
-            grid-column: auto;
-        }
-
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 650px) {
-        .profile-heading h1 {
-            font-size: 25px;
-        }
-
-        .profile-hero {
-            padding: 22px;
-            border-radius: 20px;
-        }
-
-        .hero-content {
-            align-items: flex-start;
-            gap: 16px;
-        }
-
-        .avatar-wrapper {
-            width: 82px;
-            height: 82px;
-        }
-
-        .hero-info h2 {
-            font-size: 21px;
-        }
-
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .form-group.full-width,
-        .availability-box,
-        .save-btn {
-            grid-column: auto;
-        }
-
-        .profile-card {
-            padding: 18px;
-            border-radius: 18px;
-        }
-
-        .profile-cta {
-            align-items: flex-start;
-        }
-
-        .cta-icon {
-            font-size: 28px;
-        }
-    }
-
-    @media (max-width: 430px) {
-        .hero-content {
-            flex-direction: column;
-        }
-
-        .info-row {
-            align-items: flex-start;
-        }
-
-        .photo-preview-area {
-            align-items: flex-start;
-        }
-    }
+.profile-page{
+    max-width:1250px;
+    margin:auto;
+}
+
+.profile-heading{
+    margin-bottom:24px;
+}
+
+.profile-heading h1{
+    margin:0;
+    color:#24104f;
+    font-size:30px;
+    font-weight:800;
+}
+
+.profile-heading p{
+    margin:7px 0 0;
+    color:#718096;
+    font-size:14px;
+}
+
+/* HERO */
+.profile-hero{
+    position:relative;
+    overflow:hidden;
+    border-radius:26px;
+    padding:32px;
+    margin-bottom:24px;
+    color:white;
+    background:
+        radial-gradient(circle at 90% 10%,rgba(96,165,250,.45),transparent 30%),
+        radial-gradient(circle at 10% 100%,rgba(225,29,72,.30),transparent 32%),
+        linear-gradient(135deg,#32106f,#4f46e5 55%,#2563eb);
+    box-shadow:0 20px 45px rgba(55,35,120,.22);
+}
+
+.profile-hero:after{
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    right:-80px;
+    bottom:-100px;
+    border:30px solid rgba(255,255,255,.08);
+    border-radius:50%;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.avatar-wrapper{
+    width:115px;
+    height:115px;
+    padding:4px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:linear-gradient(135deg,#fb7185,#fff,#60a5fa);
+    box-shadow:0 12px 30px rgba(0,0,0,.22);
+}
+
+.avatar-wrapper img,
+.avatar-placeholder{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    object-fit:cover;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:white;
+    color:#4f46e5;
+    font-size:42px;
+    font-weight:800;
+}
+
+.hero-info{
+    min-width:0;
+}
+
+.hero-info h2{
+    margin:0;
+    font-size:30px;
+    font-weight:800;
+    word-break:break-word;
+}
+
+.username{
+    margin-top:5px;
+    opacity:.82;
+    font-size:14px;
+}
+
+.hero-badges{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:15px;
+}
+
+.hero-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 13px;
+    border-radius:30px;
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.18);
+    font-size:12px;
+    font-weight:700;
+    backdrop-filter:blur(8px);
+}
+
+.hero-badge.available{
+    background:rgba(34,197,94,.20);
+    color:#dcfce7;
+}
+
+.hero-badge.unavailable{
+    background:rgba(239,68,68,.20);
+    color:#fee2e2;
+}
+
+/* STATS */
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:17px;
+    margin-bottom:24px;
+}
+
+.stat-card{
+    background:white;
+    border:1px solid #edf0f7;
+    border-radius:20px;
+    padding:20px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    box-shadow:0 8px 25px rgba(35,25,80,.07);
+    transition:.25s;
+}
+
+.stat-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 15px 32px rgba(35,25,80,.12);
+}
+
+.stat-icon{
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    background:linear-gradient(135deg,#ede9fe,#dbeafe);
+}
+
+.stat-card:nth-child(2) .stat-icon{
+    background:linear-gradient(135deg,#fee2e2,#ffedd5);
+}
+
+.stat-card:nth-child(3) .stat-icon{
+    background:linear-gradient(135deg,#dcfce7,#dbeafe);
+}
+
+.stat-label{
+    color:#718096;
+    font-size:12px;
+    font-weight:600;
+}
+
+.stat-value{
+    color:#24104f;
+    font-size:23px;
+    font-weight:800;
+    margin-top:2px;
+}
+
+/* GRID */
+.profile-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+}
+
+.profile-card{
+    background:white;
+    border:1px solid #edf0f7;
+    border-radius:23px;
+    padding:25px;
+    box-shadow:0 8px 28px rgba(35,25,80,.06);
+}
+
+.profile-card.full{
+    grid-column:1/-1;
+}
+
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    margin-bottom:20px;
+}
+
+.card-title-icon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#ede9fe,#dbeafe);
+    font-size:19px;
+}
+
+.card-title h3{
+    margin:0;
+    color:#24104f;
+    font-size:17px;
+    font-weight:800;
+}
+
+.card-title p{
+    margin:3px 0 0;
+    color:#94a3b8;
+    font-size:11px;
+}
+
+/* INFO */
+.info-list{
+    display:grid;
+    gap:12px;
+}
+
+.info-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    border-radius:15px;
+    background:#f8f9fd;
+    border:1px solid #f0f2f8;
+}
+
+.info-icon{
+    width:37px;
+    height:37px;
+    flex-shrink:0;
+    border-radius:11px;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+
+.info-label{
+    color:#94a3b8;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+}
+
+.info-value{
+    margin-top:2px;
+    color:#334155;
+    font-size:13px;
+    font-weight:700;
+    word-break:break-word;
+}
+
+/* BLOOD */
+.blood-box{
+    text-align:center;
+    padding:27px 15px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#fff1f2,#fff7ed);
+    border:1px solid #ffe4e6;
+}
+
+.blood-drop{
+    width:76px;
+    height:76px;
+    margin:0 auto 11px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#ef4444,#e11d48);
+    color:white;
+    font-size:25px;
+    font-weight:900;
+    box-shadow:0 10px 25px rgba(225,29,72,.25);
+}
+
+.blood-box h4{
+    margin:0;
+    color:#9f1239;
+    font-size:14px;
+}
+
+.blood-box p{
+    margin:5px 0 0;
+    color:#be123c;
+    font-size:11px;
+}
+
+/* FORM */
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group.full-width{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    margin-bottom:7px;
+    color:#334155;
+    font-size:12px;
+    font-weight:800;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:13px 14px;
+    border:1px solid #e2e8f0;
+    border-radius:13px;
+    background:#f8fafc;
+    color:#334155;
+    font-size:13px;
+    outline:none;
+    transition:.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:#6366f1;
+    background:white;
+    box-shadow:0 0 0 4px rgba(99,102,241,.10);
+}
+
+/* PHOTO */
+.photo-upload{
+    border:2px dashed #c7d2fe;
+    border-radius:18px;
+    padding:18px;
+    background:linear-gradient(135deg,#fafaff,#f8fbff);
+}
+
+.photo-preview-area{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+#photoPreview{
+    width:82px !important;
+    height:82px !important;
+    min-width:82px;
+    border-radius:50% !important;
+    object-fit:cover !important;
+    border:4px solid white !important;
+    box-shadow:0 6px 18px rgba(0,0,0,.13);
+}
+
+.photo-actions{
+    flex:1;
+}
+
+.choose-photo{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:11px 15px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#4f46e5,#2563eb);
+    color:white;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:800;
+}
+
+.choose-photo:hover{
+    opacity:.92;
+}
+
+#id_photo{
+    display:none;
+}
+
+.file-name{
+    margin-top:8px;
+    color:#4f46e5;
+    font-size:11px;
+    font-weight:700;
+}
+
+.photo-note{
+    margin-top:7px;
+    color:#94a3b8;
+    font-size:10px;
+}
+
+/* AVAILABILITY */
+.availability-box{
+    grid-column:1/-1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:16px;
+    border-radius:15px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+}
+
+.availability-text strong{
+    display:block;
+    color:#334155;
+    font-size:13px;
+}
+
+.availability-text span{
+    display:block;
+    margin-top:3px;
+    color:#94a3b8;
+    font-size:10px;
+}
+
+.switch{
+    position:relative;
+    width:50px;
+    height:27px;
+    flex-shrink:0;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    border-radius:30px;
+    background:#cbd5e1;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:21px;
+    height:21px;
+    left:3px;
+    top:3px;
+    background:white;
+    border-radius:50%;
+    transition:.25s;
+    box-shadow:0 2px 5px rgba(0,0,0,.18);
+}
+
+.switch input:checked + .slider{
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(23px);
+}
+
+/* BUTTON */
+.save-btn{
+    grid-column:1/-1;
+    width:100%;
+    border:none;
+    border-radius:14px;
+    padding:15px;
+    color:white;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    background:linear-gradient(135deg,#e11d48,#ef4444 45%,#f97316);
+    box-shadow:0 10px 25px rgba(225,29,72,.20);
+    transition:.2s;
+}
+
+.save-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 15px 30px rgba(225,29,72,.28);
+}
+
+.errorlist{
+    margin:5px 0 0;
+    padding-left:16px;
+    color:#dc2626;
+    font-size:11px;
+}
+
+/* CTA */
+.profile-cta{
+    margin-top:22px;
+    padding:23px;
+    border-radius:21px;
+    background:linear-gradient(135deg,#fff1f2,#eef2ff);
+    border:1px solid #e0e7ff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+
+.profile-cta h3{
+    margin:0;
+    color:#24104f;
+    font-size:16px;
+}
+
+.profile-cta p{
+    margin:5px 0 0;
+    color:#64748b;
+    font-size:11px;
+}
+
+.cta-icon{
+    font-size:36px;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+
+    .profile-grid{
+        grid-template-columns:1fr;
+    }
+
+    .profile-card.full{
+        grid-column:auto;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:650px){
+
+    .profile-heading h1{
+        font-size:25px;
+    }
+
+    .profile-hero{
+        padding:22px;
+        border-radius:20px;
+    }
+
+    .hero-content{
+        align-items:flex-start;
+        gap:16px;
+    }
+
+    .avatar-wrapper{
+        width:85px;
+        height:85px;
+    }
+
+    .hero-info h2{
+        font-size:21px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full-width,
+    .availability-box,
+    .save-btn{
+        grid-column:auto;
+    }
+
+    .profile-card{
+        padding:18px;
+        border-radius:19px;
+    }
+
+    .profile-cta{
+        align-items:flex-start;
+    }
+
+    .cta-icon{
+        font-size:28px;
+    }
+}
+
+@media(max-width:430px){
+
+    .hero-content{
+        flex-direction:column;
+    }
+
+    .hero-info h2{
+        font-size:23px;
+    }
+
+    .photo-preview-area{
+        align-items:flex-start;
+    }
+
+    .profile-cta{
+        flex-direction:column;
+    }
+}
 </style>
 
 
 <div class="profile-page">
 
-    <!-- PAGE HEADER -->
     <div class="profile-heading">
         <h1>My Profile</h1>
         <p>Manage your BloodLink donor profile and availability.</p>
@@ -642,23 +650,31 @@
 
     <!-- PROFILE HERO -->
     <section class="profile-hero">
+
         <div class="hero-content">
 
             <div class="avatar-wrapper">
+
                 {% if request.user.userprofile.photo %}
+
                     <img
-                        id="heroPhoto"
                         src="{{ request.user.userprofile.photo.url }}"
                         alt="Profile Photo"
                     >
+
                 {% else %}
+
                     <div class="avatar-placeholder">
                         {{ request.user.first_name|default:request.user.username|first|upper }}
                     </div>
+
                 {% endif %}
+
             </div>
 
+
             <div class="hero-info">
+
                 <h2>
                     {% if request.user.userprofile.full_name %}
                         {{ request.user.userprofile.full_name }}
@@ -678,19 +694,25 @@
                     </span>
 
                     {% if request.user.userprofile.is_available %}
+
                         <span class="hero-badge available">
                             ● Available to Donate
                         </span>
+
                     {% else %}
+
                         <span class="hero-badge unavailable">
                             ● Currently Unavailable
                         </span>
+
                     {% endif %}
 
                 </div>
+
             </div>
 
         </div>
+
     </section>
 
 
@@ -698,103 +720,126 @@
     <div class="stats-grid">
 
         <div class="stat-card">
+
             <div class="stat-icon">🩸</div>
+
             <div>
                 <div class="stat-label">Blood Group</div>
+
                 <div class="stat-value">
                     {{ request.user.userprofile.blood_group|default:"—" }}
                 </div>
             </div>
+
         </div>
 
+
         <div class="stat-card">
+
             <div class="stat-icon">❤️</div>
+
             <div>
                 <div class="stat-label">Total Donations</div>
+
                 <div class="stat-value">
                     {{ request.user.userprofile.donation_count|default:"0" }}
                 </div>
             </div>
+
         </div>
 
+
         <div class="stat-card">
+
             <div class="stat-icon">📍</div>
+
             <div>
                 <div class="stat-label">City</div>
+
                 <div class="stat-value">
                     {{ request.user.userprofile.city|default:"Not Set" }}
                 </div>
             </div>
+
         </div>
 
     </div>
 
 
-    <!-- PROFILE INFORMATION -->
+    <!-- MAIN GRID -->
     <div class="profile-grid">
+
 
         <!-- PERSONAL INFORMATION -->
         <div class="profile-card">
 
             <div class="card-title">
+
                 <div class="card-title-icon">👤</div>
+
                 <div>
                     <h3>Personal Information</h3>
                     <p>Your basic donor details</p>
                 </div>
+
             </div>
+
 
             <div class="info-list">
 
                 <div class="info-row">
-                    <div class="info-left">
-                        <div class="info-icon">📧</div>
-                        <div>
-                            <div class="info-label">Email</div>
-                            <div class="info-value">
-                                {{ request.user.email|default:"Not provided" }}
-                            </div>
+                    <div class="info-icon">📧</div>
+
+                    <div>
+                        <div class="info-label">Email</div>
+
+                        <div class="info-value">
+                            {{ request.user.email|default:"Not provided" }}
                         </div>
                     </div>
                 </div>
 
+
                 <div class="info-row">
-                    <div class="info-left">
-                        <div class="info-icon">📱</div>
-                        <div>
-                            <div class="info-label">Phone</div>
-                            <div class="info-value">
-                                {{ request.user.userprofile.phone|default:"Not provided" }}
-                            </div>
+                    <div class="info-icon">📱</div>
+
+                    <div>
+                        <div class="info-label">Phone</div>
+
+                        <div class="info-value">
+                            {{ request.user.userprofile.phone|default:"Not provided" }}
                         </div>
                     </div>
                 </div>
 
+
                 <div class="info-row">
-                    <div class="info-left">
-                        <div class="info-icon">🏙️</div>
-                        <div>
-                            <div class="info-label">City</div>
-                            <div class="info-value">
-                                {{ request.user.userprofile.city|default:"Not provided" }}
-                            </div>
+                    <div class="info-icon">🏙️</div>
+
+                    <div>
+                        <div class="info-label">City</div>
+
+                        <div class="info-value">
+                            {{ request.user.userprofile.city|default:"Not provided" }}
                         </div>
                     </div>
                 </div>
 
+
                 <div class="info-row">
-                    <div class="info-left">
-                        <div class="info-icon">📍</div>
-                        <div>
-                            <div class="info-label">Location</div>
-                            <div class="info-value">
-                                {{ request.user.userprofile.location|default:"Not provided" }}
-                            </div>
+                    <div class="info-icon">📍</div>
+
+                    <div>
+                        <div class="info-label">Location</div>
+
+                        <div class="info-value">
+                            {{ request.user.userprofile.location|default:"Not provided" }}
                         </div>
                     </div>
                 </div>
 
             </div>
+
         </div>
 
 
@@ -802,12 +847,16 @@
         <div class="profile-card">
 
             <div class="card-title">
+
                 <div class="card-title-icon">🩸</div>
+
                 <div>
                     <h3>Donor Status</h3>
                     <p>Your blood donation information</p>
                 </div>
+
             </div>
+
 
             <div class="blood-box">
 
@@ -818,122 +867,171 @@
                 <h4>Blood Group</h4>
 
                 <p>
+
                     {% if request.user.userprofile.is_available %}
                         Available for emergency donation
                     {% else %}
                         Currently not available
                     {% endif %}
+
                 </p>
 
             </div>
 
+
             <div style="height:14px;"></div>
 
+
             <div class="info-row">
-                <div class="info-left">
-                    <div class="info-icon">❤️</div>
-                    <div>
-                        <div class="info-label">Donation Count</div>
-                        <div class="info-value">
-                            {{ request.user.userprofile.donation_count|default:"0" }} successful donations
-                        </div>
+
+                <div class="info-icon">❤️</div>
+
+                <div>
+                    <div class="info-label">
+                        Donation Count
+                    </div>
+
+                    <div class="info-value">
+                        {{ request.user.userprofile.donation_count|default:"0" }}
+                        successful donations
                     </div>
                 </div>
+
             </div>
+
 
             <div style="height:10px;"></div>
 
+
             <div class="info-row">
-                <div class="info-left">
-                    <div class="info-icon">🚨</div>
-                    <div>
-                        <div class="info-label">Emergency Contact</div>
-                        <div class="info-value">
-                            {{ request.user.userprofile.emergency_contact|default:"Not provided" }}
-                        </div>
+
+                <div class="info-icon">🚨</div>
+
+                <div>
+                    <div class="info-label">
+                        Emergency Contact
+                    </div>
+
+                    <div class="info-value">
+                        {{ request.user.userprofile.emergency_contact|default:"Not provided" }}
                     </div>
                 </div>
+
             </div>
 
         </div>
 
 
-        <!-- EDIT PROFILE -->
+        <!-- UPDATE PROFILE -->
         <div class="profile-card full">
 
             <div class="card-title">
+
                 <div class="card-title-icon">✏️</div>
+
                 <div>
                     <h3>Update Profile</h3>
-                    <p>Keep your donor information accurate and up to date</p>
+                    <p>
+                        Keep your donor information accurate and up to date
+                    </p>
                 </div>
+
             </div>
 
-            <form method="POST"
-                  enctype="multipart/form-data"
-                  id="profileForm">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="profileForm"
+            >
 
                 {% csrf_token %}
 
+
                 <div class="form-grid">
+
 
                     <!-- FULL NAME -->
                     <div class="form-group">
+
                         <label for="{{ form.full_name.id_for_label }}">
                             Full Name
                         </label>
+
                         {{ form.full_name }}
+
                         {{ form.full_name.errors }}
+
                     </div>
 
 
                     <!-- BLOOD GROUP -->
                     <div class="form-group">
+
                         <label for="{{ form.blood_group.id_for_label }}">
                             Blood Group
                         </label>
+
                         {{ form.blood_group }}
+
                         {{ form.blood_group.errors }}
+
                     </div>
 
 
                     <!-- PHONE -->
                     <div class="form-group">
+
                         <label for="{{ form.phone.id_for_label }}">
                             Phone Number
                         </label>
+
                         {{ form.phone }}
+
                         {{ form.phone.errors }}
+
                     </div>
 
 
                     <!-- CITY -->
                     <div class="form-group">
+
                         <label for="{{ form.city.id_for_label }}">
                             City
                         </label>
+
                         {{ form.city }}
+
                         {{ form.city.errors }}
+
                     </div>
 
 
                     <!-- LOCATION -->
                     <div class="form-group">
+
                         <label for="{{ form.location.id_for_label }}">
                             Location
                         </label>
+
                         {{ form.location }}
+
                         {{ form.location.errors }}
+
                     </div>
 
 
                     <!-- EMERGENCY CONTACT -->
                     <div class="form-group">
+
                         <label for="{{ form.emergency_contact.id_for_label }}">
                             Emergency Contact
                         </label>
+
                         {{ form.emergency_contact }}
+
                         {{ form.emergency_contact.errors }}
+
                     </div>
 
 
@@ -944,24 +1042,30 @@
                             Profile Photo
                         </label>
 
+
                         <div class="photo-upload">
 
                             <div class="photo-preview-area">
 
                                 {% if request.user.userprofile.photo %}
+
                                     <img
                                         id="photoPreview"
                                         src="{{ request.user.userprofile.photo.url }}"
                                         alt="Profile Preview"
                                     >
+
                                 {% else %}
+
                                     <img
                                         id="photoPreview"
                                         src=""
                                         alt="Profile Preview"
                                         style="display:none !important;"
                                     >
+
                                 {% endif %}
+
 
                                 <div class="photo-actions">
 
@@ -972,16 +1076,20 @@
                                         📷 Choose Photo
                                     </label>
 
+
                                     <div
                                         id="fileName"
                                         class="file-name"
                                     >
+
                                         {% if request.user.userprofile.photo %}
                                             Current photo selected
                                         {% else %}
                                             No photo selected
                                         {% endif %}
+
                                     </div>
+
 
                                     <div class="photo-note">
                                         JPG, PNG or WEBP • Maximum 5MB
@@ -991,7 +1099,9 @@
 
                             </div>
 
+
                             {{ form.photo }}
+
                             {{ form.photo.errors }}
 
                         </div>
@@ -1003,22 +1113,35 @@
                     <div class="availability-box">
 
                         <div class="availability-text">
-                            <strong>Available for Blood Donation</strong>
+
+                            <strong>
+                                Available for Blood Donation
+                            </strong>
+
                             <span>
-                                Allow hospitals and patients to find you for blood requests.
+                                Allow hospitals and patients to find you
+                                for blood requests.
                             </span>
+
                         </div>
 
+
                         <label class="switch">
+
                             {{ form.is_available }}
+
                             <span class="slider"></span>
+
                         </label>
 
                     </div>
 
 
                     <!-- SAVE -->
-                    <button type="submit" class="save-btn">
+                    <button
+                        type="submit"
+                        class="save-btn"
+                    >
                         💾 Save Profile Changes
                     </button>
 
@@ -1035,14 +1158,21 @@
     <div class="profile-cta">
 
         <div>
-            <h3>❤️ Your donation can save a life.</h3>
+
+            <h3>
+                ❤️ Your donation can save a life.
+            </h3>
+
             <p>
                 Keep your profile updated so BloodLink can connect you
                 with people who urgently need your blood group.
             </p>
+
         </div>
 
-        <div class="cta-icon">🩸</div>
+        <div class="cta-icon">
+            🩸
+        </div>
 
     </div>
 
@@ -1050,22 +1180,38 @@
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    const photoInput = document.getElementById("id_photo");
-    const preview = document.getElementById("photoPreview");
-    const fileName = document.getElementById("fileName");
+document.addEventListener("DOMContentLoaded", function(){
 
-    if (!photoInput) return;
+    const photoInput =
+        document.getElementById("id_photo");
 
-    photoInput.addEventListener("change", function () {
+    const preview =
+        document.getElementById("photoPreview");
 
-        const file = this.files && this.files[0];
+    const fileName =
+        document.getElementById("fileName");
 
-        if (!file) {
-            fileName.textContent = "No photo selected";
+
+    if(!photoInput){
+        return;
+    }
+
+
+    photoInput.addEventListener("change", function(){
+
+        const file =
+            this.files && this.files[0];
+
+
+        if(!file){
+
+            fileName.textContent =
+                "No photo selected";
+
             return;
         }
+
 
         const allowedTypes = [
             "image/jpeg",
@@ -1073,31 +1219,56 @@ document.addEventListener("DOMContentLoaded", function () {
             "image/webp"
         ];
 
-        if (!allowedTypes.includes(file.type)) {
-            alert("Please select a JPG, PNG or WEBP image.");
+
+        if(!allowedTypes.includes(file.type)){
+
+            alert(
+                "Please select a JPG, PNG or WEBP image."
+            );
+
             this.value = "";
+
             return;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
-            alert("Photo size must be less than 5MB.");
+
+        if(file.size > 5 * 1024 * 1024){
+
+            alert(
+                "Photo size must be less than 5MB."
+            );
+
             this.value = "";
+
             return;
         }
 
-        fileName.textContent = "Selected: " + file.name;
 
-        const reader = new FileReader();
+        fileName.textContent =
+            "Selected: " + file.name;
 
-        reader.onload = function (event) {
-            preview.src = event.target.result;
-            preview.style.display = "block";
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload = function(event){
+
+            preview.src =
+                event.target.result;
+
+            preview.style.display =
+                "block";
+
         };
 
+
         reader.readAsDataURL(file);
+
     });
 
 });
+
 </script>
 
 {% endblock %}

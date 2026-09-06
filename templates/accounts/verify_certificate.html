@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Certificate Verified | BloodLink</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #6d28d9;
+            --purple-dark: #4c1d95;
+            --blue: #2563eb;
+            --blue-dark: #1e40af;
+            --coral: #ef4444;
+            --coral-dark: #b91c1c;
+            --gold: #c99a2e;
+            --gold-light: #f5d77a;
+            --text: #172033;
+            --muted: #64748b;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(109, 40, 217, 0.12), transparent 30%),
+                radial-gradient(circle at 90% 20%, rgba(37, 99, 235, 0.12), transparent 30%),
+                radial-gradient(circle at 50% 100%, rgba(239, 68, 68, 0.10), transparent 35%),
+                #f8fafc;
+            color: var(--text);
+            padding: 35px 18px;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 980px;
+            margin: auto;
+        }
+
+        /* TOP BRAND */
+
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand-logo {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 13px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            box-shadow:
+                0 15px 35px rgba(76, 29, 149, 0.25),
+                inset 0 1px 0 rgba(255,255,255,0.35);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: -0.7px;
+            background: linear-gradient(90deg, var(--purple-dark), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+        }
+
+        /* MAIN CARD */
+
+        .certificate-card {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,0.97);
+            border-radius: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow:
+                0 30px 80px rgba(30, 41, 59, 0.14),
+                0 8px 25px rgba(79, 70, 229, 0.08);
+        }
+
+        .certificate-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border: 4px solid transparent;
+            border-radius: 32px;
+            background:
+                linear-gradient(135deg, var(--purple), var(--blue), var(--coral))
+                border-box;
+            -webkit-mask:
+                linear-gradient(#fff 0 0) padding-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .top-strip {
+            height: 10px;
+            background: linear-gradient(
+                90deg,
+                var(--purple-dark),
+                var(--purple),
+                var(--blue),
+                var(--coral)
+            );
+        }
+
+        .content {
+            padding: 42px;
+        }
+
+        /* VERIFIED */
+
+        .verified-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .verified-seal {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            font-weight: 900;
+            box-shadow:
+                0 12px 25px rgba(22, 163, 74, 0.25),
+                inset 0 2px 0 rgba(255,255,255,0.35);
+        }
+
+        .verified-text h2 {
+            margin: 0;
+            color: #15803d;
+            font-size: 25px;
+            font-weight: 900;
+        }
+
+        .verified-text p {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* OFFICIAL HEADER */
+
+        .official {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .official-label {
+            display: inline-block;
+            padding: 7px 15px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #fef3c7, #fff7ed);
+            color: #92400e;
+            border: 1px solid #f5d77a;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 1.4px;
+        }
+
+        .official h2 {
+            margin: 16px 0 8px;
+            font-size: 31px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .official p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* DONOR */
+
+        .donor-section {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 22px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(109, 40, 217, 0.07),
+                    rgba(37, 99, 235, 0.07)
+                );
+            border: 1px solid #ddd6fe;
+            margin-bottom: 25px;
+        }
+
+        .donor-label {
+            color: #7c3aed;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 1.7px;
+        }
+
+        .donor-name {
+            margin: 9px 0 5px;
+            font-size: 38px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .donor-description {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* DETAILS */
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .detail-card {
+            position: relative;
+            overflow: hidden;
+            padding: 19px;
+            border-radius: 18px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 7px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .detail-card::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--purple), var(--blue));
+        }
+
+        .detail-icon {
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-size: 15px;
+            font-weight: 900;
+            word-break: break-word;
+        }
+
+        /* CERTIFICATE NUMBER */
+
+        .certificate-number {
+            padding: 21px;
+            text-align: center;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #eef2ff, #eff6ff);
+            border: 1px solid #c7d2fe;
+            margin-bottom: 28px;
+        }
+
+        .certificate-number-label {
+            color: #6366f1;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .certificate-number-value {
+            color: #312e81;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+        }
+
+        /* MESSAGE */
+
+        .message {
+            text-align: center;
+            padding: 26px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #fff7ed, #fff1f2);
+            border: 1px solid #fed7aa;
+            margin-bottom: 30px;
+        }
+
+        .message strong {
+            display: block;
+            color: var(--coral-dark);
+            font-size: 17px;
+            margin-bottom: 7px;
+        }
+
+        .message span {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            padding-top: 25px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-main {
+            color: #475569;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .footer-highlight {
+            margin-top: 10px;
+            color: var(--coral);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .footer-small {
+            margin-top: 8px;
+            color: #94a3b8;
+            font-size: 10px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 800px) {
+
+            .details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content {
+                padding: 30px 22px;
+            }
+
+            .donor-name {
+                font-size: 31px;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            body {
+                padding: 18px 10px;
+            }
+
+            .brand h1 {
+                font-size: 28px;
+            }
+
+            .brand-subtitle {
+                font-size: 9px;
+                letter-spacing: 1.2px;
+            }
+
+            .content {
+                padding: 25px 16px;
+            }
+
+            .verified-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .verified-text h2 {
+                font-size: 22px;
+            }
+
+            .official h2 {
+                font-size: 25px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .detail-card {
+                padding: 15px;
+            }
+
+            .detail-value {
+                font-size: 13px;
+            }
+
+            .donor-name {
+                font-size: 27px;
+            }
+
+            .certificate-number-value {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- BRAND -->
+
+    <div class="brand">
+
+        <div class="brand-logo">
+            🩸
+        </div>
+
+        <h1>BloodLink</h1>
+
+        <div class="brand-subtitle">
+            BLOOD DONATION & EMERGENCY SUPPORT NETWORK
+        </div>
+
+    </div>
+
+
+    <!-- CERTIFICATE -->
+
+    <div class="certificate-card">
+
+        <div class="top-strip"></div>
+
+        <div class="content">
+
+
+            <!-- VERIFIED -->
+
+            <div class="verified-box">
+
+                <div class="verified-seal">
+                    ✓
+                </div>
+
+                <div class="verified-text">
+
+                    <h2>Certificate Verified</h2>
+
+                    <p>
+                        This certificate is officially registered with BloodLink.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- OFFICIAL -->
+
+            <div class="official">
+
+                <div class="official-label">
+                    ✦ OFFICIAL BLOODLINK RECORD ✦
+                </div>
+
+                <h2>
+                    Certificate of Appreciation
+                </h2>
+
+                <p>
+                    Recognizing compassion, humanity and commitment to saving lives.
+                </p>
+
+            </div>
+
+
+            <!-- DONOR -->
+
+            <div class="donor-section">
+
+                <div class="donor-label">
+                    THIS CERTIFICATE IS PROUDLY PRESENTED TO
+                </div>
+
+                <div class="donor-name">
+                    {{ donor.full_name }}
+                </div>
+
+                <div class="donor-description">
+                    In appreciation of valuable contribution towards
+                    blood donation and emergency support.
+                </div>
+
+            </div>
+
+
+            <!-- DETAILS -->
+
+            <div class="details-grid">
+
+
+                <div class="detail-card">
+
+                    <div class="detail-icon">
+                        🩸
+                    </div>
+
+                    <div class="detail-label">
+                        Blood Group
+                    </div>
+
+                    <div class="detail-value">
+                        {{ donor.blood_group }}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <div class="detail-icon">
+                        📍
+                    </div>
+
+                    <div class="detail-label">
+                        City
+                    </div>
+
+                    <div class="detail-value">
+                        {{ donor.city }}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <div class="detail-icon">
+                        📅
+                    </div>
+
+                    <div class="detail-label">
+                        Issue Date
+                    </div>
+
+                    <div class="detail-value">
+                        {{ certificate.donation_date|date:"d-m-Y" }}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <div class="detail-icon">
+                        🛡️
+                    </div>
+
+                    <div class="detail-label">
+                        Status
+                    </div>
+
+                    <div class="detail-value">
+                        Verified
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- CERTIFICATE NUMBER -->
+
+            <div class="certificate-number">
+
+                <div class="certificate-number-label">
+                    CERTIFICATE NUMBER
+                </div>
+
+                <div class="certificate-number-value">
+                    {{ certificate.certificate_number }}
+                </div>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div class="message">
+
+                <strong>
+                    ❤️ Your kindness can save a life.
+                </strong>
+
+                <span>
+                    Supporting patients, accident victims and families
+                    during critical moments.
+                </span>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="footer">
+
+                <div class="footer-main">
+                    BloodLink Team • Authorized Digital Verification
+                </div>
+
+                <div class="footer-highlight">
+                    SAVE BLOOD • SAVE LIVES • SUPPORT IN EMERGENCIES
+                </div>
+
+                <div class="footer-small">
+                    BloodLink • Blood Donation & Emergency Support Network
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

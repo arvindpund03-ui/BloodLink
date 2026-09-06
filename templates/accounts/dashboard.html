@@ -5,656 +5,923 @@
 {% block content %}
 
 <style>
-    :root {
-        --purple: #6d28d9;
-        --purple-dark: #4c1d95;
-        --blue: #2563eb;
-        --cyan: #06b6d4;
-        --red: #ef4444;
-        --coral: #f43f5e;
-        --green: #16a34a;
-        --orange: #f97316;
-        --dark: #172033;
-        --muted: #64748b;
-        --light: #f8fafc;
-        --white: #ffffff;
-        --border: #e9eaf2;
-        --shadow: 0 14px 35px rgba(30, 41, 59, 0.08);
-    }
-
     .dashboard-page {
-        padding: 10px 0 50px;
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 10px 0 40px;
     }
 
-    /* HERO */
+    /* ================= HERO ================= */
+
     .dashboard-hero {
         position: relative;
         overflow: hidden;
-        border-radius: 28px;
-        padding: 34px;
-        margin-bottom: 28px;
-        background:
-            radial-gradient(circle at 85% 20%, rgba(255,255,255,.22), transparent 25%),
-            radial-gradient(circle at 10% 90%, rgba(6,182,212,.20), transparent 28%),
-            linear-gradient(135deg, #4c1d95 0%, #6d28d9 42%, #2563eb 100%);
+        border-radius: 26px;
+        padding: 32px;
+        margin-bottom: 24px;
         color: white;
-        box-shadow: 0 18px 45px rgba(79, 70, 229, .25);
+        background: linear-gradient(
+            135deg,
+            #4c1d95 0%,
+            #2563eb 55%,
+            #ef4444 100%
+        );
+        box-shadow: 0 18px 45px rgba(37, 99, 235, 0.20);
     }
 
     .dashboard-hero::before {
         content: "";
         position: absolute;
-        width: 180px;
-        height: 180px;
+        width: 280px;
+        height: 280px;
         border-radius: 50%;
-        right: -55px;
-        top: -65px;
-        background: rgba(255,255,255,.10);
+        background: rgba(255,255,255,0.09);
+        right: -90px;
+        top: -120px;
     }
 
     .dashboard-hero::after {
         content: "";
         position: absolute;
-        width: 120px;
-        height: 120px;
+        width: 180px;
+        height: 180px;
         border-radius: 50%;
-        right: 100px;
-        bottom: -75px;
-        background: rgba(255,255,255,.08);
+        background: rgba(255,255,255,0.07);
+        left: 45%;
+        bottom: -120px;
     }
 
     .hero-content {
         position: relative;
         z-index: 2;
-        max-width: 850px;
+    }
+
+    .hero-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        background: rgba(255,255,255,0.17);
+        border: 1px solid rgba(255,255,255,0.22);
+        margin-bottom: 16px;
+        backdrop-filter: blur(8px);
+    }
+
+    .dashboard-hero h1 {
+        margin: 0 0 8px;
+        font-size: 34px;
+        font-weight: 850;
+    }
+
+    .dashboard-hero p {
+        margin: 0;
+        font-size: 15px;
+        opacity: 0.92;
+        max-width: 720px;
+        line-height: 1.6;
     }
 
     .hero-badge {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border-radius: 50px;
-        background: rgba(255,255,255,.14);
-        border: 1px solid rgba(255,255,255,.18);
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: .4px;
-        margin-bottom: 14px;
+        gap: 7px;
+        margin-top: 18px;
+        padding: 8px 13px;
+        border-radius: 30px;
+        background: rgba(255,255,255,0.14);
+        border: 1px solid rgba(255,255,255,0.20);
+        font-size: 12px;
+        font-weight: 750;
     }
 
-    .dashboard-hero h1 {
-        margin: 0 0 10px;
-        font-size: clamp(28px, 4vw, 42px);
-        font-weight: 850;
-        letter-spacing: -1px;
-    }
+    /* ================= AVAILABILITY ================= */
 
-    .dashboard-hero p {
-        margin: 0;
-        max-width: 720px;
-        color: rgba(255,255,255,.86);
-        font-size: 15px;
-        line-height: 1.7;
-    }
-
-    /* WELCOME */
-    .welcome-card {
+    .availability-card {
         background: white;
-        border: 1px solid var(--border);
         border-radius: 22px;
-        padding: 22px;
-        margin-bottom: 25px;
-        box-shadow: var(--shadow);
+        padding: 20px;
+        margin-bottom: 24px;
+        border: 1px solid #e8eaf0;
+        box-shadow: 0 10px 30px rgba(15,23,42,0.07);
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 20px;
+        flex-wrap: wrap;
     }
 
-    .welcome-left {
+    .availability-left {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 15px;
     }
 
-    .user-avatar {
-        width: 58px;
-        height: 58px;
-        flex-shrink: 0;
-        border-radius: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 27px;
-        color: white;
-        background: linear-gradient(135deg, var(--purple), var(--blue));
-        box-shadow: 0 10px 22px rgba(109,40,217,.22);
-    }
-
-    .welcome-card h3 {
-        margin: 0 0 4px;
-        color: var(--dark);
-        font-size: 20px;
-        font-weight: 800;
-    }
-
-    .welcome-card p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 13px;
-    }
-
-    .availability-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 15px;
-        border-radius: 50px;
-        background: #ecfdf3;
-        color: #15803d;
-        font-size: 13px;
-        font-weight: 800;
-        white-space: nowrap;
-    }
-
-    .availability-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        background: #22c55e;
-        box-shadow: 0 0 0 4px rgba(34,197,94,.12);
-    }
-
-    /* SECTION TITLE */
-    .section-heading {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 30px 0 15px;
-    }
-
-    .section-heading h2 {
-        margin: 0;
-        color: var(--dark);
-        font-size: 21px;
-        font-weight: 850;
-    }
-
-    .section-heading span {
-        color: var(--muted);
-        font-size: 12px;
-    }
-
-    /* STATS */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
-    }
-
-    .stat-card {
-        position: relative;
-        overflow: hidden;
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: 22px;
-        padding: 22px;
-        box-shadow: var(--shadow);
-        transition: .25s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(30,41,59,.13);
-    }
-
-    .stat-card::after {
-        content: "";
-        position: absolute;
-        width: 90px;
-        height: 90px;
-        border-radius: 50%;
-        right: -35px;
-        top: -35px;
-        opacity: .08;
-        background: currentColor;
-    }
-
-    .stat-icon {
-        width: 50px;
-        height: 50px;
+    .availability-icon {
+        width: 52px;
+        height: 52px;
         border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 23px;
-        margin-bottom: 16px;
+        background: linear-gradient(135deg, #ede9fe, #dbeafe);
+        font-size: 25px;
     }
 
-    .stat-card h3 {
+    .availability-left h3 {
         margin: 0;
-        color: var(--dark);
-        font-size: 31px;
-        font-weight: 850;
+        font-size: 17px;
+        color: #172033;
+        font-weight: 800;
     }
 
-    .stat-card p {
+    .availability-left p {
         margin: 4px 0 0;
-        color: var(--muted);
+        color: #64748b;
         font-size: 13px;
-        font-weight: 650;
+    }
+
+    .availability-status {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .status-dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 5px #dcfce7;
+    }
+
+    .status-text {
+        color: #15803d;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    /* ================= STATS ================= */
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 17px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #e8eaf0;
+        box-shadow: 0 8px 25px rgba(15,23,42,0.07);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: 0.25s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px rgba(15,23,42,0.11);
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
     }
 
     .stat-purple {
-        color: var(--purple);
-    }
-
-    .stat-purple .stat-icon {
-        background: #f3e8ff;
-    }
-
-    .stat-green {
-        color: var(--green);
-    }
-
-    .stat-green .stat-icon {
-        background: #dcfce7;
+        background: #ede9fe;
     }
 
     .stat-blue {
-        color: var(--blue);
-    }
-
-    .stat-blue .stat-icon {
         background: #dbeafe;
     }
 
     .stat-red {
-        color: var(--red);
+        background: #fee2e2;
     }
 
-    .stat-red .stat-icon {
-        background: #ffe4e6;
+    .stat-orange {
+        background: #ffedd5;
     }
 
-    /* MAIN GRID */
-    .main-grid {
-        display: grid;
-        grid-template-columns: 1.35fr .9fr;
-        gap: 22px;
-        margin-top: 28px;
+    .stat-info h3 {
+        margin: 0;
+        color: #111827;
+        font-size: 25px;
+        font-weight: 850;
     }
 
-    .panel {
+    .stat-info span {
+        display: block;
+        margin-top: 3px;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    /* ================= SECTION ================= */
+
+    .dashboard-card {
         background: white;
-        border: 1px solid var(--border);
         border-radius: 24px;
         padding: 24px;
-        box-shadow: var(--shadow);
+        margin-bottom: 24px;
+        border: 1px solid #e8eaf0;
+        box-shadow: 0 10px 30px rgba(15,23,42,0.07);
     }
 
-    .panel-header {
+    .section-heading {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 15px;
         margin-bottom: 20px;
+        flex-wrap: wrap;
     }
 
-    .panel-title {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-    }
-
-    .panel-title-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 13px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #ede9fe, #dbeafe);
-        font-size: 19px;
-    }
-
-    .panel h3 {
+    .section-heading-left h2 {
         margin: 0;
-        color: var(--dark);
-        font-size: 18px;
-        font-weight: 850;
-    }
-
-    .panel-header small {
-        color: var(--muted);
-        font-size: 12px;
-    }
-
-    /* BLOOD GROUPS */
-    .blood-groups {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
-    }
-
-    .blood-card {
-        border: 1px solid #eeeef5;
-        border-radius: 17px;
-        padding: 15px 12px;
-        text-align: center;
-        background: linear-gradient(180deg, #fff, #fafaff);
-        transition: .2s ease;
-    }
-
-    .blood-card:hover {
-        transform: translateY(-3px);
-        border-color: #d8d2ff;
-    }
-
-    .blood-type {
-        width: 43px;
-        height: 43px;
-        margin: 0 auto 9px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #f43f5e, #dc2626);
-        color: white;
-        font-size: 12px;
-        font-weight: 850;
-        box-shadow: 0 8px 18px rgba(239,68,68,.18);
-    }
-
-    .blood-card strong {
-        display: block;
-        color: var(--dark);
-        font-size: 16px;
-    }
-
-    .blood-card span {
-        color: var(--muted);
-        font-size: 11px;
-    }
-
-    .available-text {
-        color: #16a34a !important;
-        font-weight: 750;
-        margin-top: 3px;
-    }
-
-    /* QUICK ACTIONS */
-    .actions-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 13px;
-    }
-
-    .action-card {
-        text-decoration: none;
-        border-radius: 17px;
-        padding: 17px;
-        border: 1px solid #eeeef5;
-        background: #fff;
-        transition: .22s ease;
-    }
-
-    .action-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(30,41,59,.09);
-    }
-
-    .action-icon {
-        width: 43px;
-        height: 43px;
-        border-radius: 13px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-
-    .action-card strong {
-        display: block;
-        color: var(--dark);
-        font-size: 13px;
-        margin-bottom: 3px;
-    }
-
-    .action-card span {
-        color: var(--muted);
-        font-size: 11px;
-    }
-
-    .action-donor .action-icon {
-        background: #ede9fe;
-    }
-
-    .action-request .action-icon {
-        background: #dbeafe;
-    }
-
-    .action-emergency .action-icon {
-        background: #ffe4e6;
-    }
-
-    .action-profile .action-icon {
-        background: #dcfce7;
-    }
-
-    /* RECENT */
-    .recent-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-        margin-top: 22px;
-    }
-
-    .request-item,
-    .donor-item {
-        display: flex;
-        align-items: center;
-        gap: 13px;
-        padding: 14px 0;
-        border-bottom: 1px solid #f0f1f5;
-    }
-
-    .request-item:last-child,
-    .donor-item:last-child {
-        border-bottom: none;
-    }
-
-    .item-icon {
-        width: 43px;
-        height: 43px;
-        flex-shrink: 0;
-        border-radius: 13px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 19px;
-    }
-
-    .request-icon {
-        background: #fff1f2;
-    }
-
-    .donor-icon {
-        background: #eff6ff;
-    }
-
-    .item-info {
-        min-width: 0;
-        flex: 1;
-    }
-
-    .item-info strong {
-        display: block;
-        color: var(--dark);
-        font-size: 13px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .item-info span {
-        display: block;
-        color: var(--muted);
-        font-size: 11px;
-        margin-top: 3px;
-    }
-
-    .blood-badge {
-        padding: 6px 9px;
-        border-radius: 9px;
-        background: #fff1f2;
-        color: #dc2626;
-        font-size: 11px;
-        font-weight: 850;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 30px 10px;
-        color: var(--muted);
-        font-size: 13px;
-    }
-
-    .empty-state-icon {
-        font-size: 30px;
-        margin-bottom: 7px;
-    }
-
-    /* IMPACT */
-    .impact-card {
-        margin-top: 22px;
-        border-radius: 24px;
-        padding: 25px;
-        color: white;
-        background:
-            radial-gradient(circle at 90% 20%, rgba(255,255,255,.18), transparent 25%),
-            linear-gradient(135deg, #be123c, #e11d48 45%, #7c3aed);
-        box-shadow: 0 18px 35px rgba(190,24,93,.18);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-    }
-
-    .impact-card h3 {
-        margin: 0 0 6px;
+        color: #111827;
         font-size: 21px;
         font-weight: 850;
     }
 
-    .impact-card p {
-        margin: 0;
-        color: rgba(255,255,255,.82);
+    .section-heading-left p {
+        margin: 5px 0 0;
+        color: #64748b;
         font-size: 13px;
     }
 
-    .impact-number {
-        min-width: 120px;
-        text-align: center;
-        padding: 14px 20px;
-        border-radius: 18px;
-        background: rgba(255,255,255,.13);
-        border: 1px solid rgba(255,255,255,.18);
+    .section-link {
+        text-decoration: none;
+        padding: 9px 13px;
+        border-radius: 10px;
+        background: #f1f5f9;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 750;
+        transition: 0.2s;
     }
 
-    .impact-number strong {
+    .section-link:hover {
+        background: #ede9fe;
+        color: #6d28d9;
+    }
+
+    /* ================= BLOOD GROUP ================= */
+
+    .blood-group-grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 12px;
+    }
+
+    .blood-group-card {
+        text-align: center;
+        padding: 15px 8px;
+        border-radius: 16px;
+        background: linear-gradient(145deg, #fff, #f8fafc);
+        border: 1px solid #e5e7eb;
+        transition: 0.2s;
+    }
+
+    .blood-group-card:hover {
+        transform: translateY(-3px);
+        border-color: #c4b5fd;
+        box-shadow: 0 8px 20px rgba(109,40,217,0.10);
+    }
+
+    .blood-group {
+        width: 42px;
+        height: 42px;
+        margin: 0 auto 8px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        font-size: 13px;
+        font-weight: 850;
+    }
+
+    .blood-count {
+        color: #111827;
+        font-size: 18px;
+        font-weight: 850;
+    }
+
+    .blood-label {
         display: block;
-        font-size: 31px;
+        color: #94a3b8;
+        font-size: 10px;
+        font-weight: 700;
+        margin-top: 2px;
+    }
+
+    /* ================= QUICK ACTIONS ================= */
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .quick-action {
+        text-decoration: none;
+        border-radius: 18px;
+        padding: 19px;
+        border: 1px solid #e5e7eb;
+        background: linear-gradient(145deg, #ffffff, #f8fafc);
+        transition: 0.25s ease;
+    }
+
+    .quick-action:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(15,23,42,0.10);
+    }
+
+    .quick-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        margin-bottom: 12px;
+    }
+
+    .quick-action:nth-child(1) .quick-icon {
+        background: #ede9fe;
+    }
+
+    .quick-action:nth-child(2) .quick-icon {
+        background: #fee2e2;
+    }
+
+    .quick-action:nth-child(3) .quick-icon {
+        background: #ffedd5;
+    }
+
+    .quick-action:nth-child(4) .quick-icon {
+        background: #dbeafe;
+    }
+
+    .quick-action h3 {
+        margin: 0;
+        color: #172033;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .quick-action p {
+        margin: 5px 0 0;
+        color: #64748b;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    /* ================= REQUESTS ================= */
+
+    .request-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .request-card {
+        padding: 17px;
+        border-radius: 17px;
+        border: 1px solid #e5e7eb;
+        background: linear-gradient(145deg, #ffffff, #fff7f7);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .request-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(to bottom, #dc2626, #f97316);
+    }
+
+    .request-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .request-patient {
+        color: #172033;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .request-hospital {
+        margin-top: 4px;
+        color: #64748b;
+        font-size: 11px;
+    }
+
+    .request-blood {
+        min-width: 45px;
+        height: 38px;
+        padding: 0 8px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        background: linear-gradient(135deg, #dc2626, #991b1b);
+        font-size: 13px;
+        font-weight: 850;
+    }
+
+    .request-meta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 13px;
+    }
+
+    .request-meta span {
+        padding: 6px 9px;
+        border-radius: 9px;
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    /* ================= DONORS ================= */
+
+    .donor-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    .donor-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        background: linear-gradient(145deg, #ffffff, #f8fbff);
+    }
+
+    .donor-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #ede9fe, #dbeafe);
+        font-size: 21px;
+        flex-shrink: 0;
+    }
+
+    .donor-info {
+        min-width: 0;
+    }
+
+    .donor-info h3 {
+        margin: 0;
+        color: #172033;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .donor-info p {
+        margin: 4px 0 0;
+        color: #64748b;
+        font-size: 11px;
+    }
+
+    .donor-blood {
+        margin-left: auto;
+        padding: 6px 9px;
+        border-radius: 9px;
+        background: #fee2e2;
+        color: #b91c1c;
+        font-size: 11px;
+        font-weight: 850;
+    }
+
+    /* ================= IMPACT ================= */
+
+    .impact-box {
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+        padding: 25px;
+        color: white;
+        background: linear-gradient(135deg, #312e81, #2563eb, #dc2626);
+    }
+
+    .impact-box::after {
+        content: "❤";
+        position: absolute;
+        right: 35px;
+        top: 15px;
+        font-size: 95px;
+        opacity: 0.08;
+    }
+
+    .impact-box h2 {
+        position: relative;
+        z-index: 2;
+        margin: 0 0 7px;
+        font-size: 23px;
+        font-weight: 850;
+    }
+
+    .impact-box p {
+        position: relative;
+        z-index: 2;
+        margin: 0;
+        max-width: 650px;
+        font-size: 13px;
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+
+    .impact-number {
+        position: relative;
+        z-index: 2;
+        display: inline-block;
+        margin-top: 16px;
+        font-size: 34px;
         font-weight: 900;
     }
 
-    .impact-number span {
+    /* =========================================================
+       PROFESSIONAL EMERGENCY ALARM
+       ========================================================= */
+
+    .alarm-enable {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 9000;
+        border: none;
+        cursor: pointer;
+        color: white;
+        background: linear-gradient(135deg, #7c3aed, #2563eb);
+        padding: 13px 17px;
+        border-radius: 14px;
+        font-size: 13px;
+        font-weight: 850;
+        box-shadow: 0 12px 30px rgba(37,99,235,0.30);
+        transition: 0.2s ease;
+    }
+
+    .alarm-enable:hover {
+        transform: translateY(-3px);
+    }
+
+    .alarm-enable.enabled {
+        background: linear-gradient(135deg, #15803d, #16a34a);
+    }
+
+    .emergency-alarm-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(15,23,42,0.82);
+        backdrop-filter: blur(8px);
+    }
+
+    .emergency-alarm-overlay.show {
+        display: flex;
+        animation: emergencyFadeIn 0.25s ease;
+    }
+
+    @keyframes emergencyFadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .emergency-alarm-box {
+        width: min(680px, 100%);
+        max-height: 92vh;
+        overflow-y: auto;
+        border-radius: 26px;
+        background: white;
+        box-shadow:
+            0 30px 80px rgba(0,0,0,0.40),
+            0 0 0 4px rgba(239,68,68,0.25);
+        animation: emergencyPulse 1.4s infinite;
+    }
+
+    @keyframes emergencyPulse {
+        0%, 100% {
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.40),
+                0 0 0 4px rgba(239,68,68,0.20);
+        }
+
+        50% {
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.40),
+                0 0 0 9px rgba(239,68,68,0.12);
+        }
+    }
+
+    .emergency-top {
+        padding: 27px 25px 23px;
+        text-align: center;
+        color: white;
+        background: linear-gradient(135deg,#7f1d1d,#dc2626,#f97316);
+        border-radius: 26px 26px 0 0;
+    }
+
+    .emergency-warning-icon {
+        width: 66px;
+        height: 66px;
+        margin: 0 auto 12px;
+        border-radius: 19px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.17);
+        border: 1px solid rgba(255,255,255,0.25);
+        font-size: 32px;
+        animation: warningBounce 0.8s infinite alternate;
+    }
+
+    @keyframes warningBounce {
+        from {
+            transform: scale(1);
+        }
+
+        to {
+            transform: scale(1.08);
+        }
+    }
+
+    .emergency-top h2 {
+        margin: 0;
+        font-size: 25px;
+        font-weight: 900;
+    }
+
+    .emergency-top p {
+        margin: 7px 0 0;
+        font-size: 12px;
+        opacity: 0.9;
+    }
+
+    .emergency-content {
+        padding: 23px;
+    }
+
+    .emergency-urgency {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 13px;
+        border-radius: 30px;
+        background: #fee2e2;
+        color: #b91c1c;
         font-size: 11px;
-        color: rgba(255,255,255,.8);
+        font-weight: 900;
+        text-transform: uppercase;
+        margin-bottom: 15px;
     }
 
-    /* MOBILE */
-    @media (max-width: 1050px) {
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
+    .emergency-patient {
+        padding: 17px;
+        border-radius: 17px;
+        background: linear-gradient(135deg,#f8fafc,#fff1f2);
+        border: 1px solid #fecaca;
+        margin-bottom: 15px;
+    }
+
+    .emergency-patient small {
+        color: #94a3b8;
+        font-size: 10px;
+        font-weight: 850;
+        letter-spacing: 0.7px;
+    }
+
+    .emergency-patient h3 {
+        margin: 5px 0 0;
+        color: #172033;
+        font-size: 21px;
+        font-weight: 850;
+    }
+
+    .emergency-details {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 10px;
+    }
+
+    .emergency-detail {
+        padding: 13px;
+        border-radius: 13px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+    }
+
+    .emergency-detail small {
+        display: block;
+        color: #94a3b8;
+        font-size: 9px;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .emergency-detail strong {
+        display: block;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 800;
+        word-break: break-word;
+    }
+
+    .emergency-actions {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .emergency-accept-btn,
+    .emergency-reject-btn {
+        border: none;
+        cursor: pointer;
+        border-radius: 13px;
+        padding: 14px 15px;
+        font-size: 12px;
+        font-weight: 850;
+        transition: 0.2s ease;
+    }
+
+    .emergency-accept-btn {
+        color: white;
+        background: linear-gradient(135deg,#15803d,#16a34a);
+        box-shadow: 0 8px 18px rgba(22,163,74,0.20);
+    }
+
+    .emergency-reject-btn {
+        color: #475569;
+        background: #f1f5f9;
+    }
+
+    .emergency-accept-btn:hover,
+    .emergency-reject-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .emergency-note {
+        margin-top: 14px;
+        padding: 11px 13px;
+        border-radius: 12px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 11px;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width:1000px) {
+
+        .dashboard-stats {
+            grid-template-columns: repeat(2,1fr);
         }
 
-        .main-grid,
-        .recent-grid {
-            grid-template-columns: 1fr;
+        .quick-actions {
+            grid-template-columns: repeat(2,1fr);
+        }
+
+        .blood-group-grid {
+            grid-template-columns: repeat(4,1fr);
+        }
+
+        .donor-list {
+            grid-template-columns: repeat(2,1fr);
         }
     }
 
-    @media (max-width: 700px) {
+    @media (max-width:700px) {
+
         .dashboard-page {
-            padding-bottom: 30px;
+            padding: 5px 0 30px;
         }
 
         .dashboard-hero {
             padding: 25px 20px;
-            border-radius: 22px;
+            border-radius: 21px;
         }
 
         .dashboard-hero h1 {
-            font-size: 29px;
+            font-size: 27px;
         }
 
-        .welcome-card {
-            align-items: flex-start;
-            flex-direction: column;
-            padding: 18px;
-        }
-
-        .stats-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-card {
-            padding: 17px;
-            border-radius: 18px;
-        }
-
-        .stat-card h3 {
-            font-size: 25px;
-        }
-
-        .blood-groups {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .panel {
+        .dashboard-card {
             padding: 18px;
             border-radius: 20px;
         }
 
-        .actions-grid {
+        .dashboard-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .request-list {
+            grid-template-columns: 1fr;
+        }
+
+        .donor-list {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions {
             grid-template-columns: 1fr 1fr;
         }
 
-        .impact-card {
-            flex-direction: column;
-            align-items: flex-start;
+        .emergency-alarm-overlay {
+            padding: 10px;
         }
 
-        .impact-number {
-            width: 100%;
-            box-sizing: border-box;
+        .emergency-alarm-box {
+            border-radius: 20px;
+        }
+
+        .emergency-top {
+            border-radius: 20px 20px 0 0;
+            padding: 22px 17px;
+        }
+
+        .emergency-top h2 {
+            font-size: 20px;
+        }
+
+        .emergency-content {
+            padding: 17px;
+        }
+
+        .emergency-details {
+            grid-template-columns: 1fr;
+        }
+
+        .emergency-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .alarm-enable {
+            right: 12px;
+            bottom: 12px;
+            font-size: 11px;
+            padding: 11px 13px;
         }
     }
 
-    @media (max-width: 430px) {
-        .stats-grid {
+    @media (max-width:430px) {
+
+        .quick-actions {
             grid-template-columns: 1fr;
         }
 
-        .actions-grid {
-            grid-template-columns: 1fr;
+        .blood-group-grid {
+            grid-template-columns: repeat(2,1fr);
         }
 
-        .dashboard-hero p {
-            font-size: 13px;
+        .availability-card {
+            align-items: flex-start;
         }
     }
 </style>
@@ -663,197 +930,154 @@
 <div class="dashboard-page">
 
     <!-- HERO -->
+
     <section class="dashboard-hero">
+
         <div class="hero-content">
 
-            <div class="hero-badge">
-                🩸 BloodLink • Donation Network
+            <div class="hero-icon">
+                🩸
             </div>
 
-            <h1>BloodLink Dashboard</h1>
+            <h1>
+                Welcome, {{ user.userprofile.full_name|default:user.username }} 👋
+            </h1>
 
             <p>
-                Welcome to your BloodLink control center.
-                Monitor donors, blood requests, availability and
-                emergency requirements from one place.
+                Welcome to BloodLink — Blood Donation & Emergency Support Network.
+                Connect with donors, support patients, respond to emergencies,
+                and help save lives when every second matters.
             </p>
 
+            <div class="hero-badge">
+                ❤️ SAVE BLOOD • SAVE LIVES • SUPPORT IN EMERGENCIES
+            </div>
+
         </div>
+
     </section>
 
 
-    <!-- WELCOME -->
-    <section class="welcome-card">
+    <!-- AVAILABILITY -->
 
-        <div class="welcome-left">
+    <section class="availability-card">
 
-            <div class="user-avatar">
-                👤
+        <div class="availability-left">
+
+            <div class="availability-icon">
+                🟢
             </div>
 
             <div>
+
                 <h3>
-                    Welcome, {{ request.user.username }} 👋
+                    Donor Availability
                 </h3>
 
                 <p>
-                    Manage your BloodLink profile and donation activity.
+                    Keep your availability updated so patients can find support.
                 </p>
+
             </div>
 
         </div>
 
-        {% if profile.is_available %}
-            <div class="availability-badge">
-                <span class="availability-dot"></span>
-                Available for Donation
-            </div>
-        {% else %}
-            <div class="availability-badge"
-                 style="background:#fff7ed;color:#c2410c;">
-                <span class="availability-dot"
-                      style="background:#f97316;"></span>
-                Currently Unavailable
-            </div>
-        {% endif %}
 
-    </section>
+        <div class="availability-status">
 
+            <span class="status-dot"></span>
 
-    <!-- STATISTICS -->
-    <div class="section-heading">
-        <h2>Overview</h2>
-        <span>Live BloodLink statistics</span>
-    </div>
+            <span class="status-text">
+                Available for Emergency Support
+            </span>
 
-    <section class="stats-grid">
-
-        <div class="stat-card stat-purple">
-            <div class="stat-icon">🩸</div>
-            <h3>{{ total_donors }}</h3>
-            <p>Total Donors</p>
-        </div>
-
-        <div class="stat-card stat-green">
-            <div class="stat-icon">💚</div>
-            <h3>{{ available_donors }}</h3>
-            <p>Available Donors</p>
-        </div>
-
-        <div class="stat-card stat-blue">
-            <div class="stat-icon">📋</div>
-            <h3>{{ total_requests }}</h3>
-            <p>Blood Requests</p>
-        </div>
-
-        <div class="stat-card stat-red">
-            <div class="stat-icon">🚨</div>
-            <h3>{{ active_emergencies }}</h3>
-            <p>Active Emergencies</p>
         </div>
 
     </section>
 
 
-    <!-- MAIN -->
-    <section class="main-grid">
+    <!-- STATS -->
 
-        <!-- BLOOD GROUP AVAILABILITY -->
-        <div class="panel">
+    <section class="dashboard-stats">
 
-            <div class="panel-header">
+        <div class="stat-card">
 
-                <div class="panel-title">
-                    <div class="panel-title-icon">🩸</div>
-
-                    <div>
-                        <h3>Blood Group Availability</h3>
-                        <small>Donors registered by blood group</small>
-                    </div>
-                </div>
-
+            <div class="stat-icon stat-purple">
+                👥
             </div>
 
+            <div class="stat-info">
 
-            <div class="blood-groups">
+                <h3>
+                    {{ total_donors|default:"0" }}
+                </h3>
 
-                {% for item in blood_group_stats %}
-
-                    <div class="blood-card">
-
-                        <div class="blood-type">
-                            {{ item.group }}
-                        </div>
-
-                        <strong>
-                            {{ item.count }}
-                        </strong>
-
-                        <span>
-                            Total Donors
-                        </span>
-
-                        <span class="available-text">
-                            {{ item.available }} Available
-                        </span>
-
-                    </div>
-
-                {% empty %}
-
-                    <div class="empty-state">
-                        No blood group data available.
-                    </div>
-
-                {% endfor %}
+                <span>
+                    Total Donors
+                </span>
 
             </div>
 
         </div>
 
 
-        <!-- QUICK ACTIONS -->
-        <div class="panel">
+        <div class="stat-card">
 
-            <div class="panel-header">
+            <div class="stat-icon stat-blue">
+                🟢
+            </div>
 
-                <div class="panel-title">
-                    <div class="panel-title-icon">⚡</div>
+            <div class="stat-info">
 
-                    <div>
-                        <h3>Quick Actions</h3>
-                        <small>Access important features</small>
-                    </div>
-                </div>
+                <h3>
+                    {{ available_donors|default:"0" }}
+                </h3>
+
+                <span>
+                    Available Donors
+                </span>
 
             </div>
 
+        </div>
 
-            <div class="actions-grid">
 
-                <a href="/donors/" class="action-card action-donor">
-                    <div class="action-icon">🩸</div>
-                    <strong>Find Donors</strong>
-                    <span>Search available donors</span>
-                </a>
+        <div class="stat-card">
 
-                <a href="/request-blood/" class="action-card action-request">
-                    <div class="action-icon">📋</div>
-                    <strong>Request Blood</strong>
-                    <span>Create a blood request</span>
-                </a>
+            <div class="stat-icon stat-red">
+                🩸
+            </div>
 
-                <a href="/emergency-request/" class="action-card action-emergency">
-                    <div class="action-icon">🚨</div>
-                    <strong>Emergency</strong>
-                    <span>Raise urgent request</span>
-                </a>
+            <div class="stat-info">
 
-                <a href="/profile/" class="action-card action-profile">
-                    <div class="action-icon">👤</div>
-                    <strong>My Profile</strong>
-                    <span>Manage your profile</span>
-                </a>
+                <h3>
+                    {{ total_requests|default:"0" }}
+                </h3>
+
+                <span>
+                    Blood Requests
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon stat-orange">
+                🚨
+            </div>
+
+            <div class="stat-info">
+
+                <h3>
+                    {{ active_emergencies|default:"0" }}
+                </h3>
+
+                <span>
+                    Active Emergencies
+                </span>
 
             </div>
 
@@ -862,103 +1086,323 @@
     </section>
 
 
-    <!-- RECENT DATA -->
-    <section class="recent-grid">
+    <!-- BLOOD GROUP -->
 
-        <!-- RECENT REQUESTS -->
-        <div class="panel">
+    <section class="dashboard-card">
 
-            <div class="panel-header">
+        <div class="section-heading">
 
-                <div class="panel-title">
-                    <div class="panel-title-icon">📋</div>
+            <div class="section-heading-left">
 
-                    <div>
-                        <h3>Recent Blood Requests</h3>
-                        <small>Latest requests on BloodLink</small>
-                    </div>
-                </div>
+                <h2>
+                    🩸 Blood Group Availability
+                </h2>
+
+                <p>
+                    Current donor availability by blood group.
+                </p>
 
             </div>
 
+            <a
+                href="{% url 'donor_list' %}"
+                class="section-link"
+            >
+                View Donors →
+            </a>
 
-            {% for request_item in recent_requests %}
+        </div>
 
-                <div class="request-item">
 
-                    <div class="item-icon request-icon">
-                        🩸
+        <div class="blood-group-grid">
+
+            {% for item in blood_group_stats %}
+
+                <div class="blood-group-card">
+
+                    <div class="blood-group">
+                        {{ item.blood_group }}
                     </div>
 
-                    <div class="item-info">
-
-                        <strong>
-                            {{ request_item.patient_name }}
-                        </strong>
-
-                        <span>
-                            {{ request_item.hospital }} •
-                            {{ request_item.city }}
-                        </span>
-
+                    <div class="blood-count">
+                        {{ item.count|default:"0" }}
                     </div>
 
-                    <div class="blood-badge">
-                        {{ request_item.blood_group }}
-                    </div>
+                    <span class="blood-label">
+                        DONORS
+                    </span>
 
                 </div>
 
             {% empty %}
 
-                <div class="empty-state">
-                    <div class="empty-state-icon">📋</div>
-                    No blood requests yet.
+                <div style="
+                    grid-column:1/-1;
+                    text-align:center;
+                    padding:25px;
+                    color:#64748b;
+                    font-size:13px;
+                ">
+                    No blood group data available.
                 </div>
 
             {% endfor %}
 
         </div>
 
+    </section>
 
-        <!-- RECENT DONORS -->
-        <div class="panel">
 
-            <div class="panel-header">
+    <!-- QUICK ACTIONS -->
 
-                <div class="panel-title">
-                    <div class="panel-title-icon">👥</div>
+    <section class="dashboard-card">
 
-                    <div>
-                        <h3>Recent Donors</h3>
-                        <small>Recently registered donors</small>
-                    </div>
-                </div>
+        <div class="section-heading">
+
+            <div class="section-heading-left">
+
+                <h2>
+                    ⚡ Quick Actions
+                </h2>
+
+                <p>
+                    Access important BloodLink services quickly.
+                </p>
 
             </div>
 
+        </div>
 
-            {% for donor in recent_donors %}
 
-                <div class="donor-item">
+        <div class="quick-actions">
 
-                    <div class="item-icon donor-icon">
-                        👤
+            <a
+                href="{% url 'donor_list' %}"
+                class="quick-action"
+            >
+
+                <div class="quick-icon">
+                    👥
+                </div>
+
+                <h3>
+                    Find Donors
+                </h3>
+
+                <p>
+                    Search available donors by blood group and city.
+                </p>
+
+            </a>
+
+
+            <a
+                href="{% url 'request_blood' %}"
+                class="quick-action"
+            >
+
+                <div class="quick-icon">
+                    🩸
+                </div>
+
+                <h3>
+                    Request Blood
+                </h3>
+
+                <p>
+                    Create a blood request for a patient in need.
+                </p>
+
+            </a>
+
+
+            <a
+                href="{% url 'emergency_request' %}"
+                class="quick-action"
+            >
+
+                <div class="quick-icon">
+                    🚨
+                </div>
+
+                <h3>
+                    Emergency Support
+                </h3>
+
+                <p>
+                    Create an urgent request for accident or emergency cases.
+                </p>
+
+            </a>
+
+
+            <a
+                href="{% url 'profile' %}"
+                class="quick-action"
+            >
+
+                <div class="quick-icon">
+                    👤
+                </div>
+
+                <h3>
+                    My Profile
+                </h3>
+
+                <p>
+                    Update your blood group, city and availability.
+                </p>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- RECENT REQUESTS -->
+
+    <section class="dashboard-card">
+
+        <div class="section-heading">
+
+            <div class="section-heading-left">
+
+                <h2>
+                    🩸 Recent Blood Requests
+                </h2>
+
+                <p>
+                    Recent patients who may need blood support.
+                </p>
+
+            </div>
+
+            <a
+                href="{% url 'blood_request_list' %}"
+                class="section-link"
+            >
+                View All →
+            </a>
+
+        </div>
+
+
+        <div class="request-list">
+
+            {% for request in recent_requests %}
+
+                <div class="request-card">
+
+                    <div class="request-card-top">
+
+                        <div>
+
+                            <div class="request-patient">
+                                {{ request.patient_name }}
+                            </div>
+
+                            <div class="request-hospital">
+                                🏥 {{ request.hospital }}
+                            </div>
+
+                        </div>
+
+                        <div class="request-blood">
+                            {{ request.blood_group }}
+                        </div>
+
                     </div>
 
-                    <div class="item-info">
 
-                        <strong>
-                            {{ donor.full_name|default:donor.user.username }}
-                        </strong>
+                    <div class="request-meta">
 
                         <span>
-                            📍 {{ donor.city }}
+                            📍 {{ request.city }}
+                        </span>
+
+                        <span>
+                            🩸 {{ request.units_required }} Unit(s)
+                        </span>
+
+                        <span>
+                            📌 {{ request.status }}
                         </span>
 
                     </div>
 
-                    <div class="blood-badge">
+                </div>
+
+            {% empty %}
+
+                <div style="
+                    grid-column:1/-1;
+                    text-align:center;
+                    padding:35px 20px;
+                    color:#64748b;
+                    font-size:13px;
+                ">
+                    🩸 No recent blood requests available.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- RECENT DONORS -->
+
+    <section class="dashboard-card">
+
+        <div class="section-heading">
+
+            <div class="section-heading-left">
+
+                <h2>
+                    ❤️ Recent Donors
+                </h2>
+
+                <p>
+                    People contributing to the BloodLink network.
+                </p>
+
+            </div>
+
+            <a
+                href="{% url 'donor_list' %}"
+                class="section-link"
+            >
+                Explore Donors →
+            </a>
+
+        </div>
+
+
+        <div class="donor-list">
+
+            {% for donor in recent_donors %}
+
+                <div class="donor-card">
+
+                    <div class="donor-avatar">
+                        👤
+                    </div>
+
+                    <div class="donor-info">
+
+                        <h3>
+                            {{ donor.full_name }}
+                        </h3>
+
+                        <p>
+                            📍 {{ donor.city }}
+                        </p>
+
+                    </div>
+
+                    <div class="donor-blood">
                         {{ donor.blood_group }}
                     </div>
 
@@ -966,9 +1410,14 @@
 
             {% empty %}
 
-                <div class="empty-state">
-                    <div class="empty-state-icon">👥</div>
-                    No donors registered yet.
+                <div style="
+                    grid-column:1/-1;
+                    text-align:center;
+                    padding:30px;
+                    color:#64748b;
+                    font-size:13px;
+                ">
+                    ❤️ No recent donors available.
                 </div>
 
             {% endfor %}
@@ -979,31 +1428,1384 @@
 
 
     <!-- IMPACT -->
-    <section class="impact-card">
 
-        <div>
-            <h3>❤️ Together, We Save Lives</h3>
+    <section class="impact-box">
 
-            <p>
-                Every successful blood donation can become someone's
-                second chance. Thank you for being part of BloodLink.
-            </p>
-        </div>
+        <h2>
+            ❤️ Your Support Can Save Lives
+        </h2>
+
+        <p>
+            BloodLink is more than a blood donation platform.
+            It connects people during critical moments — including
+            medical emergencies, accidents, surgeries and urgent blood requirements.
+        </p>
 
         <div class="impact-number">
+            {{ lives_saved|default:"0" }}+
+        </div>
 
-            <strong>
-                {{ lives_saved }}
-            </strong>
-
-            <span>
-                Donations Recorded
-            </span>
-
+        <div style="
+            position:relative;
+            z-index:2;
+            font-size:11px;
+            font-weight:750;
+            opacity:.85;
+        ">
+            LIVES IMPACTED BY THE BLOODLINK NETWORK
         </div>
 
     </section>
 
 </div>
+
+
+<!-- =========================================================
+     EMERGENCY ALARM POPUP
+     ========================================================= -->
+
+<div
+    id="emergencyAlarmOverlay"
+    class="emergency-alarm-overlay"
+    aria-hidden="true"
+>
+
+    <div class="emergency-alarm-box">
+
+        <div class="emergency-top">
+
+            <div class="emergency-warning-icon">
+                🚨
+            </div>
+
+            <h2>
+                EMERGENCY BLOOD REQUEST
+            </h2>
+
+            <p>
+                Immediate donor support may be required
+            </p>
+
+        </div>
+
+
+        <div class="emergency-content">
+
+            <div class="emergency-urgency">
+
+                🔴
+
+                <span id="emergencyUrgency">
+                    CRITICAL
+                </span>
+
+            </div>
+
+
+            <div class="emergency-patient">
+
+                <small>
+                    PATIENT
+                </small>
+
+                <h3 id="emergencyPatient">
+                    Emergency Patient
+                </h3>
+
+            </div>
+
+
+            <div class="emergency-details">
+
+                <div class="emergency-detail">
+
+                    <small>
+                        🩸 BLOOD GROUP
+                    </small>
+
+                    <strong id="emergencyBlood">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="emergency-detail">
+
+                    <small>
+                        🧪 UNITS REQUIRED
+                    </small>
+
+                    <strong id="emergencyUnits">
+                        0 Unit(s)
+                    </strong>
+
+                </div>
+
+
+                <div class="emergency-detail">
+
+                    <small>
+                        🏥 HOSPITAL
+                    </small>
+
+                    <strong id="emergencyHospital">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="emergency-detail">
+
+                    <small>
+                        📍 CITY
+                    </small>
+
+                    <strong id="emergencyCity">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="emergency-detail">
+
+                    <small>
+                        🚨 EMERGENCY TYPE
+                    </small>
+
+                    <strong id="emergencyType">
+                        Emergency
+                    </strong>
+
+                </div>
+
+
+                <div class="emergency-detail">
+
+                    <small>
+                        📞 CONTACT
+                    </small>
+
+                    <strong id="emergencyContact">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="emergency-actions">
+
+                <button
+                    type="button"
+                    class="emergency-accept-btn"
+                    onclick="acceptCurrentEmergency()"
+                >
+                    ❤️ ACCEPT EMERGENCY
+                </button>
+
+
+                <button
+                    type="button"
+                    class="emergency-reject-btn"
+                    onclick="closeEmergencyAlarm()"
+                >
+                    ✕ CLOSE ALERT
+                </button>
+
+            </div>
+
+
+            <div class="emergency-note">
+                ⚡ If you are available to help, accept this emergency request immediately.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ENABLE ALARM BUTTON
+     ========================================================= -->
+
+<button
+    id="alarmEnableButton"
+    class="alarm-enable"
+    type="button"
+    onclick="enableEmergencyAlarm()"
+>
+    🔊 Enable Emergency Alarm
+</button>
+
+
+<script>
+
+    /* =========================================================
+       BLOODLINK EMERGENCY ALARM VARIABLES
+       ========================================================= */
+
+    let emergencyAudioContext = null;
+
+    let emergencyAlarmEnabled = false;
+
+    let emergencyAlarmPlaying = false;
+
+    let emergencyAlarmInterval = null;
+
+    let alarmOscillators = [];
+
+    let knownEmergencyIds = new Set();
+
+    let emergencySystemInitialized = false;
+
+    let currentEmergencyId = null;
+
+
+    /* =========================================================
+       ENABLE EMERGENCY ALARM
+       ========================================================= */
+
+    function enableEmergencyAlarm() {
+
+        try {
+
+            const AudioContext =
+                window.AudioContext ||
+                window.webkitAudioContext;
+
+
+            if (!AudioContext) {
+
+                alert(
+                    "Your browser does not support emergency alarm audio."
+                );
+
+                return;
+            }
+
+
+            if (!emergencyAudioContext) {
+
+                emergencyAudioContext =
+                    new AudioContext();
+
+            }
+
+
+            if (
+                emergencyAudioContext.state ===
+                "suspended"
+            ) {
+
+                emergencyAudioContext.resume()
+                    .catch(function(error) {
+
+                        console.error(
+                            "Audio resume error:",
+                            error
+                        );
+
+                    });
+
+            }
+
+
+            emergencyAlarmEnabled = true;
+
+
+            const button =
+                document.getElementById(
+                    "alarmEnableButton"
+                );
+
+
+            if (button) {
+
+                button.classList.add("enabled");
+
+                button.innerHTML =
+                    "🔊 Emergency Alarm Ready";
+
+            }
+
+
+            requestNotificationPermission();
+
+
+            console.log(
+                "BloodLink Emergency Alarm Ready"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Emergency alarm initialization error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    function createProfessionalSiren() {
+    if (!emergencyAudioContext) return;
+
+    const ctx = emergencyAudioContext;
+    const now = ctx.currentTime;
+
+    // ==============================
+    // MASTER OUTPUT
+    // ==============================
+    const master = ctx.createGain();
+
+    master.gain.setValueAtTime(0.0, now);
+    master.gain.linearRampToValueAtTime(0.55, now + 0.04);
+    master.gain.setValueAtTime(0.55, now + 2.85);
+    master.gain.linearRampToValueAtTime(0.0, now + 3.20);
+
+    master.connect(ctx.destination);
+
+
+    // ==============================
+    // STAGE 1
+    // WARNING BEEP
+    // ==============================
+
+    function warningBeep(startTime, frequency) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "square";
+        osc.frequency.setValueAtTime(frequency, startTime);
+
+        gain.gain.setValueAtTime(0.0, startTime);
+        gain.gain.linearRampToValueAtTime(0.30, startTime + 0.015);
+        gain.gain.setValueAtTime(0.30, startTime + 0.12);
+        gain.gain.linearRampToValueAtTime(0.0, startTime + 0.18);
+
+        osc.connect(gain);
+        gain.connect(master);
+
+        osc.start(startTime);
+        osc.stop(startTime + 0.20);
+
+        alarmOscillators.push(osc);
+    }
+
+    warningBeep(now, 880);
+    warningBeep(now + 0.28, 880);
+    warningBeep(now + 0.56, 1100);
+
+
+    // ==============================
+    // STAGE 2
+    // AMBULANCE / EMERGENCY SIREN
+    // ==============================
+
+    const siren = ctx.createOscillator();
+    const sirenGain = ctx.createGain();
+
+    siren.type = "sawtooth";
+
+    siren.frequency.setValueAtTime(520, now + 0.82);
+    siren.frequency.exponentialRampToValueAtTime(
+        1150,
+        now + 1.25
+    );
+
+    siren.frequency.exponentialRampToValueAtTime(
+        520,
+        now + 1.65
+    );
+
+    siren.frequency.exponentialRampToValueAtTime(
+        1150,
+        now + 2.05
+    );
+
+    siren.frequency.exponentialRampToValueAtTime(
+        520,
+        now + 2.45
+    );
+
+    siren.frequency.exponentialRampToValueAtTime(
+        1150,
+        now + 2.80
+    );
+
+    sirenGain.gain.setValueAtTime(0.0, now + 0.80);
+    sirenGain.gain.linearRampToValueAtTime(
+        0.22,
+        now + 0.90
+    );
+
+    sirenGain.gain.setValueAtTime(
+        0.22,
+        now + 2.70
+    );
+
+    sirenGain.gain.linearRampToValueAtTime(
+        0.0,
+        now + 2.95
+    );
+
+    siren.connect(sirenGain);
+    sirenGain.connect(master);
+
+    siren.start(now + 0.80);
+    siren.stop(now + 3.0);
+
+    alarmOscillators.push(siren);
+
+
+    // ==============================
+    // SIREN HARMONIC
+    // ==============================
+
+    const harmonic = ctx.createOscillator();
+    const harmonicGain = ctx.createGain();
+
+    harmonic.type = "triangle";
+
+    harmonic.frequency.setValueAtTime(260, now + 0.82);
+    harmonic.frequency.exponentialRampToValueAtTime(
+        575,
+        now + 1.25
+    );
+
+    harmonic.frequency.exponentialRampToValueAtTime(
+        260,
+        now + 1.65
+    );
+
+    harmonic.frequency.exponentialRampToValueAtTime(
+        575,
+        now + 2.05
+    );
+
+    harmonic.frequency.exponentialRampToValueAtTime(
+        260,
+        now + 2.45
+    );
+
+    harmonic.frequency.exponentialRampToValueAtTime(
+        575,
+        now + 2.80
+    );
+
+    harmonicGain.gain.setValueAtTime(0.0, now + 0.80);
+    harmonicGain.gain.linearRampToValueAtTime(
+        0.10,
+        now + 0.95
+    );
+
+    harmonicGain.gain.linearRampToValueAtTime(
+        0.0,
+        now + 2.95
+    );
+
+    harmonic.connect(harmonicGain);
+    harmonicGain.connect(master);
+
+    harmonic.start(now + 0.80);
+    harmonic.stop(now + 3.0);
+
+    alarmOscillators.push(harmonic);
+
+
+    // ==============================
+    // STAGE 3
+    // RAPID EMERGENCY PULSE
+    // ==============================
+
+    const pulseFrequency = 1450;
+
+    for (let i = 0; i < 6; i++) {
+
+        const pulseStart = now + 2.15 + (i * 0.13);
+
+        const pulse = ctx.createOscillator();
+        const pulseGain = ctx.createGain();
+
+        pulse.type = "square";
+        pulse.frequency.setValueAtTime(
+            pulseFrequency,
+            pulseStart
+        );
+
+        pulseGain.gain.setValueAtTime(
+            0.0,
+            pulseStart
+        );
+
+        pulseGain.gain.linearRampToValueAtTime(
+            0.20,
+            pulseStart + 0.015
+        );
+
+        pulseGain.gain.linearRampToValueAtTime(
+            0.0,
+            pulseStart + 0.085
+        );
+
+        pulse.connect(pulseGain);
+        pulseGain.connect(master);
+
+        pulse.start(pulseStart);
+        pulse.stop(pulseStart + 0.10);
+
+        alarmOscillators.push(pulse);
+    }
+
+
+    // ==============================
+    // LOW EMERGENCY THUMP
+    // ==============================
+
+    const low = ctx.createOscillator();
+    const lowGain = ctx.createGain();
+
+    low.type = "sine";
+    low.frequency.setValueAtTime(95, now + 2.15);
+
+    lowGain.gain.setValueAtTime(0.0, now + 2.15);
+    lowGain.gain.linearRampToValueAtTime(
+        0.18,
+        now + 2.18
+    );
+    lowGain.gain.exponentialRampToValueAtTime(
+        0.01,
+        now + 2.45
+    );
+
+    low.connect(lowGain);
+    lowGain.connect(master);
+
+    low.start(now + 2.15);
+    low.stop(now + 2.50);
+
+    alarmOscillators.push(low);
+}
+    /* =========================================================
+       PLAY ONE ALARM
+       ========================================================= */
+
+    function playProfessionalAlarm() {
+
+        if (!emergencyAlarmEnabled) {
+            return;
+        }
+
+
+        if (!emergencyAlarmPlaying) {
+            return;
+        }
+
+
+        if (!emergencyAudioContext) {
+            return;
+        }
+
+
+        if (
+            emergencyAudioContext.state ===
+            "suspended"
+        ) {
+
+            emergencyAudioContext.resume()
+                .then(function() {
+
+                    if (
+                        emergencyAlarmPlaying &&
+                        emergencyAlarmEnabled
+                    ) {
+
+                        createProfessionalSiren();
+
+                    }
+
+                })
+                .catch(function(error) {
+
+                    console.error(
+                        "Audio resume failed:",
+                        error
+                    );
+
+                });
+
+            return;
+        }
+
+
+        createProfessionalSiren();
+
+    }
+
+
+    /* =========================================================
+       START ALARM
+       ========================================================= */
+
+    function startEmergencyAlarmSound() {
+
+        if (!emergencyAlarmEnabled) {
+
+            console.log(
+                "Emergency alarm has not been enabled."
+            );
+
+            return;
+        }
+
+
+        if (emergencyAlarmPlaying) {
+            return;
+        }
+
+
+        emergencyAlarmPlaying = true;
+
+
+        /* PLAY IMMEDIATELY */
+
+        playProfessionalAlarm();
+
+
+        /* REPEAT */
+
+        emergencyAlarmInterval =
+            setInterval(
+                function() {
+
+                    if (
+                        emergencyAlarmPlaying &&
+                        emergencyAlarmEnabled
+                    ) {
+
+                        playProfessionalAlarm();
+
+                    }
+
+                },
+                1300
+            );
+
+
+        console.log(
+            "Emergency alarm STARTED"
+        );
+
+    }
+
+
+    /* =========================================================
+       STOP ALARM
+       ========================================================= */
+
+    function stopAllAlarmSound() {
+
+        /*
+         * IMPORTANT:
+         * STOP FLAG FIRST
+         */
+
+        emergencyAlarmPlaying = false;
+
+
+        /*
+         * STOP REPEAT LOOP
+         */
+
+        if (
+            emergencyAlarmInterval !== null
+        ) {
+
+            clearInterval(
+                emergencyAlarmInterval
+            );
+
+            emergencyAlarmInterval = null;
+
+        }
+
+
+        /*
+         * STOP EVERY OSCILLATOR
+         */
+
+        alarmOscillators.forEach(
+            function(oscillator) {
+
+                try {
+
+                    oscillator.onended = null;
+
+                    oscillator.stop();
+
+                } catch (error) {
+                    /* Already stopped */
+                }
+
+
+                try {
+
+                    oscillator.disconnect();
+
+                } catch (error) {}
+
+            }
+        );
+
+
+        alarmOscillators = [];
+
+
+        /*
+         * Suspend audio after stopping.
+         */
+
+        if (emergencyAudioContext) {
+
+            try {
+
+                if (
+                    emergencyAudioContext.state ===
+                    "running"
+                ) {
+
+                    emergencyAudioContext.suspend();
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Audio suspend error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        console.log(
+            "Emergency alarm STOPPED"
+        );
+
+    }
+
+
+    /* =========================================================
+       CLOSE EMERGENCY POPUP
+       ========================================================= */
+
+    function closeEmergencyAlarm() {
+
+        /*
+         * STOP SOUND
+         */
+
+        stopAllAlarmSound();
+
+
+        /*
+         * HIDE POPUP
+         */
+
+        const overlay =
+            document.getElementById(
+                "emergencyAlarmOverlay"
+            );
+
+
+        if (overlay) {
+
+            overlay.classList.remove(
+                "show"
+            );
+
+            overlay.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+        }
+
+
+        console.log(
+            "Emergency alert closed."
+        );
+
+    }
+
+
+    /* =========================================================
+       SHOW EMERGENCY
+       ========================================================= */
+
+    function showEmergencyAlarm(
+        emergency
+    ) {
+
+        const overlay =
+            document.getElementById(
+                "emergencyAlarmOverlay"
+            );
+
+
+        if (!overlay) {
+
+            console.error(
+                "Emergency popup not found."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Stop previous alarm first.
+         */
+
+        stopAllAlarmSound();
+
+
+        /*
+         * Save current emergency ID.
+         */
+
+        currentEmergencyId =
+            emergency.id;
+
+
+        /*
+         * PATIENT
+         */
+
+        const patient =
+            document.getElementById(
+                "emergencyPatient"
+            );
+
+
+        if (patient) {
+
+            patient.textContent =
+                emergency.patient_name ||
+                "Emergency Patient";
+
+        }
+
+
+        /*
+         * BLOOD GROUP
+         */
+
+        const blood =
+            document.getElementById(
+                "emergencyBlood"
+            );
+
+
+        if (blood) {
+
+            blood.textContent =
+                emergency.blood_group ||
+                "-";
+
+        }
+
+
+        /*
+         * UNITS
+         */
+
+        const units =
+            document.getElementById(
+                "emergencyUnits"
+            );
+
+
+        if (units) {
+
+            units.textContent =
+                (emergency.units_required || 0) +
+                " Unit(s)";
+
+        }
+
+
+        /*
+         * HOSPITAL
+         */
+
+        const hospital =
+            document.getElementById(
+                "emergencyHospital"
+            );
+
+
+        if (hospital) {
+
+            hospital.textContent =
+                emergency.hospital_name ||
+                "-";
+
+        }
+
+
+        /*
+         * CITY
+         */
+
+        const city =
+            document.getElementById(
+                "emergencyCity"
+            );
+
+
+        if (city) {
+
+            city.textContent =
+                emergency.city ||
+                "-";
+
+        }
+
+
+        /*
+         * EMERGENCY TYPE
+         */
+
+        const type =
+            document.getElementById(
+                "emergencyType"
+            );
+
+
+        if (type) {
+
+            type.textContent =
+                emergency.emergency_type ||
+                "Emergency";
+
+        }
+
+
+        /*
+         * CONTACT
+         */
+
+        const contact =
+            document.getElementById(
+                "emergencyContact"
+            );
+
+
+        if (contact) {
+
+            contact.textContent =
+                emergency.contact_number ||
+                "-";
+
+        }
+
+
+        /*
+         * URGENCY
+         */
+
+        const urgency =
+            document.getElementById(
+                "emergencyUrgency"
+            );
+
+
+        if (urgency) {
+
+            urgency.textContent =
+                emergency.urgency ||
+                "CRITICAL";
+
+        }
+
+
+        /*
+         * SHOW POPUP
+         */
+
+        overlay.classList.add(
+            "show"
+        );
+
+
+        overlay.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        /*
+         * START SIREN
+         */
+
+        startEmergencyAlarmSound();
+
+
+        /*
+         * NOTIFICATION
+         */
+
+        sendEmergencyNotification(
+            emergency
+        );
+
+
+        console.log(
+            "NEW EMERGENCY DETECTED:",
+            emergency
+        );
+
+    }
+
+
+    /* =========================================================
+       ACCEPT EMERGENCY
+       ========================================================= */
+
+    function acceptCurrentEmergency() {
+
+        if (!currentEmergencyId) {
+
+            return;
+
+        }
+
+
+        /*
+         * STOP SOUND
+         */
+
+        stopAllAlarmSound();
+
+
+        /*
+         * REDIRECT
+         */
+
+        window.location.href =
+            "/emergency/" +
+            currentEmergencyId +
+            "/accept/";
+
+    }
+
+
+    /* =========================================================
+       CHECK ACTIVE EMERGENCIES
+       ========================================================= */
+
+    async function checkActiveEmergencies() {
+
+    try {
+
+        const response =
+            await fetch(
+                "{% url 'admin_active_emergencies' %}",
+                {
+                    method: "GET",
+
+                    headers: {
+                        "X-Requested-With":
+                            "XMLHttpRequest"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            if (response.status === 403) {
+
+                console.warn(
+                    "Emergency alerts are available only for the BloodLink admin."
+                );
+
+                return;
+            }
+
+            throw new Error(
+                "Emergency API error: " +
+                response.status
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+            return;
+        }
+
+
+        const emergencies =
+            data.emergencies || [];
+
+
+        /*
+         * FIRST SUCCESSFUL CHECK
+         *
+         * Existing active emergencies are remembered.
+         * They do NOT trigger the alarm.
+         */
+
+        if (!emergencySystemInitialized) {
+
+            emergencies.forEach(
+                function(emergency) {
+
+                    knownEmergencyIds.add(
+                        emergency.id
+                    );
+
+                }
+            );
+
+
+            emergencySystemInitialized =
+                true;
+
+
+            console.log(
+                "BloodLink Admin Emergency Monitor Initialized."
+            );
+
+
+            return;
+        }
+
+
+        /*
+         * FIND ONLY NEW EMERGENCY
+         */
+
+        for (
+            let i = 0;
+            i < emergencies.length;
+            i++
+        ) {
+
+            const emergency =
+                emergencies[i];
+
+
+            if (
+                !knownEmergencyIds.has(
+                    emergency.id
+                )
+            ) {
+
+                knownEmergencyIds.add(
+                    emergency.id
+                );
+
+
+                console.log(
+                    "🚨 NEW ADMIN EMERGENCY:",
+                    emergency
+                );
+
+
+                showEmergencyAlarm(
+                    emergency
+                );
+
+
+                /*
+                 * Only one new emergency
+                 * is shown at a time.
+                 */
+
+                break;
+            }
+
+        }
+
+
+        /*
+         * Remove emergencies which
+         * are no longer ACTIVE.
+         */
+
+        const activeIds =
+            new Set(
+                emergencies.map(
+                    function(emergency) {
+
+                        return emergency.id;
+
+                    }
+                )
+            );
+
+
+        knownEmergencyIds.forEach(
+            function(id) {
+
+                if (
+                    !activeIds.has(id)
+                ) {
+
+                    knownEmergencyIds.delete(
+                        id
+                    );
+
+                }
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "BloodLink Admin Emergency Check Failed:",
+            error
+        );
+
+    }
+
+}
+
+    /* =========================================================
+       NOTIFICATION PERMISSION
+       ========================================================= */
+
+    function requestNotificationPermission() {
+
+        if (
+            "Notification" in window &&
+            Notification.permission ===
+            "default"
+        ) {
+
+            Notification.requestPermission()
+                .catch(
+                    function(error) {
+
+                        console.error(
+                            "Notification permission error:",
+                            error
+                        );
+
+                    }
+                );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       SEND NOTIFICATION
+       ========================================================= */
+
+    function sendEmergencyNotification(
+        emergency
+    ) {
+
+        if (
+            !("Notification" in window)
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            Notification.permission !==
+            "granted"
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            new Notification(
+                "🚨 BLOODLINK EMERGENCY",
+                {
+                    body:
+                        (emergency.blood_group || "-") +
+                        " blood required at " +
+                        (emergency.hospital_name || "hospital"),
+
+                    requireInteraction: true
+                }
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Notification error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       PAGE LOAD
+       ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            /*
+             * First API check.
+             */
+
+            checkActiveEmergencies();
+
+
+            /*
+             * Check every 5 seconds.
+             */
+
+            setInterval(
+                checkActiveEmergencies,
+                5000
+            );
+
+
+            console.log(
+                "BloodLink Emergency Monitor Started."
+            );
+
+        }
+    );
+
+</script>
 
 {% endblock %}

@@ -8,4 +8,5 @@ urlpatterns = [
     # BloodLink Application
     path("", include("accounts.urls")),
     
+
 ]
