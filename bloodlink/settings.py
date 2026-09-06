@@ -7,9 +7,10 @@ SECRET_KEY = 'django-insecure-4l5dj%8h#wmkqh628_pa619kd2!(fj_r1^n=$nj$r!l3(n7-(%
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "192.168.134.223",
+    '127.0.0.1',
+    'localhost',
+    '192.168.134.223',
+    'bloodlink-xhpx.onrender.com',
 ]
 
 INSTALLED_APPS = [
