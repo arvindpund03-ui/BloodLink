@@ -1,29 +1,26 @@
 from io import BytesIO
+from uuid import uuid4
+from datetime import timedelta
+
 import qrcode
-from django.conf import settings
+
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
-from django.db.models import Q
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import FormView
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from reportlab.lib.pagesizes import A4,landscape
+from django.contrib.auth.forms import AuthenticationForm
+from django.db import transaction
+from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+from django.views.generic import FormView
+
 from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
-from io import BytesIO
-from uuid import uuid4
-from django.utils import timezone
-from .models import UserProfile, DonationCertificate
-from django.http import JsonResponse
-from .models import EmergencyRequest
-from django.contrib import messages
-from django.shortcuts import redirect, render
-from datetime import timedelta
-from .forms import EmergencyRequestForm
+
 from .firebase import send_admin_emergency_notification
 
 from .forms import (
@@ -32,6 +29,7 @@ from .forms import (
     BloodRequestForm,
     EmergencyRequestForm,
 )
+
 from .models import (
     UserProfile,
     BloodRequest,
@@ -49,41 +47,69 @@ from .models import (
 def home(request):
     return render(request, "accounts/home.html")
 
+
 # =========================================================
 # REGISTER
 # =========================================================
 
 def register(request):
+
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
     if request.method == "POST":
+
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-            user = form.save()
 
-            # Create UserProfile if the form does not already create it
-            profile, created = UserProfile.objects.get_or_create(
-                user=user
-            )
+            with transaction.atomic():
 
-            # Copy registration information to profile
-            profile.full_name = form.cleaned_data.get("full_name", "")
-            profile.blood_group = form.cleaned_data.get("blood_group", "")
-            profile.phone = form.cleaned_data.get("phone", "")
-            profile.city = form.cleaned_data.get("city", "")
-            profile.save()
+                user = form.save()
+
+                profile, created = UserProfile.objects.get_or_create(
+                    user=user
+                )
+
+                profile.full_name = form.cleaned_data.get(
+                    "full_name",
+                    ""
+                )
+
+                profile.blood_group = form.cleaned_data.get(
+                    "blood_group",
+                    ""
+                )
+
+                profile.phone = form.cleaned_data.get(
+                    "phone",
+                    ""
+                )
+
+                profile.city = form.cleaned_data.get(
+                    "city",
+                    ""
+                )
+
+                profile.save()
 
             messages.success(
                 request,
                 "Registration successful! Please login."
             )
+
             return redirect("login")
+
     else:
+
         form = RegistrationForm()
 
     return render(
         request,
         "accounts/registration.html",
-        {"form": form}
+        {
+            "form": form
+        }
     )
 
 
@@ -92,22 +118,42 @@ def register(request):
 # =========================================================
 
 class UserLoginView(FormView):
+
     template_name = "accounts/login.html"
     form_class = AuthenticationForm
 
+    def dispatch(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated:
+            return redirect("dashboard")
+
+        return super().dispatch(
+            request,
+            *args,
+            **kwargs
+        )
+
     def form_valid(self, form):
-        login(self.request, form.get_user())
+
+        login(
+            self.request,
+            form.get_user()
+        )
+
         messages.success(
             self.request,
             "Login successful!"
         )
+
         return redirect("dashboard")
 
     def form_invalid(self, form):
+
         messages.error(
             self.request,
             "Invalid username or password."
         )
+
         return super().form_invalid(form)
 
 
@@ -115,12 +161,17 @@ class UserLoginView(FormView):
 # LOGOUT
 # =========================================================
 
+@require_POST
+@login_required
 def user_logout(request):
+
     logout(request)
+
     messages.success(
         request,
         "You have been logged out successfully."
     )
+
     return redirect("home")
 
 
@@ -128,15 +179,17 @@ def user_logout(request):
 # DASHBOARD
 # =========================================================
 
+@login_required
 def dashboard(request):
-    if not request.user.is_authenticated:
-        return redirect("/login/")
 
     profile, created = UserProfile.objects.get_or_create(
         user=request.user
     )
 
-    # Donors
+    # -----------------------------------------------------
+    # DONOR STATISTICS
+    # -----------------------------------------------------
+
     total_donors = UserProfile.objects.count()
 
     available_donors = UserProfile.objects.filter(
@@ -149,7 +202,10 @@ def dashboard(request):
         .order_by("-id")[:5]
     )
 
-    # Blood Requests
+    # -----------------------------------------------------
+    # BLOOD REQUEST STATISTICS
+    # -----------------------------------------------------
+
     total_requests = BloodRequest.objects.count()
 
     pending_requests = BloodRequest.objects.filter(
@@ -165,7 +221,10 @@ def dashboard(request):
         .order_by("-id")[:5]
     )
 
-    # Blood group statistics
+    # -----------------------------------------------------
+    # BLOOD GROUP STATISTICS
+    # -----------------------------------------------------
+
     blood_groups = [
         "A+",
         "A-",
@@ -190,21 +249,30 @@ def dashboard(request):
             is_available=True
         ).count()
 
-        blood_group_stats.append({
-            "group": group,
-            "count": total,
-            "available": available,
-        })
+        blood_group_stats.append(
+            {
+                "group": group,
+                "count": total,
+                "available": available,
+            }
+        )
 
-    # Donations
+    # -----------------------------------------------------
+    # DONATION STATISTICS
+    # -----------------------------------------------------
+
     lives_saved = DonationCertificate.objects.count()
 
-    # Emergency requests
+    # -----------------------------------------------------
+    # ACTIVE EMERGENCIES
+    # -----------------------------------------------------
+
     active_emergencies = EmergencyRequest.objects.filter(
         status="ACTIVE"
     ).count()
 
     context = {
+
         "profile": profile,
 
         "total_donors": total_donors,
@@ -230,15 +298,42 @@ def dashboard(request):
         context
     )
 
+
+# =========================================================
+# ACTIVE EMERGENCY LIST
+# =========================================================
+
+@login_required
+def active_emergency_list(request):
+
+    emergencies = (
+        EmergencyRequest.objects
+        .filter(status="ACTIVE")
+        .order_by("-created_at")
+    )
+
+    return render(
+        request,
+        "accounts/active_emergency_list.html",
+        {
+            "emergencies": emergencies
+        }
+    )
+
+
 # =========================================================
 # PROFILE
 # =========================================================
 
 @login_required
 def profile(request):
-    profile_obj = request.user.userprofile
+
+    profile_obj, created = UserProfile.objects.get_or_create(
+        user=request.user
+    )
 
     if request.method == "POST":
+
         form = UserProfileForm(
             request.POST,
             request.FILES,
@@ -246,53 +341,80 @@ def profile(request):
         )
 
         if form.is_valid():
+
             form.save()
+
             messages.success(
                 request,
                 "Profile updated successfully!"
             )
+
             return redirect("profile")
 
     else:
-        form = UserProfileForm(instance=profile_obj)
+
+        form = UserProfileForm(
+            instance=profile_obj
+        )
 
     return render(
         request,
         "accounts/profile.html",
-        {"form": form}
+        {
+            "form": form
+        }
     )
+
 
 # =========================================================
 # DONOR DIRECTORY
 # =========================================================
 
 def donor_list(request):
-    donors = UserProfile.objects.select_related(
-        "user"
-    ).filter(
-        is_available=True
+
+    donors = (
+        UserProfile.objects
+        .select_related("user")
+        .filter(is_available=True)
+        .order_by("blood_group", "full_name")
     )
 
-    blood_group = request.GET.get("blood_group", "").strip()
-    city = request.GET.get("city", "").strip()
-    search = request.GET.get("search", "").strip()
+    blood_group = request.GET.get(
+        "blood_group",
+        ""
+    ).strip()
+
+    city = request.GET.get(
+        "city",
+        ""
+    ).strip()
+
+    search = request.GET.get(
+        "search",
+        ""
+    ).strip()
 
     if blood_group:
+
         donors = donors.filter(
             blood_group__iexact=blood_group
         )
 
     if city:
+
         donors = donors.filter(
             city__icontains=city
         )
 
     if search:
+
         donors = donors.filter(
+
             Q(full_name__icontains=search)
             | Q(city__icontains=search)
             | Q(blood_group__icontains=search)
             | Q(user__username__icontains=search)
+
         )
 
     return render(
@@ -312,16 +434,21 @@ def donor_list(request):
 # =========================================================
 
 def donor_detail(request, id):
+
     donor = get_object_or_404(
+
         UserProfile.objects.select_related("user"),
-        id=id
+
+        id=id,
+
+        is_available=True
     )
 
     return render(
         request,
         "accounts/donor_detail.html",
         {
-            "donor": donor,
+            "donor": donor
         }
     )
 
@@ -330,30 +457,42 @@ def donor_detail(request, id):
 # REQUEST BLOOD
 # =========================================================
 
+@login_required
 def request_blood(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
 
     if request.method == "POST":
+
         form = BloodRequestForm(request.POST)
 
         if form.is_valid():
-            blood_request = form.save()
+
+            blood_request = form.save(
+                commit=False
+            )
+
+            # जर BloodRequest model मध्ये user field असेल
+            # तर uncomment करा:
+            #
+            # blood_request.user = request.user
+
+            blood_request.save()
 
             messages.success(
                 request,
                 "Blood request submitted successfully!"
             )
 
-            return redirect("blood_requests")
+            return redirect("blood_request_list")
+
     else:
+
         form = BloodRequestForm()
 
     return render(
         request,
         "accounts/request_blood.html",
         {
-            "form": form,
+            "form": form
         }
     )
 
@@ -362,18 +501,37 @@ def request_blood(request):
 # BLOOD REQUEST LIST
 # =========================================================
 
+@login_required
 def blood_request_list(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
 
-    requests = BloodRequest.objects.all().order_by("-id")
+    blood_requests = (
+        BloodRequest.objects
+        .all()
+        .order_by("-id")
+    )
+
+    pending_requests = blood_requests.filter(
+        status="Pending"
+    ).count()
+
+    fulfilled_requests = blood_requests.filter(
+        status="Fulfilled"
+    ).count()
+
+    context = {
+
+        "requests": blood_requests,
+
+        "pending_requests": pending_requests,
+
+        "fulfilled_requests": fulfilled_requests,
+
+    }
 
     return render(
         request,
         "accounts/blood_request_list.html",
-        {
-            "requests": requests,
-        }
+        context
     )
 
 
@@ -381,26 +539,39 @@ def blood_request_list(request):
 # MATCHING DONORS
 # =========================================================
 
+@login_required
 def matching_donors(request, id):
+
     blood_request = get_object_or_404(
         BloodRequest,
         id=id
     )
 
-    donors = UserProfile.objects.select_related(
-        "user"
-    ).filter(
-        blood_group=blood_request.blood_group,
-        is_available=True,
+    donors = (
+        UserProfile.objects
+        .select_related("user")
+        .filter(
+            blood_group=blood_request.blood_group,
+            is_available=True
+        )
     )
 
+    # Prefer donors from same city
+
     if blood_request.city:
+
         city_donors = donors.filter(
             city__icontains=blood_request.city
         )
 
         if city_donors.exists():
+
             donors = city_donors
+
+    donors = donors.order_by(
+        "city",
+        "full_name"
+    )
 
     return render(
         request,
@@ -411,104 +582,190 @@ def matching_donors(request, id):
         }
     )
 
+
+# =========================================================
+# EMERGENCY REQUEST
+# =========================================================
+
 @login_required
 def emergency_request(request):
+
     if request.method == "POST":
-        form = EmergencyRequestForm(request.POST)
+
+        form = EmergencyRequestForm(
+            request.POST
+        )
 
         if form.is_valid():
 
-            # -----------------------------------------
-            # CLEAN / NORMALIZE DATA
-            # -----------------------------------------
-            patient_name = form.cleaned_data["patient_name"].strip()
-            blood_group = form.cleaned_data["blood_group"].strip()
-            hospital_name = form.cleaned_data["hospital_name"].strip()
-            city = form.cleaned_data["city"].strip()
-            contact_number = form.cleaned_data["contact_number"].strip()
-            units_required = form.cleaned_data["units_required"]
-            emergency_type = form.cleaned_data["emergency_type"]
+            # -------------------------------------------------
+            # CLEAN DATA
+            # -------------------------------------------------
 
-            # -----------------------------------------
-            # 1. CHECK EXACT ACTIVE DUPLICATE
-            # -----------------------------------------
-            exact_duplicate = EmergencyRequest.objects.filter(
-                status="ACTIVE",
-                patient_name__iexact=patient_name,
-                blood_group=blood_group,
-                hospital_name__iexact=hospital_name,
-                city__iexact=city,
-                contact_number=contact_number,
-                units_required=units_required,
-                emergency_type=emergency_type,
-            ).order_by("-created_at").first()
+            patient_name = form.cleaned_data[
+                "patient_name"
+            ].strip()
+
+            blood_group = form.cleaned_data[
+                "blood_group"
+            ].strip()
+
+            hospital_name = form.cleaned_data[
+                "hospital_name"
+            ].strip()
+
+            city = form.cleaned_data[
+                "city"
+            ].strip()
+
+            contact_number = form.cleaned_data[
+                "contact_number"
+            ].strip()
+
+            units_required = form.cleaned_data[
+                "units_required"
+            ]
+
+            emergency_type = form.cleaned_data[
+                "emergency_type"
+            ]
+
+            # -------------------------------------------------
+            # EXACT DUPLICATE CHECK
+            # -------------------------------------------------
+
+            exact_duplicate = (
+                EmergencyRequest.objects
+                .filter(
+
+                    status="ACTIVE",
+
+                    patient_name__iexact=patient_name,
+
+                    blood_group=blood_group,
+
+                    hospital_name__iexact=hospital_name,
+
+                    city__iexact=city,
+
+                    contact_number=contact_number,
+
+                    units_required=units_required,
+
+                    emergency_type=emergency_type,
+
+                )
+                .order_by("-created_at")
+                .first()
+            )
 
             if exact_duplicate:
+
                 messages.warning(
                     request,
-                    "This emergency request is already active. "
-                    "The emergency support team has already been notified."
+                    "This emergency request is already active."
                 )
 
-                return redirect("emergency_request")
+                return redirect(
+                    "emergency_request"
+                )
 
-            # -----------------------------------------
-            # 2. 15-MINUTE COOLDOWN CHECK
-            # -----------------------------------------
-            cooldown_time = timezone.now() - timedelta(minutes=15)
+            # -------------------------------------------------
+            # 15 MINUTE COOLDOWN
+            # -------------------------------------------------
 
-            recent_duplicate = EmergencyRequest.objects.filter(
-                created_at__gte=cooldown_time,
-                status__in=["ACTIVE", "MATCHED"],
-                patient_name__iexact=patient_name,
-                hospital_name__iexact=hospital_name,
-                city__iexact=city,
-                contact_number=contact_number,
-            ).order_by("-created_at").first()
+            cooldown_time = (
+                timezone.now()
+                - timedelta(minutes=15)
+            )
+
+            recent_duplicate = (
+                EmergencyRequest.objects
+                .filter(
+
+                    created_at__gte=cooldown_time,
+
+                    status__in=[
+                        "ACTIVE",
+                        "MATCHED"
+                    ],
+
+                    patient_name__iexact=patient_name,
+
+                    hospital_name__iexact=hospital_name,
+
+                    city__iexact=city,
+
+                    contact_number=contact_number,
+
+                )
+                .order_by("-created_at")
+                .first()
+            )
 
             if recent_duplicate:
+
                 messages.warning(
                     request,
                     "A similar emergency request was submitted recently. "
-                    "Please wait before submitting the same request again."
+                    "Please wait before submitting it again."
                 )
 
-                return redirect("emergency_request")
+                return redirect(
+                    "emergency_request"
+                )
 
-            # -----------------------------------------
-            # 3. CREATE NEW EMERGENCY
-            # -----------------------------------------
-            emergency = form.save(commit=False)
+            # -------------------------------------------------
+            # CREATE EMERGENCY
+            # -------------------------------------------------
 
-            emergency.patient_name = patient_name
-            emergency.blood_group = blood_group
-            emergency.hospital_name = hospital_name
-            emergency.city = city
-            emergency.contact_number = contact_number
-            emergency.units_required = units_required
-            emergency.emergency_type = emergency_type
+            with transaction.atomic():
 
-            # Always start as ACTIVE
-            emergency.status = "ACTIVE"
+                emergency = form.save(
+                    commit=False
+                )
+                emergency.created_by = request.user
 
-            # Save emergency first
-            emergency.save()
+                emergency.patient_name = patient_name
+                emergency.blood_group = blood_group
+                emergency.hospital_name = hospital_name
+                emergency.city = city
+                emergency.contact_number = contact_number
+                emergency.units_required = units_required
+                emergency.emergency_type = emergency_type
 
-            # Send FCM notification to Admin phone
-            send_admin_emergency_notification(emergency)
+                emergency.status = "ACTIVE"
 
-            # -----------------------------------------
-            # SUCCESS MESSAGE
-            # -----------------------------------------
+                emergency.save()
+
+            # -------------------------------------------------
+            # SEND ADMIN NOTIFICATION
+            # -------------------------------------------------
+
+            try:
+
+                send_admin_emergency_notification(
+                    emergency
+                )
+
+            except Exception:
+
+                # Notification failure should not stop
+                # emergency request creation
+                pass
+
             messages.success(
                 request,
                 "Emergency request submitted successfully. "
                 "The emergency support team has been notified."
             )
 
-            return redirect("emergency_request")
+            return redirect(
+                "emergency_request"
+            )
 
     else:
+
         form = EmergencyRequestForm()
 
     return render(
@@ -520,81 +777,106 @@ def emergency_request(request):
     )
 
 
+# =========================================================
+# DOWNLOAD DONATION CERTIFICATE PDF
+# =========================================================
+
 @login_required
 def download_pdf(request, id):
 
-    # =========================================================
-    # GET DONOR
-    # =========================================================
     donor = get_object_or_404(
         UserProfile.objects.select_related("user"),
         id=id
     )
 
-    # =========================================================
-    # ISSUE DATE
-    # Certificate generate/download date
-    # =========================================================
     issue_date = timezone.localdate()
 
-    # =========================================================
+    # -----------------------------------------------------
     # GET OR CREATE CERTIFICATE
-    # =========================================================
-    certificate = DonationCertificate.objects.filter(
-        donor=donor
-    ).first()
+    # -----------------------------------------------------
+
+    certificate = (
+        DonationCertificate.objects
+        .filter(donor=donor)
+        .order_by("-id")
+        .first()
+    )
 
     if certificate is None:
+
         certificate = DonationCertificate.objects.create(
+
             donor=donor,
+
             donation_date=issue_date,
+
             certificate_number=(
-                f"BL-{donor.id}-{uuid4().hex[:8].upper()}"
+                f"BL-{donor.id}-"
+                f"{uuid4().hex[:8].upper()}"
             )
+
         )
 
     certificate_number = certificate.certificate_number
 
-    # =========================================================
+    # -----------------------------------------------------
     # DONOR ID
-    # =========================================================
+    # -----------------------------------------------------
+
     donor_id = (
         f"BLK{issue_date.strftime('%Y%m%d')}"
-        f"{donor.id:02d}"
+        f"{donor.id:04d}"
     )
 
-    # =========================================================
-    # QR VERIFICATION URL
-    # =========================================================
+    # -----------------------------------------------------
+    # VERIFICATION URL
+    # -----------------------------------------------------
+
     verification_url = request.build_absolute_uri(
         f"/verify-certificate/{certificate_number}/"
     )
 
-    # =========================================================
+    # -----------------------------------------------------
     # QR CODE
-    # =========================================================
+    # -----------------------------------------------------
+
     qr = qrcode.QRCode(
+
         version=1,
+
         error_correction=qrcode.constants.ERROR_CORRECT_H,
+
         box_size=8,
+
         border=3,
+
     )
 
     qr.add_data(verification_url)
+
     qr.make(fit=True)
 
     qr_image = qr.make_image(
+
         fill_color="#111827",
+
         back_color="white"
+
     )
 
     qr_buffer = BytesIO()
-    qr_image.save(qr_buffer, format="PNG")
+
+    qr_image.save(
+        qr_buffer,
+        format="PNG"
+    )
+
     qr_buffer.seek(0)
 
-    # =========================================================
+    # -----------------------------------------------------
     # PDF SETUP
-    # =========================================================
+    # -----------------------------------------------------
+
     buffer = BytesIO()
 
     page_width, page_height = landscape(A4)
@@ -604,34 +886,28 @@ def download_pdf(request, id):
         pagesize=landscape(A4)
     )
 
-    # =========================================================
-    # BLOODLINK BRAND COLORS
-    # =========================================================
+    # -----------------------------------------------------
+    # COLORS
+    # -----------------------------------------------------
+
     PURPLE = colors.HexColor("#6D28D9")
     DARK_PURPLE = colors.HexColor("#4C1D95")
-
     BLUE = colors.HexColor("#2563EB")
-    LIGHT_BLUE = colors.HexColor("#DBEAFE")
-
     CORAL = colors.HexColor("#F43F5E")
-    DARK_CORAL = colors.HexColor("#E11D48")
-    LIGHT_CORAL = colors.HexColor("#FFE4E6")
-
     GOLD = colors.HexColor("#F59E0B")
-    LIGHT_GOLD = colors.HexColor("#FEF3C7")
-
     NAVY = colors.HexColor("#111827")
     DARK = colors.HexColor("#1F2937")
     MUTED = colors.HexColor("#64748B")
-
     WHITE = colors.white
     LIGHT = colors.HexColor("#F8FAFC")
     BORDER = colors.HexColor("#CBD5E1")
     GREEN = colors.HexColor("#15803D")
+    LIGHT_GOLD = colors.HexColor("#FEF3C7")
 
-    # =========================================================
-    # WHITE BACKGROUND
-    # =========================================================
+    # -----------------------------------------------------
+    # BACKGROUND
+    # -----------------------------------------------------
+
     pdf.setFillColor(WHITE)
 
     pdf.rect(
@@ -643,9 +919,9 @@ def download_pdf(request, id):
         stroke=0
     )
 
-    # =========================================================
-    # PREMIUM OUTER BORDER
-    # =========================================================
+    # -----------------------------------------------------
+    # OUTER BORDER
+    # -----------------------------------------------------
 
     pdf.setStrokeColor(PURPLE)
     pdf.setLineWidth(6)
@@ -673,50 +949,38 @@ def download_pdf(request, id):
         stroke=1
     )
 
-    # =========================================================
-    # DECORATIVE TOP GRADIENT-STYLE BANDS
-    # =========================================================
+    # -----------------------------------------------------
+    # TOP BRAND BARS
+    # -----------------------------------------------------
 
-    pdf.setFillColor(PURPLE)
+    for color, y in [
 
-    pdf.rect(
-        30,
-        page_height - 38,
-        page_width - 60,
-        5,
-        fill=1,
-        stroke=0
-    )
+        (PURPLE, page_height - 38),
+        (BLUE, page_height - 43),
+        (CORAL, page_height - 48),
 
-    pdf.setFillColor(BLUE)
+    ]:
 
-    pdf.rect(
-        30,
-        page_height - 43,
-        page_width - 60,
-        5,
-        fill=1,
-        stroke=0
-    )
+        pdf.setFillColor(color)
 
-    pdf.setFillColor(CORAL)
+        pdf.rect(
+            30,
+            y,
+            page_width - 60,
+            5,
+            fill=1,
+            stroke=0
+        )
 
-    pdf.rect(
-        30,
-        page_height - 48,
-        page_width - 60,
-        5,
-        fill=1,
-        stroke=0
-    )
-
-    # =========================================================
+    # -----------------------------------------------------
     # WATERMARK
-    # =========================================================
+    # -----------------------------------------------------
 
     pdf.saveState()
 
-    pdf.setFillColor(colors.HexColor("#F3F4F6"))
+    pdf.setFillColor(
+        colors.HexColor("#F3F4F6")
+    )
 
     pdf.setFont(
         "Helvetica-Bold",
@@ -738,14 +1002,13 @@ def download_pdf(request, id):
 
     pdf.restoreState()
 
-    # =========================================================
-    # LOGO CIRCLE
-    # =========================================================
+    # -----------------------------------------------------
+    # LOGO
+    # -----------------------------------------------------
 
     logo_x = 72
     logo_y = page_height - 83
 
-    # Outer purple circle
     pdf.setFillColor(PURPLE)
 
     pdf.circle(
@@ -756,7 +1019,6 @@ def download_pdf(request, id):
         stroke=0
     )
 
-    # Inner blue circle
     pdf.setFillColor(BLUE)
 
     pdf.circle(
@@ -767,7 +1029,6 @@ def download_pdf(request, id):
         stroke=0
     )
 
-    # Coral blood drop
     pdf.setFillColor(CORAL)
 
     path = pdf.beginPath()
@@ -801,9 +1062,9 @@ def download_pdf(request, id):
         stroke=0
     )
 
-    # =========================================================
-    # BLOODLINK BRAND
-    # =========================================================
+    # -----------------------------------------------------
+    # BRAND NAME
+    # -----------------------------------------------------
 
     pdf.setFillColor(NAVY)
 
@@ -831,9 +1092,9 @@ def download_pdf(request, id):
         "BLOOD DONATION & EMERGENCY SUPPORT NETWORK"
     )
 
-    # =========================================================
-    # OFFICIAL CERTIFICATE BADGE
-    # =========================================================
+    # -----------------------------------------------------
+    # OFFICIAL BADGE
+    # -----------------------------------------------------
 
     badge_x = page_width - 185
     badge_y = page_height - 75
@@ -864,6 +1125,7 @@ def download_pdf(request, id):
     )
 
     pdf.setFillColor(DARK)
+
     pdf.setFont(
         "Helvetica-Bold",
         8
@@ -875,9 +1137,9 @@ def download_pdf(request, id):
         "OFFICIAL CERTIFICATE"
     )
 
-    # =========================================================
-    # MAIN HEADING
-    # =========================================================
+    # -----------------------------------------------------
+    # TITLE
+    # -----------------------------------------------------
 
     title_y = page_height - 153
 
@@ -920,9 +1182,9 @@ def download_pdf(request, id):
         "Recognizing compassion, humanity and commitment to saving lives"
     )
 
-    # =========================================================
+    # -----------------------------------------------------
     # PRESENTED TO
-    # =========================================================
+    # -----------------------------------------------------
 
     pdf.setFillColor(CORAL)
 
@@ -937,17 +1199,15 @@ def download_pdf(request, id):
         "THIS CERTIFICATE IS PROUDLY PRESENTED TO"
     )
 
-    # =========================================================
+    # -----------------------------------------------------
     # DONOR NAME
-    # =========================================================
+    # -----------------------------------------------------
 
-    donor_name = donor.full_name
-
-    if not donor_name:
-        donor_name = donor.user.get_full_name()
-
-    if not donor_name:
-        donor_name = donor.user.username
+    donor_name = (
+        donor.full_name
+        or donor.user.get_full_name()
+        or donor.user.username
+    )
 
     donor_name = donor_name.upper()
 
@@ -964,7 +1224,6 @@ def download_pdf(request, id):
         donor_name
     )
 
-    # Name underline
     name_width = pdf.stringWidth(
         donor_name,
         "Helvetica-Bold",
@@ -972,7 +1231,6 @@ def download_pdf(request, id):
     )
 
     pdf.setStrokeColor(CORAL)
-
     pdf.setLineWidth(2)
 
     pdf.line(
@@ -982,9 +1240,9 @@ def download_pdf(request, id):
         title_y - 99
     )
 
-    # =========================================================
+    # -----------------------------------------------------
     # APPRECIATION MESSAGE
-    # =========================================================
+    # -----------------------------------------------------
 
     pdf.setFillColor(DARK)
 
@@ -994,9 +1252,13 @@ def download_pdf(request, id):
     )
 
     message_lines = [
+
         "in sincere appreciation for your valuable contribution",
+
         "towards blood donation and emergency support,",
-        "helping patients, accident victims and families receive timely assistance."
+
+        "helping patients, accident victims and families receive timely assistance.",
+
     ]
 
     message_y = title_y - 121
@@ -1011,10 +1273,6 @@ def download_pdf(request, id):
 
         message_y -= 12
 
-    # =========================================================
-    # KINDNESS STATEMENT
-    # =========================================================
-
     pdf.setFillColor(CORAL)
 
     pdf.setFont(
@@ -1028,12 +1286,11 @@ def download_pdf(request, id):
         "YOUR KINDNESS CAN SAVE A LIFE"
     )
 
-    # =========================================================
+    # -----------------------------------------------------
     # INFORMATION CARDS
-    # =========================================================
+    # -----------------------------------------------------
 
     cards_y = 105
-
     card_height = 50
     card_width = 116
     gap = 12
@@ -1048,31 +1305,43 @@ def download_pdf(request, id):
     ) / 2
 
     details = [
+
         (
             "BLOOD GROUP",
-            donor.blood_group or "N/A"
+            donor.blood_group or "N/A",
+            CORAL
         ),
+
         (
             "CITY",
-            donor.city or "N/A"
+            donor.city or "N/A",
+            BLUE
         ),
+
         (
             "ISSUE DATE",
-            issue_date.strftime("%d-%m-%Y")
+            certificate.donation_date.strftime("%d-%m-%Y"),
+            GOLD
         ),
+
         (
             "DONOR ID",
-            donor_id
+            donor_id,
+            PURPLE
         ),
+
     ]
 
-    for index, (label, value) in enumerate(details):
+    for index, (
+        label,
+        value,
+        accent
+    ) in enumerate(details):
 
         x = start_x + index * (
             card_width + gap
         )
 
-        # Card
         pdf.setFillColor(LIGHT)
 
         pdf.setStrokeColor(BORDER)
@@ -1089,16 +1358,6 @@ def download_pdf(request, id):
             stroke=1
         )
 
-        # Small top accent
-        if index == 0:
-            accent = CORAL
-        elif index == 1:
-            accent = BLUE
-        elif index == 2:
-            accent = GOLD
-        else:
-            accent = PURPLE
-
         pdf.setFillColor(accent)
 
         pdf.roundRect(
@@ -1111,7 +1370,6 @@ def download_pdf(request, id):
             stroke=0
         )
 
-        # Label
         pdf.setFillColor(MUTED)
 
         pdf.setFont(
@@ -1125,22 +1383,20 @@ def download_pdf(request, id):
             label
         )
 
-        # Value
+        display_value = str(value)
+
+        font_size = (
+            7.5
+            if len(display_value) > 18
+            else 10
+        )
+
         pdf.setFillColor(NAVY)
 
         pdf.setFont(
             "Helvetica-Bold",
-            10
+            font_size
         )
-
-        display_value = str(value)
-
-        if len(display_value) > 18:
-
-            pdf.setFont(
-                "Helvetica-Bold",
-                7.5
-            )
 
         pdf.drawCentredString(
             x + card_width / 2,
@@ -1148,105 +1404,9 @@ def download_pdf(request, id):
             display_value
         )
 
-    # =========================================================
-    # DONOR HERO BADGE
-    # =========================================================
-
-    hero_x = 78
-    hero_y = 91
-
-    pdf.setFillColor(CORAL)
-
-    pdf.circle(
-        hero_x,
-        hero_y,
-        29,
-        fill=1,
-        stroke=0
-    )
-
-    pdf.setStrokeColor(GOLD)
-
-    pdf.setLineWidth(2)
-
-    pdf.circle(
-        hero_x,
-        hero_y,
-        25,
-        fill=0,
-        stroke=1
-    )
-
-    pdf.setFillColor(WHITE)
-
-    pdf.setFont(
-        "Helvetica-Bold",
-        7
-    )
-
-    pdf.drawCentredString(
-        hero_x,
-        hero_y + 4,
-        "DONOR"
-    )
-
-    pdf.drawCentredString(
-        hero_x,
-        hero_y - 7,
-        "HERO"
-    )
-
-    # =========================================================
-    # EMERGENCY SUPPORT BADGE
-    # =========================================================
-
-    support_x = page_width - 78
-    support_y = 91
-
-    pdf.setFillColor(PURPLE)
-
-    pdf.circle(
-        support_x,
-        support_y,
-        29,
-        fill=1,
-        stroke=0
-    )
-
-    pdf.setStrokeColor(BLUE)
-
-    pdf.setLineWidth(2)
-
-    pdf.circle(
-        support_x,
-        support_y,
-        25,
-        fill=0,
-        stroke=1
-    )
-
-    pdf.setFillColor(WHITE)
-
-    pdf.setFont(
-        "Helvetica-Bold",
-        6.5
-    )
-
-    pdf.drawCentredString(
-        support_x,
-        support_y + 4,
-        "EMERGENCY"
-    )
-
-    pdf.drawCentredString(
-        support_x,
-        support_y - 7,
-        "SUPPORT"
-    )
-
-    # =========================================================
-    # QR VERIFICATION PANEL
-    # =========================================================
+    # -----------------------------------------------------
+    # QR CODE
+    # -----------------------------------------------------
 
     qr_x = page_width - 148
     qr_y = page_height - 292
@@ -1255,7 +1415,6 @@ def download_pdf(request, id):
     pdf.setFillColor(WHITE)
 
     pdf.setStrokeColor(BLUE)
-
     pdf.setLineWidth(1.5)
 
     pdf.roundRect(
@@ -1288,25 +1447,12 @@ def download_pdf(request, id):
     pdf.drawCentredString(
         qr_x + qr_size / 2,
         qr_y - 20,
-        "✓ VERIFIED"
+        "VERIFIED"
     )
 
-    pdf.setFillColor(MUTED)
-
-    pdf.setFont(
-        "Helvetica",
-        6
-    )
-
-    pdf.drawCentredString(
-        qr_x + qr_size / 2,
-        qr_y - 29,
-        "SCAN TO VERIFY"
-    )
-
-    # =========================================================
+    # -----------------------------------------------------
     # QUOTE
-    # =========================================================
+    # -----------------------------------------------------
 
     pdf.setFillColor(MUTED)
 
@@ -1321,111 +1467,9 @@ def download_pdf(request, id):
         '"Every drop donated can become someone\'s hope in a critical moment."'
     )
 
-    # =========================================================
-    # DIGITAL SIGNATURE - LEFT
-    # =========================================================
-
-    left_signature_x = 225
-    signature_y = 42
-
-    pdf.setStrokeColor(PURPLE)
-
-    pdf.setLineWidth(0.8)
-
-    pdf.line(
-        left_signature_x - 70,
-        signature_y,
-        left_signature_x + 70,
-        signature_y
-    )
-
-    pdf.setFillColor(DARK_PURPLE)
-
-    pdf.setFont(
-        "Helvetica-Oblique",
-        10
-    )
-
-    pdf.drawCentredString(
-        left_signature_x,
-        signature_y + 8,
-        "BloodLink Team"
-    )
-
-    pdf.setFillColor(MUTED)
-
-    pdf.setFont(
-        "Helvetica",
-        6.5
-    )
-
-    pdf.drawCentredString(
-        left_signature_x,
-        signature_y - 9,
-        "Authorized Signature"
-    )
-
-    # =========================================================
-    # DIGITAL SIGNATURE - RIGHT
-    # =========================================================
-
-    right_signature_x = page_width - 225
-
-    pdf.setStrokeColor(BLUE)
-
-    pdf.line(
-        right_signature_x - 70,
-        signature_y,
-        right_signature_x + 70,
-        signature_y
-    )
-
-    pdf.setFillColor(BLUE)
-
-    pdf.setFont(
-        "Helvetica-Oblique",
-        10
-    )
-
-    pdf.drawCentredString(
-        right_signature_x,
-        signature_y + 8,
-        "Emergency Support Team"
-    )
-
-    pdf.setFillColor(MUTED)
-
-    pdf.setFont(
-        "Helvetica",
-        6.5
-    )
-
-    pdf.drawCentredString(
-        right_signature_x,
-        signature_y - 9,
-        "BloodLink Emergency Network"
-    )
-
-    # =========================================================
-    # DIGITAL VERIFICATION LABEL
-    # =========================================================
-
-    pdf.setFillColor(GREEN)
-
-    pdf.setFont(
-        "Helvetica-Bold",
-        6
-    )
-
-    pdf.drawString(
-        48,
-        30,
-        "✓ DIGITALLY VERIFIABLE"
-    )
-
-    # =========================================================
+    # -----------------------------------------------------
     # CERTIFICATE NUMBER
-    # =========================================================
+    # -----------------------------------------------------
 
     pdf.setFillColor(NAVY)
 
@@ -1440,9 +1484,9 @@ def download_pdf(request, id):
         f"Certificate No. {certificate_number}"
     )
 
-    # =========================================================
-    # FOOTER BRANDING
-    # =========================================================
+    # -----------------------------------------------------
+    # FOOTER
+    # -----------------------------------------------------
 
     pdf.setFillColor(CORAL)
 
@@ -1457,18 +1501,15 @@ def download_pdf(request, id):
         "SAVE BLOOD • SAVE LIVES • SUPPORT IN EMERGENCIES"
     )
 
-    # =========================================================
+    # -----------------------------------------------------
     # FINISH PDF
-    # =========================================================
+    # -----------------------------------------------------
 
     pdf.showPage()
+
     pdf.save()
 
     buffer.seek(0)
-
-    # =========================================================
-    # RESPONSE
-    # =========================================================
 
     response = HttpResponse(
         buffer.getvalue(),
@@ -1481,59 +1522,90 @@ def download_pdf(request, id):
     )
 
     return response
+
+
 # =========================================================
 # MARK DONATION
 # =========================================================
 
+@require_POST
+@login_required
 def mark_donation(request, id):
-    if not request.user.is_authenticated:
-        return redirect("login")
 
     donor = get_object_or_404(
         UserProfile,
         id=id
     )
 
-    donor.donation_count += 1
-    donor.save()
+    with transaction.atomic():
 
-    certificate = DonationCertificate.objects.create(
-        donor=donor
-    )
+        donor.donation_count += 1
+
+        donor.save(
+            update_fields=["donation_count"]
+        )
+
+        certificate = DonationCertificate.objects.create(
+
+            donor=donor,
+
+            donation_date=timezone.localdate(),
+
+            certificate_number=(
+                f"BL-{donor.id}-"
+                f"{uuid4().hex[:8].upper()}"
+            )
+        )
 
     messages.success(
         request,
         "Donation marked successfully!"
     )
 
+    # तुमच्या urls.py मध्ये certificate view असल्यास
+    # हा redirect चालेल.
     return redirect(
         "certificate",
         id=certificate.id
     )
-def verify_certificate(request, certificate_number):
+
+
+# =========================================================
+# VERIFY CERTIFICATE
+# =========================================================
+
+def verify_certificate(
+    request,
+    certificate_number
+):
+
     certificate = get_object_or_404(
+
         DonationCertificate.objects.select_related(
             "donor",
             "donor__user"
         ),
-        certificate_number=certificate_number
-    )
 
-    donor = certificate.donor
+        certificate_number=certificate_number
+
+    )
 
     return render(
         request,
         "accounts/verify_certificate.html",
         {
             "certificate": certificate,
-            "donor": donor,
+            "donor": certificate.donor,
         }
     )
+
+
 # =========================================================
 # ABOUT
 # =========================================================
 
 def about(request):
+
     return render(
         request,
         "accounts/about.html"
@@ -1545,11 +1617,14 @@ def about(request):
 # =========================================================
 
 def contact(request):
+
     if request.method == "POST":
+
         messages.success(
             request,
             "Thank you for contacting BloodLink!"
         )
+
         return redirect("contact")
 
     return render(
@@ -1562,17 +1637,20 @@ def contact(request):
 # NOTIFICATIONS
 # =========================================================
 
+@login_required
 def notifications(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
 
-    user_notifications = Notification.objects.filter(
-        user=request.user
-    ).select_related(
-        "emergency"
-    ).order_by("-created_at")
+    user_notifications = (
+
+        Notification.objects
+        .filter(user=request.user)
+        .select_related("emergency")
+        .order_by("-created_at")
+
+    )
 
     if request.method == "POST":
+
         user_notifications.filter(
             is_read=False
         ).update(
@@ -1586,11 +1664,16 @@ def notifications(request):
 
         return redirect("notifications")
 
+    unread_count = user_notifications.filter(
+        is_read=False
+    ).count()
+
     return render(
         request,
         "accounts/notifications.html",
         {
             "notifications": user_notifications,
+            "unread_count": unread_count,
         }
     )
 
@@ -1599,36 +1682,65 @@ def notifications(request):
 # ACCEPT EMERGENCY
 # =========================================================
 
-def accept_emergency(request, emergency_id):
-    if not request.user.is_authenticated:
-        return redirect("login")
+@require_POST
+@login_required
+def accept_emergency(
+    request,
+    emergency_id
+):
 
     emergency = get_object_or_404(
         EmergencyRequest,
         id=emergency_id
     )
 
-    donor = get_object_or_404(
-        UserProfile,
+    if emergency.status not in [
+        "ACTIVE",
+        "MATCHED"
+    ]:
+
+        messages.warning(
+            request,
+            "This emergency request is no longer active."
+        )
+
+        return redirect("notifications")
+
+    donor, created = UserProfile.objects.get_or_create(
         user=request.user
     )
 
-    response, created = EmergencyResponse.objects.get_or_create(
-        emergency=emergency,
-        donor=donor,
-        defaults={
-            "response": "ACCEPTED",
-        }
-    )
+    with transaction.atomic():
 
-    if not created:
-        response.response = "ACCEPTED"
-        response.save()
+        response, created = (
+            EmergencyResponse.objects.get_or_create(
 
-    emergency.status = "MATCHED"
-    emergency.save()
+                emergency=emergency,
 
-    
+                donor=donor,
+
+                defaults={
+                    "response": "ACCEPTED"
+                }
+
+            )
+        )
+
+        if not created:
+
+            response.response = "ACCEPTED"
+
+            response.save(
+                update_fields=["response"]
+            )
+
+        if emergency.status == "ACTIVE":
+
+            emergency.status = "MATCHED"
+
+            emergency.save(
+                update_fields=["status"]
+            )
 
     messages.success(
         request,
@@ -1642,31 +1754,45 @@ def accept_emergency(request, emergency_id):
 # REJECT EMERGENCY
 # =========================================================
 
-def reject_emergency(request, emergency_id):
-    if not request.user.is_authenticated:
-        return redirect("login")
+@require_POST
+@login_required
+def reject_emergency(
+    request,
+    emergency_id
+):
 
     emergency = get_object_or_404(
         EmergencyRequest,
         id=emergency_id
     )
 
-    donor = get_object_or_404(
-        UserProfile,
+    donor, created = UserProfile.objects.get_or_create(
         user=request.user
     )
 
-    response, created = EmergencyResponse.objects.get_or_create(
-        emergency=emergency,
-        donor=donor,
-        defaults={
-            "response": "REJECTED",
-        }
-    )
+    with transaction.atomic():
 
-    if not created:
-        response.response = "REJECTED"
-        response.save()
+        response, created = (
+            EmergencyResponse.objects.get_or_create(
+
+                emergency=emergency,
+
+                donor=donor,
+
+                defaults={
+                    "response": "REJECTED"
+                }
+
+            )
+        )
+
+        if not created:
+
+            response.response = "REJECTED"
+
+            response.save(
+                update_fields=["response"]
+            )
 
     messages.info(
         request,
@@ -1676,6 +1802,9 @@ def reject_emergency(request, emergency_id):
     return redirect("notifications")
 
 
+# =========================================================
+# ADMIN ACTIVE EMERGENCY API
+# =========================================================
 
 @login_required
 def admin_active_emergency_api(request):
@@ -1690,57 +1819,63 @@ def admin_active_emergency_api(request):
             status=403
         )
 
-
     emergencies = (
+
         EmergencyRequest.objects
         .filter(status="ACTIVE")
         .order_by("-created_at")[:20]
-    )
 
+    )
 
     data = []
 
-
     for emergency in emergencies:
 
-        data.append({
+        data.append(
 
-            "id": emergency.id,
+            {
 
-            "patient_name":
-                emergency.patient_name,
+                "id": emergency.id,
 
-            "blood_group":
-                emergency.blood_group,
+                "patient_name":
+                    emergency.patient_name,
 
-            "units_required":
-                emergency.units_required,
+                "blood_group":
+                    emergency.blood_group,
 
-            "hospital_name":
-                emergency.hospital_name,
+                "units_required":
+                    emergency.units_required,
 
-            "city":
-                emergency.city,
+                "hospital_name":
+                    emergency.hospital_name,
 
-            "contact_number":
-                emergency.contact_number,
+                "city":
+                    emergency.city,
 
-            "emergency_type":
-                emergency.emergency_type,
+                "contact_number":
+                    emergency.contact_number,
 
-            "urgency":
-                emergency.urgency,
+                "emergency_type":
+                    emergency.emergency_type,
 
-            "created_at":
-                emergency.created_at.isoformat(),
+                "urgency":
+                    emergency.urgency,
 
-        })
+                "created_at":
+                    emergency.created_at.isoformat(),
 
+            }
 
-    return JsonResponse({
+        )
 
-        "success": True,
+    return JsonResponse(
+        {
 
-        "emergencies": data
+            "success": True,
 
-    })
+            "count": len(data),
+
+            "emergencies": data,
+
+        }
+    )

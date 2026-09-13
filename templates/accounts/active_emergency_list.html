@@ -1,0 +1,809 @@
+{% extends "base.html" %}
+
+{% block title %}
+Active Emergencies | BloodLink
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* ================================
+       ACTIVE EMERGENCIES PAGE
+    ================================= */
+
+    .emergency-page {
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 10px 5px 30px;
+    }
+
+
+    /* ================================
+       HERO SECTION
+    ================================= */
+
+    .emergency-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #5b21b6, #2563eb, #ef4444);
+        border-radius: 26px;
+        padding: 38px;
+        color: white;
+        margin-bottom: 25px;
+        box-shadow: 0 20px 45px rgba(91, 33, 182, 0.25);
+    }
+
+    .emergency-hero::before {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.10);
+        right: -80px;
+        top: -100px;
+    }
+
+    .emergency-hero::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        left: 45%;
+        bottom: -120px;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        background: rgba(255, 255, 255, 0.18);
+        margin-bottom: 15px;
+    }
+
+    .emergency-hero h1 {
+        margin: 0 0 8px;
+        font-size: 34px;
+        font-weight: 800;
+    }
+
+    .emergency-hero p {
+        margin: 0;
+        font-size: 15px;
+        opacity: 0.92;
+        max-width: 650px;
+    }
+
+
+    /* ================================
+       STATS
+    ================================= */
+
+    .emergency-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .emergency-stat {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border: 1px solid #eef2ff;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.07);
+        transition: 0.25s ease;
+    }
+
+    .emergency-stat:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 35px rgba(91, 33, 182, 0.14);
+    }
+
+    .stat-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .icon-emergency {
+        background: #ffe4e6;
+    }
+
+    .icon-active {
+        background: #fee2e2;
+    }
+
+    .icon-support {
+        background: #dbeafe;
+    }
+
+    .stat-content h3 {
+        margin: 0;
+        font-size: 25px;
+        color: #1e293b;
+        font-weight: 800;
+    }
+
+    .stat-content span {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    /* ================================
+       MAIN CONTAINER
+    ================================= */
+
+    .emergency-container {
+        background: white;
+        border-radius: 26px;
+        padding: 26px;
+        border: 1px solid #eef2ff;
+        box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 800;
+        color: #1e293b;
+    }
+
+    .section-header p {
+        margin: 5px 0 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .new-emergency-btn {
+        text-decoration: none;
+        color: white;
+        background: linear-gradient(135deg, #7c3aed, #2563eb, #ef4444);
+        padding: 12px 18px;
+        border-radius: 13px;
+        font-size: 14px;
+        font-weight: 700;
+        transition: 0.25s ease;
+        box-shadow: 0 8px 20px rgba(91, 33, 182, 0.25);
+    }
+
+    .new-emergency-btn:hover {
+        color: white;
+        transform: translateY(-3px);
+    }
+
+
+    /* ================================
+       EMERGENCY GRID
+    ================================= */
+
+    .emergency-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+
+    /* ================================
+       EMERGENCY CARD
+    ================================= */
+
+    .emergency-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        padding: 22px;
+        background: linear-gradient(145deg, #ffffff, #faf5ff);
+        border: 1px solid #e9d5ff;
+        transition: 0.25s ease;
+    }
+
+    .emergency-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 6px;
+        height: 100%;
+        background: linear-gradient(to bottom, #7c3aed, #2563eb, #ef4444);
+    }
+
+    .emergency-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 35px rgba(91, 33, 182, 0.15);
+    }
+
+
+    /* ================================
+       CARD HEADER
+    ================================= */
+
+    .emergency-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .patient-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .patient-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        background: linear-gradient(135deg, #ede9fe, #dbeafe);
+    }
+
+    .patient-info h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 800;
+        color: #1e293b;
+    }
+
+    .patient-info span {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #64748b;
+    }
+
+
+    /* ================================
+       STATUS BADGE
+    ================================= */
+
+    .active-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 8px 12px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 800;
+        animation: pulseEmergency 2s infinite;
+    }
+
+    @keyframes pulseEmergency {
+
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
+
+    }
+
+
+    /* ================================
+       DETAILS
+    ================================= */
+
+    .emergency-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .detail-box {
+        background: #f8fafc;
+        border: 1px solid #eef2ff;
+        border-radius: 13px;
+        padding: 12px;
+    }
+
+    .detail-label {
+        color: #94a3b8;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 5px;
+    }
+
+    .detail-value {
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+        word-break: break-word;
+    }
+
+
+    /* ================================
+       FOOTER / ACTIONS
+    ================================= */
+
+    .emergency-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding-top: 15px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .emergency-id {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .emergency-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .action-form {
+        margin: 0;
+    }
+
+    .accept-btn,
+    .reject-btn {
+        border: none;
+        padding: 9px 14px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .accept-btn {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        color: white;
+    }
+
+    .reject-btn {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        color: white;
+    }
+
+    .accept-btn:hover,
+    .reject-btn:hover {
+        transform: translateY(-2px);
+    }
+
+
+    /* ================================
+       EMPTY STATE
+    ================================= */
+
+    .empty-state {
+        text-align: center;
+        padding: 70px 20px;
+    }
+
+    .empty-icon {
+        width: 90px;
+        height: 90px;
+        margin: 0 auto 20px;
+        border-radius: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 42px;
+        background: linear-gradient(135deg, #ede9fe, #dbeafe, #ffe4e6);
+    }
+
+    .empty-state h3 {
+        margin: 0 0 8px;
+        color: #1e293b;
+        font-size: 22px;
+    }
+
+    .empty-state p {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+
+    /* ================================
+       MOBILE
+    ================================= */
+
+    @media (max-width: 900px) {
+
+        .emergency-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .emergency-stats {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .emergency-page {
+            padding: 5px 0 20px;
+        }
+
+        .emergency-hero {
+            padding: 26px 20px;
+            border-radius: 20px;
+        }
+
+        .emergency-hero h1 {
+            font-size: 27px;
+        }
+
+        .emergency-container {
+            padding: 18px;
+            border-radius: 20px;
+        }
+
+        .emergency-card {
+            padding: 17px;
+        }
+
+        .emergency-details {
+            grid-template-columns: 1fr;
+        }
+
+        .section-header {
+            align-items: stretch;
+        }
+
+        .new-emergency-btn {
+            text-align: center;
+            width: 100%;
+        }
+
+        .emergency-footer {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .emergency-actions {
+            width: 100%;
+        }
+
+        .action-form {
+            flex: 1;
+        }
+
+        .accept-btn,
+        .reject-btn {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<div class="emergency-page">
+
+    <!-- HERO -->
+    <div class="emergency-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-icon">🚨</div>
+
+            <h1>Active Emergencies</h1>
+
+            <p>
+                View urgent emergency cases that currently need
+                immediate blood donation and community support.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATS -->
+    <div class="emergency-stats">
+
+        <div class="emergency-stat">
+
+            <div class="stat-icon icon-emergency">🚨</div>
+
+            <div class="stat-content">
+
+                <h3>{{ emergencies|length }}</h3>
+
+                <span>Total Active Emergencies</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="emergency-stat">
+
+            <div class="stat-icon icon-active">🔴</div>
+
+            <div class="stat-content">
+
+                <h3>ACTIVE</h3>
+
+                <span>Emergency Status</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="emergency-stat">
+
+            <div class="stat-icon icon-support">🤝</div>
+
+            <div class="stat-content">
+
+                <h3>HELP</h3>
+
+                <span>Community Support Needed</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="emergency-container">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>🚨 Emergency Cases</h2>
+
+                <p>
+                    These emergencies require immediate attention and support.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'emergency_request' %}"
+                class="new-emergency-btn"
+            >
+                🚨 Create Emergency
+            </a>
+
+        </div>
+
+
+        {% if emergencies %}
+
+        <div class="emergency-grid">
+
+            {% for emergency in emergencies %}
+
+            <div class="emergency-card">
+
+
+                <!-- HEADER -->
+                <div class="emergency-top">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar">
+                            👤
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                {{ emergency.patient_name }}
+                            </h3>
+
+                            <span>
+                                Emergency Blood Support
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="active-badge">
+                        🔴 ACTIVE
+                    </div>
+
+                </div>
+
+
+                <!-- DETAILS -->
+                <div class="emergency-details">
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Blood Group
+                        </div>
+
+                        <div class="detail-value">
+                            🩸 {{ emergency.blood_group }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Units Required
+                        </div>
+
+                        <div class="detail-value">
+                            🩸 {{ emergency.units_required }} Unit(s)
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Location
+                        </div>
+
+                        <div class="detail-value">
+                            📍 {{ emergency.city }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Contact
+                        </div>
+
+                        <div class="detail-value">
+                            📞 {{ emergency.contact_number }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FOOTER -->
+                <div class="emergency-footer">
+
+                    <span class="emergency-id">
+                        Emergency #{{ emergency.id }}
+                    </span>
+
+
+                    <div class="emergency-actions">
+
+                        <!-- ACCEPT -->
+                        <form
+                            method="POST"
+                            action="{% url 'accept_emergency' emergency.id %}"
+                            class="action-form"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="accept-btn"
+                            >
+                                ✓ Accept
+                            </button>
+
+                        </form>
+
+
+                        <!-- REJECT -->
+                        <form
+                            method="POST"
+                            action="{% url 'reject_emergency' emergency.id %}"
+                            class="action-form"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="reject-btn"
+                            >
+                                ✕ Reject
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        {% else %}
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                🚨
+            </div>
+
+            <h3>No Active Emergencies</h3>
+
+            <p>
+                There are currently no active emergency cases.
+                New emergency requests will appear here.
+            </p>
+
+            <a
+                href="{% url 'emergency_request' %}"
+                class="new-emergency-btn"
+            >
+                🚨 Create Emergency Request
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

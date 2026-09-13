@@ -4,21 +4,24 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
-    <!-- IMPORTANT: MOBILE VIEWPORT -->
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     >
 
-    <title>{% block title %}BloodLink{% endblock %}</title>
+    <title>
+        {% block title %}BloodLink{% endblock %}
+    </title>
+
 
     <style>
 
-        /* =========================================================
-           GLOBAL
-        ========================================================= */
+        /* =========================================
+           RESET + GLOBAL
+        ========================================= */
 
         *,
         *::before,
@@ -26,17 +29,19 @@
             box-sizing: border-box;
         }
 
+
         html {
             scroll-behavior: smooth;
-            width: 100%;
-            min-height: 100%;
         }
 
+
         body {
+
             margin: 0;
             padding: 0;
-            width: 100%;
-            min-height: 100%;
+
+            min-height: 100vh;
+
             overflow-x: hidden;
 
             font-family:
@@ -49,37 +54,55 @@
                 sans-serif;
 
             background: #f5f7fb;
+
             color: #172033;
+
         }
+
+
+        body.menu-open {
+            overflow: hidden;
+        }
+
 
         a {
             text-decoration: none;
         }
 
+
         button,
         input,
         select,
         textarea {
-            font-family: inherit;
+            font: inherit;
         }
 
 
-        /* =========================================================
-           APP
-        ========================================================= */
+        button {
+            -webkit-tap-highlight-color: transparent;
+            tap-highlight-color: transparent;
+        }
+
+
+        /* =========================================
+           APP WRAPPER
+        ========================================= */
 
         .bl-app {
+
             width: 100%;
+
             min-height: 100vh;
-            overflow-x: hidden;
+
         }
 
 
-        /* =========================================================
-           SIDEBAR
-        ========================================================= */
+        /* =========================================
+           SIDEBAR - DESKTOP
+        ========================================= */
 
         .bl-sidebar {
+
             position: fixed;
 
             top: 0;
@@ -87,6 +110,7 @@
             bottom: 0;
 
             width: 260px;
+
             height: 100vh;
 
             padding: 20px 14px;
@@ -104,6 +128,7 @@
             z-index: 1000;
 
             overflow-y: auto;
+
             overflow-x: hidden;
 
             box-shadow:
@@ -111,34 +136,73 @@
 
             -webkit-overflow-scrolling: touch;
 
-            transition:
-                transform .25s ease,
-                visibility .25s ease;
         }
 
 
-        /* =========================================================
+        /* =========================================
+           SIDEBAR CLOSE BUTTON
+        ========================================= */
+
+        .bl-sidebar-close {
+
+            display: none;
+
+            position: absolute;
+
+            top: 15px;
+            right: 14px;
+
+            width: 42px;
+            height: 42px;
+
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,.12);
+
+            color: white;
+
+            font-size: 24px;
+
+            cursor: pointer;
+
+        }
+
+
+        /* =========================================
            BRAND
-        ========================================================= */
+        ========================================= */
 
         .bl-brand {
+
             display: flex;
+
             align-items: center;
+
             gap: 11px;
 
             padding: 5px 9px 20px;
 
             border-bottom:
                 1px solid rgba(255,255,255,.12);
+
         }
 
+
         .bl-brand-icon {
+
             width: 44px;
             height: 44px;
 
             flex: 0 0 44px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -151,50 +215,62 @@
                     #ef4444
                 );
 
+            font-size: 23px;
+
             box-shadow:
                 0 9px 22px rgba(239,68,68,.35);
 
-            font-size: 23px;
         }
 
+
         .bl-brand-name {
+
             color: white;
 
             font-size: 21px;
+
             font-weight: 900;
 
             line-height: 1.1;
 
-            white-space: nowrap;
         }
+
 
         .bl-brand-name span {
+
             color: #93c5fd;
+
         }
 
+
         .bl-brand-tagline {
+
             margin-top: 4px;
 
-            color: rgba(255,255,255,.62);
+            color:
+                rgba(255,255,255,.62);
 
             font-size: 9px;
+
             font-weight: 800;
 
             letter-spacing: 1.1px;
 
             text-transform: uppercase;
 
-            white-space: nowrap;
         }
 
 
-        /* =========================================================
+        /* =========================================
            MINI PROFILE
-        ========================================================= */
+        ========================================= */
 
         .bl-mini-profile {
+
             display: flex;
+
             align-items: center;
+
             gap: 10px;
 
             margin: 17px 3px;
@@ -206,11 +282,11 @@
             background:
                 rgba(255,255,255,.08);
 
-            border:
-                1px solid rgba(255,255,255,.08);
         }
 
+
         .bl-mini-avatar {
+
             width: 40px;
             height: 40px;
 
@@ -221,6 +297,7 @@
             overflow: hidden;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -234,80 +311,101 @@
             color: white;
 
             font-size: 14px;
+
             font-weight: 900;
+
         }
 
+
         .bl-mini-avatar img {
+
             width: 100%;
             height: 100%;
 
             object-fit: cover;
 
-            display: block;
         }
+
 
         .bl-mini-text {
+
             min-width: 0;
-            overflow: hidden;
+
+            flex: 1;
+
         }
 
+
         .bl-mini-name {
+
             color: white;
 
             font-size: 12px;
+
             font-weight: 800;
 
             white-space: nowrap;
 
             overflow: hidden;
+
             text-overflow: ellipsis;
+
         }
 
+
         .bl-mini-handle {
+
             margin-top: 3px;
 
-            color: rgba(255,255,255,.55);
+            color:
+                rgba(255,255,255,.55);
 
             font-size: 10px;
 
-            white-space: nowrap;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
 
-        /* =========================================================
+        /* =========================================
            NAVIGATION
-        ========================================================= */
+        ========================================= */
 
         .bl-nav-section {
+
             margin: 19px 8px 7px;
 
-            color: rgba(255,255,255,.43);
+            color:
+                rgba(255,255,255,.43);
 
             font-size: 9px;
+
             font-weight: 900;
 
             letter-spacing: 1.4px;
 
             text-transform: uppercase;
+
         }
 
+
         .bl-nav {
+
             display: flex;
+
             flex-direction: column;
 
             gap: 3px;
+
         }
 
+
         .bl-nav-link {
-            position: relative;
 
             width: 100%;
+
             min-height: 43px;
 
             display: flex;
+
             align-items: center;
 
             gap: 10px;
@@ -316,20 +414,23 @@
 
             border-radius: 12px;
 
-            color: rgba(255,255,255,.76);
+            color:
+                rgba(255,255,255,.78);
 
             font-size: 12px;
-            font-weight: 700;
 
-            white-space: nowrap;
+            font-weight: 700;
 
             transition:
                 background .2s ease,
-                transform .2s ease,
-                color .2s ease;
+                color .2s ease,
+                transform .2s ease;
+
         }
 
+
         .bl-nav-link:hover {
+
             color: white;
 
             background:
@@ -337,38 +438,19 @@
 
             transform:
                 translateX(2px);
+
         }
 
-        .bl-nav-link.active {
-            color: white;
-
-            background:
-                rgba(255,255,255,.13);
-        }
-
-        .bl-nav-link.active::before {
-            content: "";
-
-            position: absolute;
-
-            left: 0;
-            top: 8px;
-            bottom: 8px;
-
-            width: 3px;
-
-            border-radius: 8px;
-
-            background: #fb7185;
-        }
 
         .bl-nav-icon {
+
             width: 27px;
             height: 27px;
 
             flex: 0 0 27px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -377,16 +459,16 @@
             background:
                 rgba(255,255,255,.08);
 
-            font-size: 14px;
         }
 
 
-        /* =========================================================
+        /* =========================================
            SAVE CARD
-        ========================================================= */
+        ========================================= */
 
         .bl-save-card {
-            margin: 20px 2px 4px;
+
+            margin: 20px 2px;
 
             padding: 16px;
 
@@ -395,87 +477,88 @@
             background:
                 linear-gradient(
                     135deg,
-                    rgba(244,63,94,.95),
-                    rgba(124,58,237,.95)
+                    #f43f5e,
+                    #7c3aed
                 );
 
-            box-shadow:
-                0 14px 28px rgba(15,23,42,.20);
         }
+
 
         .bl-save-icon {
-            width: 35px;
-            height: 35px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 25px;
 
-            margin-bottom: 9px;
-
-            border-radius: 10px;
-
-            background:
-                rgba(255,255,255,.16);
-
-            font-size: 17px;
         }
+
 
         .bl-save-card h4 {
-            margin: 0 0 5px;
+
+            margin: 8px 0 5px;
+
+            color: white;
 
             font-size: 13px;
-            font-weight: 900;
+
         }
 
+
         .bl-save-card p {
+
             margin: 0 0 12px;
 
-            color: rgba(255,255,255,.76);
+            color:
+                rgba(255,255,255,.8);
 
             font-size: 10px;
 
             line-height: 1.5;
+
         }
 
+
         .bl-save-btn {
+
             display: block;
 
-            padding: 8px 10px;
-
-            border-radius: 9px;
+            padding: 9px;
 
             text-align: center;
+
+            border-radius: 9px;
 
             background: white;
 
             color: #4f46e5;
 
             font-size: 10px;
+
             font-weight: 900;
+
         }
 
 
-        /* =========================================================
+        /* =========================================
            MAIN
-        ========================================================= */
+        ========================================= */
 
         .bl-main {
-            width: calc(100% - 260px);
+
+            width:
+                calc(100% - 260px);
 
             margin-left: 260px;
 
             min-height: 100vh;
 
-            overflow-x: hidden;
         }
 
 
-        /* =========================================================
+        /* =========================================
            TOPBAR
-        ========================================================= */
+        ========================================= */
 
         .bl-topbar {
+
             position: sticky;
 
             top: 0;
@@ -485,13 +568,15 @@
             height: 70px;
 
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
 
             padding: 0 30px;
 
             background:
-                rgba(255,255,255,.92);
+                rgba(255,255,255,.94);
 
             backdrop-filter:
                 blur(18px);
@@ -503,40 +588,44 @@
                 1px solid #e8ebf2;
 
             z-index: 500;
+
         }
+
 
         .bl-top-left,
         .bl-top-right {
+
             display: flex;
+
             align-items: center;
+
         }
+
 
         .bl-top-right {
+
             gap: 11px;
+
         }
 
 
-        /* =========================================================
-           MOBILE MENU
-        ========================================================= */
+        /* =========================================
+           MOBILE MENU BUTTON
+        ========================================= */
 
         .bl-mobile-menu {
+
             display: none;
 
-            width: 42px;
-            height: 42px;
-
-            flex: 0 0 42px;
+            width: 50px;
+            height: 50px;
 
             align-items: center;
             justify-content: center;
 
-            margin: 0;
-            padding: 0;
+            border: none;
 
-            border: 0;
-
-            border-radius: 12px;
+            border-radius: 16px;
 
             background:
                 linear-gradient(
@@ -547,35 +636,26 @@
 
             color: #3730a3;
 
+            font-size: 26px;
+
             cursor: pointer;
 
-            font-size: 21px;
-            font-weight: 900;
-
             box-shadow:
-                0 4px 12px rgba(79,70,229,.12);
+                0 6px 18px
+                rgba(79,70,229,.12);
+
         }
 
-        .bl-mobile-menu:active {
-            transform: scale(.95);
-        }
 
-
-        /* =========================================================
+        /* =========================================
            SEARCH
-        ========================================================= */
+        ========================================= */
 
         .bl-top-search {
+
             width: 250px;
 
-            display: flex;
-            align-items: center;
-
-            gap: 8px;
-
-            margin-left: 12px;
-
-            padding: 10px 13px;
+            padding: 11px 14px;
 
             border-radius: 11px;
 
@@ -584,85 +664,78 @@
             color: #94a3b8;
 
             font-size: 11px;
+
         }
 
 
-        /* =========================================================
-           NOTIFICATION
-        ========================================================= */
+        /* =========================================
+           NOTIFICATIONS
+        ========================================= */
 
         .bl-notification {
+
             position: relative;
 
-            width: 40px;
-            height: 40px;
+            width: 54px;
+            height: 54px;
+
+            flex: 0 0 54px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
-            border-radius: 12px;
+            border-radius: 17px;
 
             background: white;
 
             border:
                 1px solid #e5e7eb;
 
-            color: #475569;
+            color: #172033;
 
-            font-size: 16px;
+            font-size: 25px;
+
+            box-shadow:
+                0 5px 16px
+                rgba(15,23,42,.06);
+
         }
 
+
         .bl-notification-dot {
+
             position: absolute;
 
-            top: 7px;
-            right: 7px;
+            top: 9px;
+            right: 9px;
 
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
 
             border-radius: 50%;
 
             background: #ef4444;
 
-            border: 2px solid white;
         }
 
 
-        /* =========================================================
-           USER CHIP
-        ========================================================= */
+        /* =========================================
+           USER PROFILE
+        ========================================= */
 
         .bl-user-chip {
+
             display: flex;
+
             align-items: center;
 
             gap: 9px;
 
-            padding: 5px 10px 5px 5px;
+            padding: 5px;
 
-            border-radius: 13px;
-
-            background: white;
-
-            border:
-                1px solid #e5e7eb;
-        }
-
-        .bl-user-avatar {
-            width: 34px;
-            height: 34px;
-
-            flex: 0 0 34px;
-
-            overflow: hidden;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 10px;
+            border-radius: 17px;
 
             background:
                 linear-gradient(
@@ -673,62 +746,86 @@
 
             color: white;
 
-            font-size: 12px;
-            font-weight: 900;
         }
 
+
+        .bl-user-avatar {
+
+            width: 48px;
+            height: 48px;
+
+            flex: 0 0 48px;
+
+            overflow: hidden;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #818cf8,
+                    #38bdf8
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 900;
+
+        }
+
+
         .bl-user-avatar img {
+
             width: 100%;
             height: 100%;
 
             object-fit: cover;
 
-            display: block;
         }
+
 
         .bl-user-name {
-            max-width: 130px;
 
-            color: #172033;
+            padding: 0 8px;
 
-            font-size: 11px;
+            color: white;
+
+            font-size: 13px;
+
             font-weight: 800;
 
-            white-space: nowrap;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .bl-user-role {
-            margin-top: 2px;
-
-            color: #94a3b8;
-
-            font-size: 9px;
         }
 
 
-        /* =========================================================
+        /* =========================================
            CONTENT
-        ========================================================= */
+        ========================================= */
 
         .bl-content {
+
             width: 100%;
+
             max-width: 1450px;
 
             margin: 0 auto;
 
             padding: 30px;
+
         }
 
 
-        /* =========================================================
+        /* =========================================
            MESSAGES
-        ========================================================= */
+        ========================================= */
 
         .bl-message {
-            width: 100%;
 
             margin-bottom: 18px;
 
@@ -743,309 +840,359 @@
             border:
                 1px solid #a7f3d0;
 
-            font-size: 12px;
-            font-weight: 700;
         }
 
 
-        /* =========================================================
+        /* =========================================
            FOOTER
-        ========================================================= */
+        ========================================= */
 
         .bl-footer {
-            width: calc(100% - 260px);
+
+            width:
+                calc(100% - 260px);
 
             margin-left: 260px;
 
-            padding: 20px 30px 26px;
+            padding: 25px;
+
+            text-align: center;
 
             color: #94a3b8;
 
-            font-size: 10px;
+            font-size: 11px;
 
-            text-align: center;
         }
 
 
-        /* =========================================================
+        /* =========================================
            OVERLAY
-        ========================================================= */
+        ========================================= */
 
         .bl-overlay {
+
             display: none;
 
             position: fixed;
 
             inset: 0;
 
-            width: 100%;
-            height: 100%;
-
             background:
-                rgba(15,23,42,.58);
+                rgba(15,23,42,.60);
 
-            backdrop-filter:
-                blur(2px);
+            z-index: 9998;
 
-            -webkit-backdrop-filter:
-                blur(2px);
-
-            z-index: 900;
-        }
-
-        .bl-overlay.show {
-            display: block;
         }
 
 
-        /* =========================================================
-           TABLET
-        ========================================================= */
+        /* =========================================
+           TABLET + MOBILE
+        ========================================= */
 
-        @media screen and (max-width: 900px) {
+        @media screen and (max-width: 1200px) {
+
 
             .bl-sidebar {
+
+                width:
+                    min(285px, 85vw);
+
+                height: 100dvh;
+
+                padding: 18px 13px;
+
                 transform:
-                    translateX(-105%);
+                    translateX(-100%);
 
                 visibility: hidden;
 
-                box-shadow:
-                    12px 0 35px rgba(15,23,42,.25);
+                transition:
+                    transform .3s ease,
+                    visibility .3s ease;
+
+                z-index: 9999;
+
             }
 
+
             .bl-sidebar.open {
+
                 transform:
                     translateX(0);
 
                 visibility: visible;
+
             }
+
+
+            .bl-sidebar-close {
+
+                display: flex;
+
+            }
+
+
+            .bl-overlay.show {
+
+                display: block;
+
+            }
+
 
             .bl-main {
-                width: 100% !important;
 
-                margin-left: 0 !important;
+                width: 100%;
+
+                margin-left: 0;
+
             }
+
 
             .bl-footer {
-                width: 100% !important;
 
-                margin-left: 0 !important;
+                width: 100%;
+
+                margin-left: 0;
+
             }
+
 
             .bl-mobile-menu {
-                display: flex !important;
+
+                display: flex;
+
             }
+
 
             .bl-top-search {
-                display: none !important;
+
+                width: 200px;
+
             }
+
 
             .bl-topbar {
-                width: 100%;
 
-                height: 66px;
+                height: 72px;
 
-                padding:
-                    0 18px;
+                padding: 0 20px;
+
             }
+
 
             .bl-content {
-                width: 100%;
 
-                padding:
-                    22px 16px;
+                padding: 25px 18px;
+
             }
+
         }
 
 
-        /* =========================================================
+        /* =========================================
            MOBILE
-        ========================================================= */
+        ========================================= */
 
-        @media screen and (max-width: 600px) {
+        @media screen and (max-width: 1200px) {
 
-            html,
-            body {
-                width: 100%;
 
-                max-width: 100%;
+            .bl-top-search {
 
-                overflow-x: hidden;
+                display: none;
+
             }
 
-            .bl-sidebar {
-                width: min(285px, 86vw);
-
-                max-width: 285px;
-
-                padding:
-                    18px 13px;
-            }
 
             .bl-topbar {
-                height: 64px;
 
-                padding:
-                    0 12px;
+                height: 76px;
+
+                padding: 0 16px;
+
             }
 
-            .bl-top-left {
-                min-width: 0;
-            }
 
             .bl-mobile-menu {
-                width: 40px;
-                height: 40px;
 
-                flex: 0 0 40px;
+                width: 54px;
+                height: 54px;
 
-                font-size: 20px;
+                border-radius: 17px;
+
+                font-size: 27px;
+
             }
+
 
             .bl-top-right {
-                gap: 7px;
 
-                min-width: 0;
+                gap: 9px;
+
             }
+
 
             .bl-notification {
-                width: 38px;
-                height: 38px;
 
-                border-radius: 11px;
+                width: 54px;
+                height: 54px;
+
+                flex: 0 0 54px;
+
+                border-radius: 17px;
+
+                font-size: 24px;
+
             }
+
 
             .bl-user-chip {
-                padding: 3px;
 
-                border: 0;
+                width: 54px;
+                height: 54px;
 
-                background:
-                    transparent;
+                padding: 4px;
+
+                border-radius: 17px;
+
             }
 
-            .bl-user-info {
-                display: none !important;
-            }
 
             .bl-user-avatar {
-                width: 36px;
-                height: 36px;
 
-                flex: 0 0 36px;
+                width: 46px;
+                height: 46px;
 
-                border-radius: 11px;
+                flex: 0 0 46px;
+
+                border-radius: 14px;
+
             }
+
+
+            .bl-user-name {
+
+                display: none;
+
+            }
+
 
             .bl-content {
-                width: 100% !important;
 
-                max-width: 100% !important;
+                padding: 20px 15px;
 
-                padding:
-                    17px 11px !important;
             }
+
 
             .bl-footer {
-                width: 100% !important;
 
-                margin-left: 0 !important;
+                padding: 20px 15px 30px;
 
-                padding:
-                    18px 12px 24px;
             }
 
-            .bl-message {
-                font-size: 11px;
-
-                padding:
-                    11px 12px;
-            }
         }
 
 
-        /* =========================================================
-           SMALL PHONES
-        ========================================================= */
+        /* =========================================
+           SMALL MOBILE
+        ========================================= */
 
-        @media screen and (max-width: 380px) {
+        @media screen and (max-width: 420px) {
 
-            .bl-sidebar {
-                width: 84vw;
-            }
 
             .bl-topbar {
-                padding:
-                    0 9px;
+
+                height: 72px;
+
+                padding: 0 12px;
+
             }
+
 
             .bl-mobile-menu {
-                width: 38px;
-                height: 38px;
 
-                flex-basis: 38px;
+                width: 50px;
+                height: 50px;
+
+                font-size: 24px;
+
             }
+
+
+            .bl-top-right {
+
+                gap: 7px;
+
+            }
+
 
             .bl-notification {
-                width: 36px;
-                height: 36px;
+
+                width: 50px;
+                height: 50px;
+
+                flex: 0 0 50px;
+
+                border-radius: 15px;
+
+                font-size: 22px;
+
             }
+
+
+            .bl-user-chip {
+
+                width: 50px;
+                height: 50px;
+
+                border-radius: 15px;
+
+            }
+
 
             .bl-user-avatar {
-                width: 34px;
-                height: 34px;
 
-                flex-basis: 34px;
+                width: 42px;
+                height: 42px;
+
+                flex: 0 0 42px;
+
+                border-radius: 12px;
+
             }
 
-            .bl-content {
-                padding:
-                    14px 9px !important;
-            }
-        }
-
-
-        /* =========================================================
-           PREVENT MOBILE HORIZONTAL OVERFLOW
-        ========================================================= */
-
-        @media screen and (max-width: 900px) {
-
-            img,
-            video,
-            iframe,
-            table {
-                max-width: 100%;
-            }
-
-            input,
-            select,
-            textarea {
-                max-width: 100%;
-            }
         }
 
     </style>
+
 
     {% block extra_css %}{% endblock %}
 
 </head>
 
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
+
 
 <div class="bl-app">
 
 
-    <!-- =========================================================
-         SIDEBAR
-    ========================================================= -->
+    <!-- SIDEBAR -->
 
     <aside
         class="bl-sidebar"
         id="blSidebar"
     >
+
+
+        <button
+            type="button"
+            class="bl-sidebar-close"
+            onclick="closeBloodLinkMenu()"
+            aria-label="Close menu"
+        >
+            ✕
+        </button>
+
 
         <!-- BRAND -->
 
@@ -1073,7 +1220,7 @@
         {% if request.user.is_authenticated %}
 
 
-        <!-- MINI PROFILE -->
+        <!-- PROFILE -->
 
         <div class="bl-mini-profile">
 
@@ -1111,8 +1258,11 @@
 
                 </div>
 
+
                 <div class="bl-mini-handle">
+
                     @{{ request.user.username }}
+
                 </div>
 
             </div>
@@ -1126,33 +1276,33 @@
             Main
         </div>
 
+
         <nav class="bl-nav">
 
-            <a
-                href="/"
-                class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
-            >
+            <a href="/" class="bl-nav-link">
+
                 <span class="bl-nav-icon">🏠</span>
-                <span>Home</span>
+
+                Home
+
             </a>
 
-            <a
-                href="/dashboard/"
-                class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
-            >
+
+            <a href="/dashboard/" class="bl-nav-link">
+
                 <span class="bl-nav-icon">📊</span>
-                <span>Dashboard</span>
+
+                Dashboard
+
             </a>
 
-            <a
-                href="/profile/"
-                class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
-            >
+
+            <a href="/profile/" class="bl-nav-link">
+
                 <span class="bl-nav-icon">👤</span>
-                <span>My Profile</span>
+
+                My Profile
+
             </a>
 
         </nav>
@@ -1164,33 +1314,39 @@
             Donation
         </div>
 
+
         <nav class="bl-nav">
 
-            <a
-                href="/donors/"
-                class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
-            >
+            <a href="/donors/" class="bl-nav-link">
+
                 <span class="bl-nav-icon">🩸</span>
-                <span>Find Donors</span>
+
+                Find Donors
+
             </a>
+
 
             <a
                 href="/request-blood/"
                 class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
             >
+
                 <span class="bl-nav-icon">💉</span>
-                <span>Request Blood</span>
+
+                Request Blood
+
             </a>
+
 
             <a
                 href="/blood-requests/"
                 class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
             >
+
                 <span class="bl-nav-icon">📋</span>
-                <span>Blood Requests</span>
+
+                Blood Requests
+
             </a>
 
         </nav>
@@ -1202,24 +1358,30 @@
             Emergency
         </div>
 
+
         <nav class="bl-nav">
 
             <a
                 href="/emergency-request/"
                 class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
             >
+
                 <span class="bl-nav-icon">🚨</span>
-                <span>Emergency Request</span>
+
+                Emergency Request
+
             </a>
+
 
             <a
                 href="/notifications/"
                 class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
             >
+
                 <span class="bl-nav-icon">🔔</span>
-                <span>Notifications</span>
+
+                Notifications
+
             </a>
 
         </nav>
@@ -1231,33 +1393,33 @@
             Services
         </div>
 
+
         <nav class="bl-nav">
 
-            <a
-                href="/about/"
-                class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
-            >
+            <a href="/about/" class="bl-nav-link">
+
                 <span class="bl-nav-icon">ℹ️</span>
-                <span>About BloodLink</span>
+
+                About BloodLink
+
             </a>
 
-            <a
-                href="/contact/"
-                class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
-            >
+
+            <a href="/contact/" class="bl-nav-link">
+
                 <span class="bl-nav-icon">📞</span>
-                <span>Contact</span>
+
+                Contact
+
             </a>
 
-            <a
-                href="/logout/"
-                class="bl-nav-link"
-                onclick="closeBloodLinkMenu()"
-            >
+
+            <a href="/logout/" class="bl-nav-link">
+
                 <span class="bl-nav-icon">↪</span>
-                <span>Logout</span>
+
+                Logout
+
             </a>
 
         </nav>
@@ -1276,14 +1438,12 @@
             </h4>
 
             <p>
-                Your donation can give someone
-                another chance at life.
+                Your donation can give someone another chance at life.
             </p>
 
             <a
                 href="/donors/"
                 class="bl-save-btn"
-                onclick="closeBloodLinkMenu()"
             >
                 Find Blood Donors →
             </a>
@@ -1293,30 +1453,24 @@
 
         {% endif %}
 
+
     </aside>
 
 
-    <!-- =========================================================
-         MOBILE OVERLAY
-    ========================================================= -->
+    <!-- OVERLAY -->
 
     <div
         class="bl-overlay"
         id="blOverlay"
-        aria-hidden="true"
     ></div>
 
 
-    <!-- =========================================================
-         MAIN AREA
-    ========================================================= -->
+    <!-- MAIN -->
 
     <main class="bl-main">
 
 
-        <!-- =====================================================
-             TOPBAR
-        ===================================================== -->
+        <!-- TOPBAR -->
 
         <header class="bl-topbar">
 
@@ -1324,31 +1478,22 @@
             <div class="bl-top-left">
 
 
-                <!-- MOBILE MENU -->
-
                 <button
                     type="button"
                     class="bl-mobile-menu"
                     id="blMobileMenu"
-                    onclick="toggleBloodLinkMenu()"
                     aria-label="Open menu"
-                    aria-expanded="false"
                 >
                     ☰
                 </button>
 
 
-                <!-- SEARCH -->
-
                 <div class="bl-top-search">
 
-                    🔍
-
-                    <span>
-                        Search BloodLink...
-                    </span>
+                    🔍 Search BloodLink...
 
                 </div>
+
 
             </div>
 
@@ -1356,34 +1501,31 @@
             <div class="bl-top-right">
 
 
-                {% if request.user.is_authenticated %}
+                <a
+                    href="/notifications/"
+                    class="bl-notification"
+                    title="Notifications"
+                >
+
+                    🔔
+
+                    <span
+                        class="bl-notification-dot"
+                    ></span>
+
+                </a>
 
 
-                    <!-- NOTIFICATIONS -->
-
-                    <a
-                        href="/notifications/"
-                        class="bl-notification"
-                        title="Notifications"
-                    >
-
-                        🔔
-
-                        <span
-                            class="bl-notification-dot"
-                        ></span>
-
-                    </a>
+                <a
+                    href="{% if request.user.is_authenticated %}/profile/{% else %}/login/{% endif %}"
+                    class="bl-user-chip"
+                >
 
 
-                    <!-- USER -->
+                    <div class="bl-user-avatar">
 
-                    <a
-                        href="/profile/"
-                        class="bl-user-chip"
-                    >
 
-                        <div class="bl-user-avatar">
+                        {% if request.user.is_authenticated %}
 
 
                             {% if request.user.userprofile.photo %}
@@ -1400,47 +1542,31 @@
                             {% endif %}
 
 
-                        </div>
+                        {% else %}
+
+                            👤
+
+                        {% endif %}
 
 
-                        <div class="bl-user-info">
+                    </div>
 
 
-                            <div class="bl-user-name">
-
-                                {% if request.user.userprofile.full_name %}
-
-                                    {{ request.user.userprofile.full_name }}
-
-                                {% else %}
-
-                                    {{ request.user.username }}
-
-                                {% endif %}
-
-                            </div>
+                    <div class="bl-user-name">
+                        Profile
+                    </div>
 
 
-                            <div class="bl-user-role">
-                                Blood Donor
-                            </div>
+                </a>
 
-
-                        </div>
-
-                    </a>
-
-
-                {% endif %}
 
             </div>
+
 
         </header>
 
 
-        <!-- =====================================================
-             PAGE CONTENT
-        ===================================================== -->
+        <!-- PAGE CONTENT -->
 
         <section class="bl-content">
 
@@ -1450,7 +1576,9 @@
                 {% for message in messages %}
 
                     <div class="bl-message">
+
                         ✓ {{ message }}
+
                     </div>
 
                 {% endfor %}
@@ -1464,206 +1592,284 @@
         </section>
 
 
-        <!-- =====================================================
-             FOOTER
-        ===================================================== -->
-
-        <footer class="bl-footer">
-
-            © {% now "Y" %} BloodLink
-            • Donate Blood • Save Lives
-
-        </footer>
-
-
     </main>
+
+
+    <!-- FOOTER -->
+
+    <footer class="bl-footer">
+
+        © {% now "Y" %} BloodLink
+        • Donate Blood • Save Lives
+
+    </footer>
+
 
 </div>
 
 
-<!-- =============================================================
-     MENU JAVASCRIPT
-============================================================= -->
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
 
 <script>
 
-(function () {
 
-    "use strict";
+    function isMobileLayout() {
 
+        return window.innerWidth <= 1200;
 
-    function getSidebar() {
-        return document.getElementById("blSidebar");
     }
 
 
-    function getOverlay() {
-        return document.getElementById("blOverlay");
-    }
+    function openBloodLinkMenu() {
 
 
-    function getMenuButton() {
-        return document.getElementById("blMobileMenu");
-    }
+        const sidebar =
+            document.getElementById("blSidebar");
 
 
-    window.toggleBloodLinkMenu = function () {
+        const overlay =
+            document.getElementById("blOverlay");
 
-        const sidebar = getSidebar();
-        const overlay = getOverlay();
-        const menuButton = getMenuButton();
 
         if (!sidebar || !overlay) {
+
             return;
-        }
-
-
-        const isOpen =
-            sidebar.classList.contains("open");
-
-
-        if (isOpen) {
-
-            sidebar.classList.remove("open");
-
-            overlay.classList.remove("show");
-
-            if (menuButton) {
-                menuButton.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-            }
-
-        } else {
-
-            sidebar.classList.add("open");
-
-            overlay.classList.add("show");
-
-            if (menuButton) {
-                menuButton.setAttribute(
-                    "aria-expanded",
-                    "true"
-                );
-            }
 
         }
 
-    };
+
+        if (!isMobileLayout()) {
+
+            return;
+
+        }
 
 
-    window.closeBloodLinkMenu = function () {
+        sidebar.classList.add("open");
 
-        const sidebar = getSidebar();
-        const overlay = getOverlay();
-        const menuButton = getMenuButton();
+        overlay.classList.add("show");
+
+        document.body.classList.add(
+            "menu-open"
+        );
+
+
+    }
+
+
+    function closeBloodLinkMenu() {
+
+
+        const sidebar =
+            document.getElementById("blSidebar");
+
+
+        const overlay =
+            document.getElementById("blOverlay");
+
 
         if (sidebar) {
+
             sidebar.classList.remove("open");
+
         }
+
 
         if (overlay) {
+
             overlay.classList.remove("show");
+
         }
 
-        if (menuButton) {
-            menuButton.setAttribute(
-                "aria-expanded",
-                "false"
-            );
+
+        document.body.classList.remove(
+            "menu-open"
+        );
+
+
+    }
+
+
+    function toggleBloodLinkMenu() {
+
+
+        const sidebar =
+            document.getElementById("blSidebar");
+
+
+        if (!sidebar) {
+
+            return;
+
         }
 
-    };
+
+        if (!isMobileLayout()) {
+
+            return;
+
+        }
+
+
+        if (
+            sidebar.classList.contains("open")
+        ) {
+
+            closeBloodLinkMenu();
+
+        }
+
+        else {
+
+            openBloodLinkMenu();
+
+        }
+
+    }
+
 
 
     document.addEventListener(
-        "DOMContentLoaded",
-        function () {
 
-            const overlay = getOverlay();
+        "DOMContentLoaded",
+
+        function() {
+
+
+            const menuButton =
+                document.getElementById(
+                    "blMobileMenu"
+                );
+
+
+            const overlay =
+                document.getElementById(
+                    "blOverlay"
+                );
+
+
+            /* HAMBURGER */
+
+            if (menuButton) {
+
+                menuButton.addEventListener(
+
+                    "click",
+
+                    function() {
+
+                        toggleBloodLinkMenu();
+
+                    }
+
+                );
+
+            }
+
+
+            /* OVERLAY CLICK */
 
             if (overlay) {
 
                 overlay.addEventListener(
-                    "click",
-                    function () {
 
-                        window.closeBloodLinkMenu();
+                    "click",
+
+                    function() {
+
+                        closeBloodLinkMenu();
 
                     }
+
                 );
 
             }
 
 
-            /* Close menu after clicking a sidebar link */
+            /* CLOSE MENU AFTER CLICKING LINK */
 
-            const sidebar = getSidebar();
+            const links =
+                document.querySelectorAll(
+                    ".bl-sidebar a"
+                );
 
-            if (sidebar) {
 
-                const links =
-                    sidebar.querySelectorAll("a");
+            links.forEach(
 
-                links.forEach(function (link) {
+                function(link) {
+
 
                     link.addEventListener(
+
                         "click",
-                        function () {
 
-                            if (
-                                window.innerWidth <= 900
-                            ) {
+                        function() {
 
-                                window.closeBloodLinkMenu();
+
+                            if (isMobileLayout()) {
+
+                                closeBloodLinkMenu();
 
                             }
 
                         }
+
                     );
 
-                });
+                }
 
-            }
+            );
 
 
-            /* ESC closes mobile menu */
+            /* ESC KEY */
 
             document.addEventListener(
+
                 "keydown",
-                function (event) {
 
-                    if (event.key === "Escape") {
+                function(event) {
 
-                        window.closeBloodLinkMenu();
+
+                    if (
+                        event.key === "Escape"
+                    ) {
+
+                        closeBloodLinkMenu();
 
                     }
 
                 }
+
             );
 
 
-            /* If screen becomes desktop,
-               force-close mobile sidebar */
+            /* SCREEN RESIZE */
 
             window.addEventListener(
+
                 "resize",
-                function () {
 
-                    if (window.innerWidth > 900) {
+                function() {
 
-                        window.closeBloodLinkMenu();
+
+                    if (!isMobileLayout()) {
+
+                        closeBloodLinkMenu();
 
                     }
 
                 }
+
             );
 
+
         }
+
     );
 
-})();
 
 </script>
 
@@ -1672,4 +1878,5 @@
 
 
 </body>
+
 </html>

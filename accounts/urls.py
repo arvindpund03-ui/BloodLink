@@ -22,7 +22,11 @@ urlpatterns = [
 
     path("profile/", views.profile, name="profile"),
 
-   
+    path(
+        "active-emergencies/",
+        views.active_emergency_list,
+        name="active_emergency_list"
+    ),
 
 
     # =========================
@@ -135,20 +139,18 @@ urlpatterns = [
     ),
 
     path(
-    "verify-certificate/<str:certificate_number>/",
-    views.verify_certificate,
-    name="verify_certificate"
+        "verify-certificate/<str:certificate_number>/",
+        views.verify_certificate,
+        name="verify_certificate"
     ),
 
-    path("dashboard/", views.dashboard, name="dashboard"),
-
-
-path(
-    "api/admin-active-emergencies/",
-    views.admin_active_emergency_api,
-    name="admin_active_emergencies"
-),
-
-
+    path(
+        "api/admin-active-emergencies/",
+        views.admin_active_emergency_api,
+        name="admin_active_emergencies"
+    ),
 
 ]
+
+
+

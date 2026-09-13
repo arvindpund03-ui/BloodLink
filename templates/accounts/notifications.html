@@ -3,12 +3,20 @@
 {% block content %}
 
 <style>
+
+    /* =====================================================
+       NOTIFICATIONS PAGE
+    ===================================================== */
+
     .notification-page {
         min-height: calc(100vh - 90px);
-        padding: 10px 5px 40px;
+        padding: 20px 10px 50px;
     }
 
-    /* ================= HERO ================= */
+
+    /* =====================================================
+       HERO
+    ===================================================== */
 
     .notification-hero {
         position: relative;
@@ -16,13 +24,15 @@
         border-radius: 26px;
         padding: 32px;
         margin-bottom: 25px;
-        color: #fff;
+        color: #ffffff;
+
         background: linear-gradient(
             135deg,
             #667eea 0%,
             #8e35c7 45%,
             #ff416c 100%
         );
+
         box-shadow: 0 18px 45px rgba(103, 71, 180, 0.22);
     }
 
@@ -34,18 +44,18 @@
         border-radius: 50%;
         right: -70px;
         top: -100px;
-        background: rgba(255,255,255,0.13);
+        background: rgba(255, 255, 255, 0.13);
     }
 
     .notification-hero::after {
         content: "";
         position: absolute;
-        width: 130px;
-        height: 130px;
+        width: 140px;
+        height: 140px;
         border-radius: 50%;
-        right: 150px;
-        bottom: -80px;
-        background: rgba(255,193,7,0.18);
+        right: 140px;
+        bottom: -85px;
+        background: rgba(255, 193, 7, 0.18);
     }
 
     .hero-content {
@@ -57,12 +67,16 @@
         width: 64px;
         height: 64px;
         border-radius: 19px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255,255,255,0.20);
+
+        background: rgba(255, 255, 255, 0.20);
+
         font-size: 30px;
         margin-bottom: 15px;
+
         backdrop-filter: blur(6px);
     }
 
@@ -81,7 +95,9 @@
     }
 
 
-    /* ================= TOP STATS ================= */
+    /* =====================================================
+       STATS
+    ===================================================== */
 
     .notification-stats {
         display: grid;
@@ -93,55 +109,82 @@
     .stat-card {
         position: relative;
         overflow: hidden;
+
         border-radius: 21px;
         padding: 20px;
+
         background: linear-gradient(
             145deg,
             #fff4f7,
             #f5efff
         );
+
         border: 1px solid #eadcf3;
+
         box-shadow: 0 10px 26px rgba(82, 46, 111, 0.08);
     }
 
     .stat-card::after {
         content: "";
         position: absolute;
+
         width: 70px;
         height: 70px;
+
         border-radius: 50%;
+
         right: -25px;
         top: -25px;
-        background: rgba(196,60,255,0.08);
+
+        background: rgba(196, 60, 255, 0.08);
     }
 
     .stat-icon {
-        width: 43px;
-        height: 43px;
-        border-radius: 13px;
+        width: 45px;
+        height: 45px;
+
+        border-radius: 14px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
-        font-size: 19px;
+
+        color: #ffffff;
+        font-size: 20px;
+
         margin-bottom: 12px;
-        background: linear-gradient(135deg, #ff416c, #c43cff);
+
+        background: linear-gradient(
+            135deg,
+            #ff416c,
+            #c43cff
+        );
     }
 
     .stat-card:nth-child(2) .stat-icon {
-        background: linear-gradient(135deg, #667eea, #8e35c7);
+        background: linear-gradient(
+            135deg,
+            #667eea,
+            #8e35c7
+        );
     }
 
     .stat-card:nth-child(3) .stat-icon {
-        background: linear-gradient(135deg, #ff4b2b, #ff9f43);
+        background: linear-gradient(
+            135deg,
+            #ff1744,
+            #ff9f43
+        );
     }
 
     .stat-number {
         color: #4f2365;
-        font-size: 26px;
+
+        font-size: 27px;
         font-weight: 900;
+
         line-height: 1;
-        margin-bottom: 5px;
+        margin-bottom: 6px;
     }
 
     .stat-label {
@@ -151,7 +194,9 @@
     }
 
 
-    /* ================= SECTION ================= */
+    /* =====================================================
+       NOTIFICATION SECTION
+    ===================================================== */
 
     .notification-section {
         background: linear-gradient(
@@ -160,18 +205,27 @@
             #f8f3ff,
             #f2f7ff
         );
+
         border-radius: 25px;
         padding: 25px;
+
         border: 1px solid #eadcf3;
+
         box-shadow: 0 13px 32px rgba(79, 50, 105, 0.09);
     }
+
+
+    /* =====================================================
+       SECTION HEADER
+    ===================================================== */
 
     .section-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
         gap: 15px;
-        margin-bottom: 20px;
+        margin-bottom: 22px;
     }
 
     .section-title-box {
@@ -181,15 +235,23 @@
     }
 
     .section-icon {
-        width: 45px;
-        height: 45px;
+        width: 46px;
+        height: 46px;
+
         border-radius: 14px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
+
+        color: #ffffff;
         font-size: 20px;
-        background: linear-gradient(135deg, #667eea, #c43cff);
+
+        background: linear-gradient(
+            135deg,
+            #667eea,
+            #c43cff
+        );
     }
 
     .section-title {
@@ -206,33 +268,51 @@
     }
 
 
-    /* ================= NOTIFICATION CARD ================= */
+    /* =====================================================
+       NOTIFICATION LIST
+    ===================================================== */
 
     .notification-list {
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        gap: 15px;
     }
+
+
+    /* =====================================================
+       NOTIFICATION CARD
+    ===================================================== */
 
     .notification-card {
         position: relative;
+
         display: flex;
         align-items: flex-start;
+
         gap: 15px;
-        padding: 19px;
-        border-radius: 19px;
-        background: rgba(255,255,255,0.88);
+        padding: 20px;
+
+        border-radius: 20px;
+
+        background: rgba(255, 255, 255, 0.90);
+
         border: 1px solid #eadff2;
+
         box-shadow: 0 7px 20px rgba(81, 45, 105, 0.06);
+
         transition: all 0.25s ease;
     }
 
     .notification-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 13px 28px rgba(81, 45, 105, 0.11);
+
+        box-shadow: 0 14px 30px rgba(81, 45, 105, 0.12);
     }
 
-    /* Unread notification */
+
+    /* =====================================================
+       UNREAD
+    ===================================================== */
 
     .notification-card.unread {
         background: linear-gradient(
@@ -240,37 +320,69 @@
             #fff1f5,
             #f5efff
         );
+
         border-left: 5px solid #c43cff;
     }
 
     .notification-card.unread::after {
         content: "";
+
         position: absolute;
+
         top: 18px;
         right: 18px;
+
         width: 9px;
         height: 9px;
+
         border-radius: 50%;
+
         background: #ff416c;
-        box-shadow: 0 0 0 5px rgba(255,65,108,0.10);
+
+        box-shadow: 0 0 0 5px rgba(255, 65, 108, 0.10);
     }
 
+
+    /* =====================================================
+       EMERGENCY CARD
+    ===================================================== */
+
+    .notification-card.emergency {
+        border-left: 5px solid #ff1744;
+
+        background: linear-gradient(
+            135deg,
+            #fff5f5,
+            #fff0f3
+        );
+    }
+
+
+    /* =====================================================
+       NOTIFICATION ICON
+    ===================================================== */
+
     .notification-icon {
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-        border-radius: 15px;
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+
+        border-radius: 16px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
-        color: #fff;
+
+        font-size: 23px;
+        color: #ffffff;
+
         background: linear-gradient(
             135deg,
             #ff416c,
             #c43cff
         );
-        box-shadow: 0 8px 18px rgba(196,60,255,0.18);
+
+        box-shadow: 0 8px 18px rgba(196, 60, 255, 0.18);
     }
 
     .notification-card.emergency .notification-icon {
@@ -281,21 +393,10 @@
         );
     }
 
-    .notification-card.success .notification-icon {
-        background: linear-gradient(
-            135deg,
-            #00b894,
-            #00cec9
-        );
-    }
 
-    .notification-card.info .notification-icon {
-        background: linear-gradient(
-            135deg,
-            #667eea,
-            #8e35c7
-        );
-    }
+    /* =====================================================
+       CONTENT
+    ===================================================== */
 
     .notification-content {
         flex: 1;
@@ -305,25 +406,39 @@
 
     .notification-title {
         margin: 0 0 6px;
+
         color: #4c235f;
+
         font-size: 16px;
         font-weight: 850;
     }
 
     .notification-message {
-        margin: 0 0 9px;
+        margin: 0 0 12px;
+
         color: #765b82;
+
         font-size: 13px;
         line-height: 1.65;
     }
 
+
+    /* =====================================================
+       META
+    ===================================================== */
+
     .notification-meta {
         display: flex;
         flex-wrap: wrap;
+
         align-items: center;
+
         gap: 10px;
+
         color: #a083a9;
+
         font-size: 11px;
+        margin-top: 8px;
     }
 
     .notification-time {
@@ -332,67 +447,176 @@
         gap: 5px;
     }
 
-    .notification-phone {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        color: #8a55a0;
-        font-weight: 700;
-    }
 
+    /* =====================================================
+       BADGES
+    ===================================================== */
 
-    /* ================= STATUS ================= */
-
-    .read-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 5px 9px;
-        border-radius: 20px;
-        background: #eee8f4;
-        color: #866d90;
-        font-size: 10px;
-        font-weight: 800;
-    }
-
+    .read-badge,
     .unread-badge {
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        padding: 5px 9px;
+
+        padding: 5px 10px;
+
         border-radius: 20px;
-        background: #ffe8ef;
-        color: #d93657;
+
         font-size: 10px;
         font-weight: 800;
     }
 
+    .read-badge {
+        background: #eee8f4;
+        color: #866d90;
+    }
 
-    /* ================= EMPTY ================= */
+    .unread-badge {
+        background: #ffe8ef;
+        color: #d93657;
+    }
+
+
+    /* =====================================================
+       EMERGENCY ACTIONS
+    ===================================================== */
+
+    .emergency-actions {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .emergency-actions form {
+        margin: 0;
+    }
+
+    .accept-btn,
+    .reject-btn {
+        border: none;
+
+        padding: 10px 18px;
+
+        border-radius: 10px;
+
+        font-size: 12px;
+        font-weight: 800;
+
+        cursor: pointer;
+
+        transition: all 0.25s ease;
+    }
+
+
+    /* ACCEPT */
+
+    .accept-btn {
+        color: #ffffff;
+
+        background: linear-gradient(
+            135deg,
+            #00b894,
+            #00cec9
+        );
+
+        box-shadow: 0 6px 15px rgba(0, 184, 148, 0.20);
+    }
+
+    .accept-btn:hover {
+        transform: translateY(-2px);
+
+        box-shadow: 0 10px 22px rgba(0, 184, 148, 0.30);
+    }
+
+
+    /* REJECT */
+
+    .reject-btn {
+        color: #ffffff;
+
+        background: linear-gradient(
+            135deg,
+            #ff416c,
+            #ff1744
+        );
+
+        box-shadow: 0 6px 15px rgba(255, 65, 108, 0.18);
+    }
+
+    .reject-btn:hover {
+        transform: translateY(-2px);
+
+        box-shadow: 0 10px 22px rgba(255, 23, 68, 0.28);
+    }
+
+
+    /* =====================================================
+       EMERGENCY STATUS
+    ===================================================== */
+
+    .emergency-status {
+        display: inline-flex;
+        align-items: center;
+
+        margin-top: 14px;
+
+        padding: 8px 12px;
+
+        border-radius: 9px;
+
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .status-matched {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .status-closed {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+
+    /* =====================================================
+       EMPTY STATE
+    ===================================================== */
 
     .empty-state {
         text-align: center;
-        padding: 60px 25px;
+
+        padding: 65px 25px;
+
         border-radius: 21px;
+
         background: linear-gradient(
             135deg,
             #fff1f5,
             #f3edff,
             #edf5ff
         );
+
         border: 2px dashed #dfc9ea;
     }
 
     .empty-icon {
-        width: 76px;
-        height: 76px;
+        width: 78px;
+        height: 78px;
+
         margin: 0 auto 18px;
-        border-radius: 23px;
+
+        border-radius: 24px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
-        font-size: 32px;
+
+        color: #ffffff;
+        font-size: 33px;
+
         background: linear-gradient(
             135deg,
             #667eea,
@@ -403,19 +627,25 @@
 
     .empty-state h3 {
         margin: 0 0 8px;
+
         color: #542568;
+
         font-size: 21px;
         font-weight: 850;
     }
 
     .empty-state p {
         margin: 0;
+
         color: #8b6b97;
+
         font-size: 13px;
     }
 
 
-    /* ================= MOBILE ================= */
+    /* =====================================================
+       MOBILE
+    ===================================================== */
 
     @media (max-width: 800px) {
 
@@ -423,23 +653,17 @@
             grid-template-columns: 1fr;
         }
 
-        .notification-hero {
-            padding: 25px;
-        }
-
-        .notification-hero h1 {
-            font-size: 27px;
-        }
     }
+
 
     @media (max-width: 600px) {
 
         .notification-page {
-            padding: 5px 0 25px;
+            padding: 8px 0 30px;
         }
 
         .notification-hero {
-            padding: 22px;
+            padding: 23px;
             border-radius: 20px;
         }
 
@@ -450,7 +674,7 @@
         }
 
         .notification-hero h1 {
-            font-size: 23px;
+            font-size: 24px;
         }
 
         .notification-hero p {
@@ -458,12 +682,8 @@
         }
 
         .notification-section {
-            padding: 18px;
+            padding: 17px;
             border-radius: 20px;
-        }
-
-        .section-header {
-            align-items: flex-start;
         }
 
         .section-title {
@@ -476,11 +696,14 @@
         }
 
         .notification-icon {
-            width: 43px;
-            height: 43px;
-            min-width: 43px;
-            border-radius: 13px;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
             font-size: 19px;
+        }
+
+        .notification-content {
+            padding-right: 0;
         }
 
         .notification-title {
@@ -490,13 +713,28 @@
         .notification-message {
             font-size: 12px;
         }
+
+        .emergency-actions {
+            flex-direction: column;
+        }
+
+        .emergency-actions form {
+            width: 100%;
+        }
+
+        .accept-btn,
+        .reject-btn {
+            width: 100%;
+        }
+
     }
+
 </style>
 
 
 <div class="notification-page">
 
-    <!-- ================= HERO ================= -->
+    <!-- HERO -->
 
     <div class="notification-hero">
 
@@ -518,7 +756,7 @@
     </div>
 
 
-    <!-- ================= STATS ================= -->
+    <!-- STATS -->
 
     <div class="notification-stats">
 
@@ -575,7 +813,7 @@
     </div>
 
 
-    <!-- ================= NOTIFICATIONS ================= -->
+    <!-- NOTIFICATION SECTION -->
 
     <div class="notification-section">
 
@@ -588,6 +826,7 @@
                 </div>
 
                 <div>
+
                     <h2 class="section-title">
                         Recent Notifications
                     </h2>
@@ -595,6 +834,7 @@
                     <p class="section-subtitle">
                         Your latest BloodLink updates
                     </p>
+
                 </div>
 
             </div>
@@ -608,26 +848,32 @@
 
                 {% for notification in notifications %}
 
-                    <div class="
-                        notification-card
-                        {% if not notification.is_read %}unread{% endif %}
-                        {% if notification.emergency %}emergency{% endif %}
-                    ">
+                    <div class="notification-card {% if not notification.is_read %}unread{% endif %} {% if notification.emergency %}emergency{% endif %}">
 
                         <!-- ICON -->
 
                         <div class="notification-icon">
 
                             {% if notification.emergency %}
+
                                 🚨
+
                             {% elif "success" in notification.title|lower %}
+
                                 ✅
+
                             {% elif "blood" in notification.title|lower %}
+
                                 🩸
+
                             {% elif "donor" in notification.title|lower %}
+
                                 ❤️
+
                             {% else %}
+
                                 🔔
+
                             {% endif %}
 
                         </div>
@@ -641,27 +887,23 @@
                                 {{ notification.title }}
                             </h3>
 
+
                             <p class="notification-message">
                                 {{ notification.message }}
                             </p>
 
 
+                            <!-- META -->
+
                             <div class="notification-meta">
 
                                 <span class="notification-time">
+
                                     🕒
+
                                     {{ notification.created_at|date:"d M Y, h:i A" }}
+
                                 </span>
-
-
-                                {% if notification.phone %}
-
-                                    <span class="notification-phone">
-                                        📞
-                                        {{ notification.phone }}
-                                    </span>
-
-                                {% endif %}
 
 
                                 {% if notification.is_read %}
@@ -680,6 +922,76 @@
 
                             </div>
 
+
+                            <!-- EMERGENCY ACTIONS -->
+
+                            {% if notification.emergency %}
+
+                                {% if notification.emergency.status == "ACTIVE" %}
+
+                                    <div class="emergency-actions">
+
+                                        <!-- ACCEPT -->
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'accept_emergency' notification.emergency.id %}"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="accept-btn"
+                                            >
+                                                ✓ Accept Emergency
+                                            </button>
+
+                                        </form>
+
+
+                                        <!-- REJECT -->
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'reject_emergency' notification.emergency.id %}"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="reject-btn"
+                                            >
+                                                ✕ Reject
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+
+                                {% elif notification.emergency.status == "MATCHED" %}
+
+                                    <div class="emergency-status status-matched">
+
+                                        ✓ Emergency has been matched
+
+                                    </div>
+
+
+                                {% else %}
+
+                                    <div class="emergency-status status-closed">
+
+                                        This emergency is no longer active.
+
+                                    </div>
+
+                                {% endif %}
+
+                            {% endif %}
+
                         </div>
 
                     </div>
@@ -687,6 +999,7 @@
                 {% endfor %}
 
             </div>
+
 
         {% else %}
 
@@ -698,11 +1011,14 @@
                     🔔
                 </div>
 
-                <h3>No Notifications Yet</h3>
+                <h3>
+                    No Notifications Yet
+                </h3>
 
                 <p>
                     You are all caught up! New blood requests,
-                    emergency alerts and updates will appear here.
+                    emergency alerts and important BloodLink updates
+                    will appear here.
                 </p>
 
             </div>

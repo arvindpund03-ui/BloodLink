@@ -924,6 +924,25 @@
             align-items: flex-start;
         }
     }
+    .emergency-stat-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    position: relative;
+}
+
+.emergency-stat-card:hover {
+    border-color: #fb7185;
+}
+
+.emergency-arrow {
+    margin-left: auto;
+    font-size: 22px;
+    color: #ef4444;
+    font-weight: bold;
+}
+
+
 </style>
 
 
@@ -1000,25 +1019,28 @@
 
     <section class="dashboard-stats">
 
-        <div class="stat-card">
+        <a href="{% url 'active_emergency_list' %}" class="stat-card emergency-stat-card">
 
-            <div class="stat-icon stat-purple">
-                👥
-            </div>
+    <div class="stat-icon stat-orange">
+        🚨
+    </div>
 
-            <div class="stat-info">
+    <div class="stat-info">
 
-                <h3>
-                    {{ total_donors|default:"0" }}
-                </h3>
+        <h3>
+            {{ active_emergencies|default:"0" }}
+        </h3>
 
-                <span>
-                    Total Donors
-                </span>
+        <span>
+            Active Emergencies</span>
 
-            </div>
+    </div>
 
-        </div>
+    <div class="emergency-arrow">
+        →
+    </div>
+
+</a>
 
 
         <div class="stat-card">
@@ -1114,41 +1136,41 @@
         </div>
 
 
-        <div class="blood-group-grid">
+       <div class="blood-group-grid">
 
-            {% for item in blood_group_stats %}
+    {% for item in blood_group_stats %}
 
-                <div class="blood-group-card">
+        <div class="blood-group-card">
 
-                    <div class="blood-group">
-                        {{ item.blood_group }}
-                    </div>
+            <div class="blood-group">
+                {{ item.group }}
+            </div>
 
-                    <div class="blood-count">
-                        {{ item.count|default:"0" }}
-                    </div>
+            <div class="blood-count">
+                {{ item.count|default:"0" }}
+            </div>
 
-                    <span class="blood-label">
-                        DONORS
-                    </span>
-
-                </div>
-
-            {% empty %}
-
-                <div style="
-                    grid-column:1/-1;
-                    text-align:center;
-                    padding:25px;
-                    color:#64748b;
-                    font-size:13px;
-                ">
-                    No blood group data available.
-                </div>
-
-            {% endfor %}
+            <span class="blood-label">
+                DONORS
+            </span>
 
         </div>
+
+    {% empty %}
+
+        <div style="
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+            font-size: 13px;
+        ">
+            No blood group data available.
+        </div>
+
+    {% endfor %}
+
+</div>
 
     </section>
 

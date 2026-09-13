@@ -1,0 +1,336 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}BloodLink{% endblock %}
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
+
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+
+        /* ==============================
+           HEADER
+        ============================== */
+
+        .public-header {
+
+            height: 72px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            background: white;
+
+            border-bottom:
+                1px solid #e5e7eb;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+        }
+
+
+        /* LOGO */
+
+        .public-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+        .brand-icon {
+
+            width: 45px;
+
+            height: 45px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #dc2626,
+                    #f97316
+                );
+
+            font-size: 23px;
+
+        }
+
+        .brand-name {
+
+            font-size: 22px;
+
+            font-weight: 900;
+
+            color: #111827;
+
+        }
+
+        .brand-name span {
+
+            color: #dc2626;
+
+        }
+
+
+        /* NAV */
+
+        .public-nav {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 22px;
+
+        }
+
+        .public-nav a {
+
+            color: #475569;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+        }
+
+        .public-nav a:hover {
+
+            color: #dc2626;
+
+        }
+
+
+        /* BUTTON */
+
+        .nav-btn {
+
+            background: #dc2626;
+
+            color: white !important;
+
+            padding: 10px 17px;
+
+            border-radius: 10px;
+
+        }
+
+
+        /* CONTENT */
+
+        .public-content {
+
+            min-height:
+                calc(100vh - 72px);
+
+        }
+
+
+        /* FOOTER */
+
+        .public-footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            background: #111827;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+        }
+
+
+        /* MOBILE */
+
+        @media(max-width: 700px) {
+
+            .public-header {
+
+                padding: 0 18px;
+
+            }
+
+            .public-nav {
+
+                gap: 12px;
+
+            }
+
+            .public-nav .hide-mobile {
+
+                display: none;
+
+            }
+
+        }
+
+    </style>
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header class="public-header">
+
+
+    <!-- BRAND -->
+
+    <a
+        href="/"
+        class="public-brand"
+    >
+
+        <div class="brand-icon">
+            🩸
+        </div>
+
+        <div class="brand-name">
+
+            Blood<span>Link</span>
+
+        </div>
+
+    </a>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="public-nav">
+
+        <a
+            href="/"
+            class="hide-mobile"
+        >
+            Home
+        </a>
+
+        <a
+            href="/donors/"
+            class="hide-mobile"
+        >
+            Find Donors
+        </a>
+
+
+        {% if request.user.is_authenticated %}
+
+            <a
+                href="/dashboard/"
+                class="nav-btn"
+            >
+                Dashboard
+            </a>
+
+        {% else %}
+
+            <a
+                href="/login/"
+                class="hide-mobile"
+            >
+                Login
+            </a>
+
+            <a
+                href="/register/"
+                class="nav-btn"
+            >
+                Join Now
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+
+</header>
+
+
+<!-- PAGE CONTENT -->
+
+<main class="public-content">
+
+    {% block content %}{% endblock %}
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer class="public-footer">
+
+    © {% now "Y" %} BloodLink
+    • Donate Blood • Save Lives
+
+</footer>
+
+
+{% block extra_js %}{% endblock %}
+
+
+</body>
+</html>

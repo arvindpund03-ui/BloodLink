@@ -165,29 +165,25 @@ class EmergencyRequest(models.Model):
         ("CANCELLED", "CANCELLED"),
     ]
 
-    patient_name = models.CharField(
-        max_length=100
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_emergencies"
     )
 
-    blood_group = models.CharField(
-        max_length=10
-    )
+    patient_name = models.CharField(max_length=100)
 
-    units_required = models.PositiveIntegerField(
-        default=1
-    )
+    blood_group = models.CharField(max_length=10)
 
-    hospital_name = models.CharField(
-        max_length=200
-    )
+    units_required = models.PositiveIntegerField(default=1)
 
-    city = models.CharField(
-        max_length=100
-    )
+    hospital_name = models.CharField(max_length=200)
 
-    contact_number = models.CharField(
-        max_length=15
-    )
+    city = models.CharField(max_length=100)
+
+    contact_number = models.CharField(max_length=15)
 
     emergency_type = models.CharField(
         max_length=50,
@@ -212,12 +208,12 @@ class EmergencyRequest(models.Model):
     )
 
     def __str__(self):
+
         return (
             f"{self.patient_name} - "
             f"{self.blood_group} - "
             f"{self.emergency_type}"
         )
-
 
 # =========================================================
 # OTP VERIFICATION

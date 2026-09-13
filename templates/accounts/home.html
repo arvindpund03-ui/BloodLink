@@ -1,403 +1,1088 @@
 {% extends "base.html" %}
 
-{% block title %}BloodLink - Save Lives{% endblock %}
+
+{% block title %}
+BloodLink - Save Lives
+{% endblock %}
+
+
+{% block body_class %}
+home-page
+{% endblock %}
+
 
 {% block content %}
 
+
 <style>
-    .home-wrap {
-        max-width: 1200px;
+
+
+    /* =========================================
+       HOME WRAPPER
+    ========================================= */
+
+    .apk-home {
+
+        width: 100%;
+        max-width: 1100px;
+
         margin: 0 auto;
     }
 
-    .hero {
+
+    /* =========================================
+       HERO
+    ========================================= */
+
+    .apk-hero {
+
         position: relative;
+
         overflow: hidden;
-        border-radius: 28px;
-        padding: 55px 45px;
-        background: linear-gradient(135deg, #6d28d9, #2563eb, #0891b2);
+
+        min-height: 560px;
+
+        padding: 55px 55px;
+
+        border-radius: 32px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #5b21b6 0%,
+                #2563eb 50%,
+                #0891b2 100%
+            );
+
         color: white;
-        box-shadow: 0 20px 50px rgba(37, 99, 235, .25);
+
+        box-shadow:
+            0 25px 60px
+            rgba(37,99,235,.25);
     }
 
-    .hero::before,
-    .hero::after {
+
+    /* BIG CIRCLE */
+
+    .apk-hero::before {
+
         content: "";
+
         position: absolute;
-        border-radius: 50%;
-        background: rgba(255,255,255,.10);
-    }
 
-    .hero::before {
-        width: 260px;
-        height: 260px;
+        width: 420px;
+        height: 420px;
+
+        top: -130px;
         right: -80px;
-        top: -90px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255,255,255,.10);
     }
 
-    .hero::after {
-        width: 180px;
-        height: 180px;
-        left: -60px;
-        bottom: -80px;
+
+    /* BOTTOM CIRCLE */
+
+    .apk-hero::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 300px;
+        height: 300px;
+
+        bottom: -180px;
+        left: -100px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255,255,255,.08);
     }
 
-    .hero-content {
+
+    .apk-hero-content {
+
         position: relative;
+
         z-index: 2;
-        max-width: 720px;
+
+        max-width: 850px;
     }
 
-    .hero-badge {
-        display: inline-block;
-        padding: 9px 16px;
-        border-radius: 30px;
-        background: rgba(255,255,255,.16);
-        border: 1px solid rgba(255,255,255,.25);
-        font-weight: 700;
-        margin-bottom: 18px;
+
+    /* =========================================
+       BADGE
+    ========================================= */
+
+    .apk-badge {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        padding: 14px 28px;
+
+        margin-bottom: 35px;
+
+        border-radius: 40px;
+
+        background:
+            rgba(255,255,255,.12);
+
+        border:
+            1px solid rgba(255,255,255,.25);
+
+        backdrop-filter:
+            blur(10px);
+
+        font-size: 22px;
+        font-weight: 800;
     }
 
-    .hero h1 {
-        font-size: 48px;
-        line-height: 1.1;
-        margin: 0 0 18px;
+
+    /* =========================================
+       HERO TITLE
+    ========================================= */
+
+    .apk-hero h1 {
+
+        margin: 0 0 30px;
+
+        max-width: 850px;
+
+        font-size: 64px;
+
+        line-height: 1.12;
+
         font-weight: 900;
+
+        letter-spacing: -2px;
     }
 
-    .hero h1 span {
+
+    .apk-hero h1 span {
+
         color: #ffd1dc;
     }
 
-    .hero p {
-        font-size: 18px;
-        line-height: 1.7;
-        margin-bottom: 30px;
-        color: rgba(255,255,255,.92);
+
+    /* =========================================
+       DESCRIPTION
+    ========================================= */
+
+    .apk-hero-text {
+
+        max-width: 800px;
+
+        margin-bottom: 42px;
+
+        color:
+            rgba(255,255,255,.92);
+
+        font-size: 23px;
+
+        line-height: 1.8;
     }
 
-    .hero-buttons {
+
+    /* =========================================
+       HERO BUTTONS
+    ========================================= */
+
+    .apk-actions {
+
         display: flex;
-        gap: 14px;
-        flex-wrap: wrap;
-    }
 
-    .btn-main {
-        display: inline-block;
-        padding: 14px 24px;
-        border-radius: 14px;
-        background: #ffffff;
-        color: #4c1d95;
-        text-decoration: none;
-        font-weight: 800;
-        transition: .25s;
-    }
+        flex-direction: column;
 
-    .btn-main:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(0,0,0,.18);
-    }
-
-    .btn-emergency {
-        display: inline-block;
-        padding: 14px 24px;
-        border-radius: 14px;
-        background: #ff4d6d;
-        color: white;
-        text-decoration: none;
-        font-weight: 800;
-        transition: .25s;
-    }
-
-    .btn-emergency:hover {
-        transform: translateY(-3px);
-        background: #e11d48;
-    }
-
-    .section-title {
-        text-align: center;
-        margin: 45px 0 25px;
-    }
-
-    .section-title h2 {
-        margin: 0 0 8px;
-        font-size: 30px;
-        color: #172554;
-    }
-
-    .section-title p {
-        color: #64748b;
-    }
-
-    .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
+
+        max-width: 700px;
     }
 
-    .feature-card {
-        background: white;
-        padding: 28px;
+
+    .apk-btn {
+
+        width: 100%;
+
+        min-height: 78px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 12px;
+
         border-radius: 22px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 10px 30px rgba(15,23,42,.07);
-        transition: .25s;
+
+        font-size: 23px;
+        font-weight: 900;
+
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease;
     }
 
-    .feature-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 35px rgba(37,99,235,.13);
+
+    .apk-btn:hover {
+
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0 15px 30px rgba(0,0,0,.18);
     }
 
-    .feature-icon {
+
+    .apk-btn-donor {
+
+        background: white;
+
+        color: #312e81;
+    }
+
+
+    .apk-btn-emergency {
+
+        background: #ff4265;
+
+        color: white;
+
+        box-shadow:
+            0 12px 28px
+            rgba(239,68,68,.25);
+    }
+
+
+    /* =========================================
+       SECTION TITLE
+    ========================================= */
+
+    .apk-section-heading {
+
+        margin-top: 80px;
+
+        text-align: center;
+    }
+
+
+    .apk-section-heading h2 {
+
+        margin: 0 0 15px;
+
+        color: #1e3157;
+
+        font-size: 48px;
+
+        font-weight: 900;
+
+        letter-spacing: -1px;
+    }
+
+
+    .apk-section-heading p {
+
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: 22px;
+    }
+
+
+    /* =========================================
+       FEATURE GRID
+    ========================================= */
+
+    .apk-features {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 25px;
+
+        margin-top: 45px;
+    }
+
+
+    .apk-card {
+
+        min-height: 310px;
+
+        padding: 35px;
+
+        border-radius: 28px;
+
+        background: white;
+
+        border:
+            1px solid #e2e8f0;
+
+        box-shadow:
+            0 12px 35px
+            rgba(15,23,42,.08);
+
+        transition:
+            transform .25s ease,
+            box-shadow .25s ease;
+    }
+
+
+    .apk-card:hover {
+
+        transform:
+            translateY(-7px);
+
+        box-shadow:
+            0 22px 45px
+            rgba(37,99,235,.14);
+    }
+
+
+    .apk-card-icon {
+
+        width: 90px;
+        height: 90px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 30px;
+
+        border-radius: 25px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ede9fe,
+                #dbeafe
+            );
+
+        font-size: 42px;
+    }
+
+
+    .apk-card h3 {
+
+        margin: 0 0 15px;
+
+        color: #26385c;
+
+        font-size: 27px;
+
+        font-weight: 850;
+    }
+
+
+    .apk-card p {
+
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: 17px;
+
+        line-height: 1.7;
+    }
+
+
+    /* =========================================
+       HOW IT WORKS
+    ========================================= */
+
+    .apk-steps {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 20px;
+
+        margin-top: 45px;
+    }
+
+
+    .apk-step {
+
+        padding: 30px 22px;
+
+        text-align: center;
+
+        border-radius: 25px;
+
+        background: white;
+
+        border:
+            1px solid #e2e8f0;
+
+        box-shadow:
+            0 10px 25px
+            rgba(15,23,42,.06);
+    }
+
+
+    .apk-step-number {
+
         width: 58px;
         height: 58px;
+
         display: flex;
+
         align-items: center;
         justify-content: center;
-        border-radius: 17px;
-        font-size: 27px;
-        margin-bottom: 18px;
-        background: linear-gradient(135deg,#ede9fe,#dbeafe);
-    }
 
-    .feature-card h3 {
-        margin: 0 0 10px;
-        color: #172554;
-    }
+        margin:
+            0 auto 20px;
 
-    .feature-card p {
-        margin: 0;
-        color: #64748b;
-        line-height: 1.6;
-    }
-
-    .steps {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-    }
-
-    .step {
-        background: linear-gradient(145deg,#ffffff,#f8fafc);
-        border-radius: 20px;
-        padding: 25px 18px;
-        text-align: center;
-        border: 1px solid #e2e8f0;
-    }
-
-    .step-number {
-        width: 45px;
-        height: 45px;
-        margin: 0 auto 15px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg,#7c3aed,#2563eb);
+
+        background:
+            linear-gradient(
+                135deg,
+                #6d28d9,
+                #2563eb
+            );
+
         color: white;
+
+        font-size: 20px;
         font-weight: 900;
     }
 
-    .step h3 {
-        color: #172554;
-        font-size: 17px;
+
+    .apk-step h3 {
+
+        margin: 0 0 12px;
+
+        color: #26385c;
+
+        font-size: 20px;
     }
 
-    .step p {
+
+    .apk-step p {
+
+        margin: 0;
+
         color: #64748b;
-        font-size: 14px;
-        line-height: 1.5;
+
+        font-size: 15px;
+
+        line-height: 1.6;
     }
 
-    .cta {
-        margin-top: 45px;
-        margin-bottom: 20px;
-        padding: 35px;
-        border-radius: 24px;
-        background: linear-gradient(135deg,#fff1f2,#fce7f3,#ede9fe);
-        border: 1px solid #fbcfe8;
+
+    /* =========================================
+       CTA
+    ========================================= */
+
+    .apk-cta {
+
+        margin-top: 80px;
+
+        padding: 60px 30px;
+
         text-align: center;
+
+        border-radius: 30px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #fff1f2,
+                #fce7f3,
+                #ede9fe
+            );
+
+        border:
+            1px solid #fbcfe8;
     }
 
-    .cta h2 {
-        margin: 0 0 10px;
-        color: #831843;
+
+    .apk-cta h2 {
+
+        margin: 0 0 15px;
+
+        color: #7f1d4a;
+
+        font-size: 35px;
     }
 
-    .cta p {
+
+    .apk-cta p {
+
+        margin: 0 0 28px;
+
         color: #64748b;
-        margin-bottom: 22px;
+
+        font-size: 18px;
     }
 
-    .cta a {
-        display: inline-block;
-        padding: 13px 22px;
-        border-radius: 12px;
-        background: linear-gradient(135deg,#e11d48,#7c3aed);
+
+    .apk-cta-btn {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        padding: 17px 30px;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #e11d48,
+                #7c3aed
+            );
+
         color: white;
-        text-decoration: none;
-        font-weight: 800;
+
+        font-size: 17px;
+        font-weight: 900;
+
+        transition: .2s;
     }
 
-    @media (max-width: 900px) {
-        .feature-grid {
-            grid-template-columns: 1fr 1fr;
-        }
 
-        .steps {
-            grid-template-columns: 1fr 1fr;
-        }
+    .apk-cta-btn:hover {
 
-        .hero h1 {
-            font-size: 38px;
-        }
+        transform:
+            translateY(-3px);
     }
 
-    @media (max-width: 600px) {
-        .hero {
-            padding: 35px 22px;
-            border-radius: 20px;
+
+
+    /* =========================================
+       MOBILE
+    ========================================= */
+
+    @media screen and (max-width: 700px) {
+
+
+        .apk-hero {
+
+            min-height: auto;
+
+            padding:
+                56px 36px 55px;
+
+            border-radius: 30px;
         }
 
-        .hero h1 {
-            font-size: 32px;
+
+        .apk-badge {
+
+            padding:
+                13px 25px;
+
+            margin-bottom: 35px;
+
+            font-size: 20px;
         }
 
-        .hero p {
+
+        .apk-hero h1 {
+
+            margin-bottom: 30px;
+
+            font-size: 54px;
+
+            line-height: 1.08;
+
+            letter-spacing: -1px;
+        }
+
+
+        .apk-hero-text {
+
+            margin-bottom: 40px;
+
+            font-size: 22px;
+
+            line-height: 1.8;
+        }
+
+
+        .apk-btn {
+
+            min-height: 76px;
+
+            font-size: 22px;
+
+            border-radius: 22px;
+        }
+
+
+        .apk-section-heading {
+
+            margin-top: 80px;
+        }
+
+
+        .apk-section-heading h2 {
+
+            font-size: 42px;
+        }
+
+
+        .apk-section-heading p {
+
+            font-size: 20px;
+
+            line-height: 1.5;
+        }
+
+
+        .apk-features {
+
+            grid-template-columns: 1fr;
+
+            gap: 22px;
+        }
+
+
+        .apk-card {
+
+            min-height: auto;
+
+            padding: 40px;
+
+            border-radius: 28px;
+        }
+
+
+        .apk-card h3 {
+
+            font-size: 29px;
+        }
+
+
+        .apk-card p {
+
+            font-size: 18px;
+        }
+
+
+        .apk-steps {
+
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+    }
+
+
+
+    /* =========================================
+       SMALL MOBILE
+    ========================================= */
+
+    @media screen and (max-width: 480px) {
+
+
+        .apk-hero {
+
+            padding:
+                38px 36px 48px;
+
+            border-radius: 28px;
+        }
+
+
+        .apk-badge {
+
+            padding:
+                12px 22px;
+
+            margin-bottom: 30px;
+
+            font-size: 17px;
+        }
+
+
+        .apk-hero h1 {
+
+            font-size: 42px;
+
+            line-height: 1.15;
+
+            letter-spacing: -.5px;
+        }
+
+
+        .apk-hero-text {
+
+            font-size: 17px;
+
+            line-height: 1.8;
+
+            margin-bottom: 35px;
+        }
+
+
+        .apk-btn {
+
+            min-height: 70px;
+
+            font-size: 19px;
+
+            border-radius: 19px;
+        }
+
+
+        .apk-section-heading {
+
+            margin-top: 65px;
+        }
+
+
+        .apk-section-heading h2 {
+
+            font-size: 36px;
+        }
+
+
+        .apk-section-heading p {
+
+            font-size: 17px;
+
+            padding: 0 8px;
+        }
+
+
+        .apk-card {
+
+            padding: 32px;
+
+            border-radius: 25px;
+        }
+
+
+        .apk-card-icon {
+
+            width: 75px;
+            height: 75px;
+
+            font-size: 34px;
+
+            border-radius: 22px;
+        }
+
+
+        .apk-card h3 {
+
+            font-size: 25px;
+        }
+
+
+        .apk-card p {
+
             font-size: 16px;
         }
 
-        .feature-grid,
-        .steps {
+
+        .apk-steps {
+
             grid-template-columns: 1fr;
         }
 
-        .btn-main,
-        .btn-emergency {
-            width: 100%;
-            text-align: center;
-            box-sizing: border-box;
+
+        .apk-cta {
+
+            margin-top: 60px;
+
+            padding: 45px 20px;
         }
+
+
+        .apk-cta h2 {
+
+            font-size: 28px;
+        }
+
     }
+
+
 </style>
 
-<div class="home-wrap">
 
-    <section class="hero">
-        <div class="hero-content">
 
-            <div class="hero-badge">
+<div class="apk-home">
+
+
+    <!-- HERO -->
+
+    <section class="apk-hero">
+
+        <div class="apk-hero-content">
+
+
+            <div class="apk-badge">
                 🩸 BloodLink • Save Lives
             </div>
 
+
             <h1>
+
                 Every Drop Can
-                <span>Save a Life.</span>
+
+                <span>
+                    Save a Life.
+                </span>
+
             </h1>
 
-            <p>
+
+            <div class="apk-hero-text">
+
                 BloodLink connects blood donors with people who need blood.
                 Find donors, request blood and respond to emergencies quickly
                 through one simple platform.
-            </p>
 
-            <div class="hero-buttons">
-                <a href="/donors/" class="btn-main">
+            </div>
+
+
+            <div class="apk-actions">
+
+
+                <a
+                    href="/donors/"
+                    class="apk-btn apk-btn-donor"
+                >
                     🔎 Find Donors
                 </a>
 
-                <a href="/emergency-request/" class="btn-emergency">
+
+                <a
+                    href="/emergency-request/"
+                    class="apk-btn apk-btn-emergency"
+                >
                     🚨 Emergency Request
                 </a>
+
+
             </div>
 
+
         </div>
+
     </section>
 
-    <div class="section-title">
-        <h2>Why Choose BloodLink?</h2>
-        <p>Fast, simple and connected blood donation support.</p>
-    </div>
 
-    <div class="feature-grid">
 
-        <div class="feature-card">
-            <div class="feature-icon">🩸</div>
-            <h3>Find Blood Donors</h3>
+    <!-- WHY CHOOSE -->
+
+    <section class="apk-section-heading">
+
+        <h2>
+            Why Choose BloodLink?
+        </h2>
+
+        <p>
+            Fast, simple and connected blood donation support.
+        </p>
+
+    </section>
+
+
+
+    <!-- FEATURES -->
+
+    <section class="apk-features">
+
+
+        <div class="apk-card">
+
+            <div class="apk-card-icon">
+                🩸
+            </div>
+
+            <h3>
+                Find Blood Donors
+            </h3>
+
             <p>
                 Search available donors by blood group and location
                 when you need help.
             </p>
+
         </div>
 
-        <div class="feature-card">
-            <div class="feature-icon">🚨</div>
-            <h3>Emergency Support</h3>
+
+
+        <div class="apk-card">
+
+            <div class="apk-card-icon">
+                🚨
+            </div>
+
+            <h3>
+                Emergency Support
+            </h3>
+
             <p>
-                Create urgent blood requests and connect with available
-                donors quickly.
+                Create urgent blood requests and connect with
+                available donors quickly.
             </p>
+
         </div>
 
-        <div class="feature-card">
-            <div class="feature-icon">❤️</div>
-            <h3>Save Lives</h3>
+
+
+        <div class="apk-card">
+
+            <div class="apk-card-icon">
+                ❤️
+            </div>
+
+            <h3>
+                Save Lives
+            </h3>
+
             <p>
-                Every successful donation can make a meaningful difference
-                to someone in need.
+                Every successful donation can make a meaningful
+                difference to someone in need.
             </p>
+
         </div>
 
-    </div>
 
-    <div class="section-title">
-        <h2>How BloodLink Works</h2>
-        <p>Four simple steps to connect donors and recipients.</p>
-    </div>
+    </section>
 
-    <div class="steps">
 
-        <div class="step">
-            <div class="step-number">1</div>
-            <h3>Register</h3>
-            <p>Create your BloodLink account and add your blood details.</p>
+
+    <!-- HOW IT WORKS -->
+
+    <section class="apk-section-heading">
+
+        <h2>
+            How BloodLink Works
+        </h2>
+
+        <p>
+            Four simple steps to connect donors and recipients.
+        </p>
+
+    </section>
+
+
+
+    <section class="apk-steps">
+
+
+        <div class="apk-step">
+
+            <div class="apk-step-number">
+                1
+            </div>
+
+            <h3>
+                Register
+            </h3>
+
+            <p>
+                Create your BloodLink account and add your blood details.
+            </p>
+
         </div>
 
-        <div class="step">
-            <div class="step-number">2</div>
-            <h3>Find</h3>
-            <p>Search for suitable donors based on blood group and city.</p>
+
+
+        <div class="apk-step">
+
+            <div class="apk-step-number">
+                2
+            </div>
+
+            <h3>
+                Find
+            </h3>
+
+            <p>
+                Search for suitable donors based on blood group and city.
+            </p>
+
         </div>
 
-        <div class="step">
-            <div class="step-number">3</div>
-            <h3>Connect</h3>
-            <p>Contact the donor and coordinate the blood donation.</p>
+
+
+        <div class="apk-step">
+
+            <div class="apk-step-number">
+                3
+            </div>
+
+            <h3>
+                Connect
+            </h3>
+
+            <p>
+                Contact the donor and coordinate the blood donation.
+            </p>
+
         </div>
 
-        <div class="step">
-            <div class="step-number">4</div>
-            <h3>Save a Life</h3>
-            <p>Complete the donation and help someone in need.</p>
+
+
+        <div class="apk-step">
+
+            <div class="apk-step-number">
+                4
+            </div>
+
+            <h3>
+                Save a Life
+            </h3>
+
+            <p>
+                Complete the donation and help someone in need.
+            </p>
+
         </div>
 
-    </div>
 
-    <section class="cta">
+    </section>
 
-        <h2>Ready to Make a Difference?</h2>
+
+
+    <!-- CTA -->
+
+    <section class="apk-cta">
+
+
+        <h2>
+            Ready to Make a Difference?
+        </h2>
+
 
         <p>
             Become a donor or request blood today.
         </p>
 
-        <a href="/register/">
+
+        <a
+            href="/register/"
+            class="apk-cta-btn"
+        >
             ❤️ Join BloodLink
         </a>
 
+
     </section>
 
+
 </div>
+
 
 {% endblock %}
